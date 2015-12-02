@@ -1,0 +1,5 @@
+rootProject.name = 'lamp-client'
+
+include 'genie-core'
+include 'genie-spring-boot'
+

@@ -1,0 +1,24 @@
+package lamp.client.genie.spring.boot.management.assembler;
+
+import lamp.client.genie.spring.boot.base.exec.deploy.DeployManifest;
+import lamp.client.genie.spring.boot.management.controller.AppRegistrationForm;
+import net.badnom.lamp.common.assembler.AbstractListAssembler;
+import net.badnom.lamp.common.utils.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Component;
+
+@Component
+public class DeployManifestAssembler extends AbstractListAssembler<AppRegistrationForm, DeployManifest> {
+
+	@Override protected DeployManifest doAssemble(AppRegistrationForm form) {
+		DeployManifest manifest = new DeployManifest();
+		BeanUtils.copyProperties(form, manifest, DeployManifest.class);
+
+		if (StringUtils.isBlank(manifest.getFilename())) {
+			manifest.setFilename(form.getDeployFile().getOriginalFilename());
+		}
+
+		return manifest;
+	}
+
+}

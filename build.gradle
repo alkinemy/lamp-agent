@@ -1,0 +1,48 @@
+ext {
+
+    lombokVersion = '1.16.6'
+
+}
+
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+
+    project.group = 'lamp.client'
+    project.version = '0.0.1-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
+
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
+    configurations {
+        providedCompile
+
+        all*.exclude group: 'commons-logging', module: 'commons-logging'
+        all*.exclude group: 'log4j', module: 'log4j'
+        all*.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+        all*.exclude group: 'org.slf4j', module: 'slf4j-jcl'
+        all*.exclude group: 'org.slf4j', module: 'slf4j-jdk14'
+    }
+
+    dependencies {
+        testCompile("junit:junit:4.12")
+        testCompile("org.mockito:mockito-all:1.10.19")
+        testCompile("org.easytesting:fest-assert-base:2.0M10")
+
+        providedCompile group: 'org.projectlombok', name: 'lombok', version:'1.14.8'
+    }
+
+    sourceSets {
+        main.compileClasspath += configurations.providedCompile
+        test.compileClasspath += configurations.providedCompile
+        test.runtimeClasspath += configurations.providedCompile
+    }
+
+}
