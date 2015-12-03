@@ -4,7 +4,7 @@ import lamp.client.genie.core.AppManifest;
 import lamp.client.genie.core.context.LampContext;
 import lamp.client.genie.spring.boot.base.assembler.AbstractListAssembler;
 import lamp.client.genie.spring.boot.base.impl.AppManifestImpl;
-import lamp.client.genie.spring.boot.management.controller.AppRegistrationForm;
+import lamp.client.genie.spring.boot.management.form.AppRegistrationForm;
 import lamp.client.genie.utils.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

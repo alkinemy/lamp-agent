@@ -26,7 +26,6 @@ public class AppManifestImpl implements AppManifest {
 
 	private Boolean deploy;
 	private AppProcessType processType;
-	private boolean isDaemon;
 
 	private String homeDirectoryPath;
 	private String workDirectoryPath;
@@ -34,12 +33,12 @@ public class AppManifestImpl implements AppManifest {
 
 	private String pidFilePath;
 
-	private long checkStatusInterval;
+	private Long checkStatusInterval;
 
 	private String startCommandLine;
-	private long startTimeout = ExecuteWatchdog.INFINITE_TIMEOUT;
+	private Long startTimeout = ExecuteWatchdog.INFINITE_TIMEOUT;
 	private String stopCommandLine;
-	private long stopTimeout = ExecuteWatchdog.INFINITE_TIMEOUT;
+	private Long stopTimeout = ExecuteWatchdog.INFINITE_TIMEOUT;
 	private Boolean autoStart;
 	private Boolean autoStop;
 
@@ -64,6 +63,7 @@ public class AppManifestImpl implements AppManifest {
 	}
 
 	@Nullable
+	@JsonIgnore
 	@Override
 	public File getPidFile() {
 		String pidFilePath = getPidFilePath();

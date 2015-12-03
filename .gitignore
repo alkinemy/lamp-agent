@@ -1,3 +1,5 @@
+/native
+
 # Created by .ignore support plugin (hsz.mobi)
 ### Java template
 *.class
@@ -104,7 +106,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 ### Scala template
-*.class
 *.log
 
 # sbt specific
@@ -133,7 +134,6 @@ gradle-app.setting
 ### Eclipse template
 *.pydevproject
 .metadata
-.gradle
 bin/
 tmp/
 *.tmp

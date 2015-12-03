@@ -1,9 +1,9 @@
 package lamp.client.genie.spring.boot.management.assembler;
 
-import lamp.client.genie.spring.boot.base.exec.deploy.DeployManifest;
-import lamp.client.genie.spring.boot.management.controller.AppRegistrationForm;
-import net.badnom.lamp.common.assembler.AbstractListAssembler;
-import net.badnom.lamp.common.utils.StringUtils;
+import lamp.client.genie.core.deploy.DeployManifest;
+import lamp.client.genie.spring.boot.base.assembler.AbstractListAssembler;
+import lamp.client.genie.spring.boot.management.form.AppRegistrationForm;
+import lamp.client.genie.utils.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 

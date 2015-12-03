@@ -5,7 +5,7 @@ public interface AppProcess {
 
 	String getId();
 
-	AppProcessStatus getStatus();
+	AppProcessState getStatus();
 
 	void terminate();
 

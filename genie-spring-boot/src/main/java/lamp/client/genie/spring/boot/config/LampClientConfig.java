@@ -1,14 +1,14 @@
 package lamp.client.genie.spring.boot.config;
 
 import lamp.client.genie.spring.boot.base.assembler.SmartAssembler;
-import lamp.client.genie.spring.boot.base.register.LampClientRegistrationApplicationListener;
-import lamp.client.genie.spring.boot.base.register.service.LampClientSecretKeyService;
-import lamp.client.genie.spring.boot.base.register.support.LampClientApiRegistrator;
+import lamp.client.genie.spring.boot.register.LampClientRegistrationApplicationListener;
+import lamp.client.genie.spring.boot.register.service.LampClientSecretKeyService;
+import lamp.client.genie.spring.boot.register.support.LampClientApiRegistrator;
 import lamp.client.genie.spring.boot.base.impl.LampContextImpl;
-import lamp.client.genie.spring.boot.base.register.LampClientRegistrator;
+import lamp.client.genie.spring.boot.register.LampClientRegistrator;
 
-import lamp.client.genie.spring.boot.base.register.support.http.BasicAuthHttpRequestInterceptor;
-import lamp.client.genie.spring.boot.base.register.support.http.LampHttpRequestInterceptor;
+import lamp.client.genie.spring.boot.register.support.http.BasicAuthHttpRequestInterceptor;
+import lamp.client.genie.spring.boot.register.support.http.LampHttpRequestInterceptor;
 
 import lamp.client.genie.utils.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -29,8 +29,8 @@ import java.util.List;
 public class LampClientConfig {
 
 	@Bean
-	public LampContextImpl lampContext(ApplicationContext applicationContext, LampClientProperties clientProperties) {
-		return new LampContextImpl(applicationContext, clientProperties);
+	public LampContextImpl lampContext(LampClientProperties clientProperties) {
+		return new LampContextImpl(clientProperties);
 	}
 
 	@Bean

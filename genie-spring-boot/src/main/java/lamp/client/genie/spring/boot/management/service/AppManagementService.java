@@ -13,7 +13,7 @@ import lamp.client.genie.spring.boot.base.exception.Exceptions;
 import lamp.client.genie.spring.boot.base.impl.AppContextImpl;
 import lamp.client.genie.spring.boot.base.impl.AppImpl;
 import lombok.extern.slf4j.Slf4j;
-import lamp.client.genie.spring.boot.management.controller.AppRegistrationForm;
+import lamp.client.genie.spring.boot.management.form.AppRegistrationForm;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

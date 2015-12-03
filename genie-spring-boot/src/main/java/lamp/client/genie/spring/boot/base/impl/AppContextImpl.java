@@ -5,7 +5,7 @@ import lamp.client.genie.core.AppStatus;
 import lamp.client.genie.core.context.AppContext;
 import lamp.client.genie.core.context.LampContext;
 import lamp.client.genie.core.runtime.process.AppProcess;
-import lamp.client.genie.core.runtime.process.AppProcessStatus;
+import lamp.client.genie.core.runtime.process.AppProcessState;
 import lamp.client.genie.core.runtime.process.exec.AppProcessLauncher;
 import lamp.client.genie.core.runtime.shell.Shell;
 import lombok.Getter;
@@ -83,8 +83,8 @@ public class AppContextImpl implements AppContext {
 
 	@Override public AppStatus checkAndUpdateStatus() {
 		lastCheckTimeMillis = System.currentTimeMillis();
-		AppProcessStatus processStatus = getProcessStatus();
-		if (AppProcessStatus.RUNNING.equals(processStatus)) {
+		AppProcessState processStatus = getProcessStatus();
+		if (AppProcessState.RUNNING.equals(processStatus)) {
 			return updateStatus(AppStatus.RUNNING);
 		} else {
 			return updateStatus(AppStatus.NOT_RUNNING);
@@ -100,9 +100,9 @@ public class AppContextImpl implements AppContext {
 		return process;
 	}
 
-	public AppProcessStatus getProcessStatus() {
+	public AppProcessState getProcessStatus() {
 		AppProcess process = getProcess();
-		return process != null ? process.getStatus() : AppProcessStatus.NOT_RUNNING;
+		return process != null ? process.getStatus() : AppProcessState.NOT_RUNNING;
 	}
 
 

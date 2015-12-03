@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lamp.client.genie.core.AppManifest;
 import lamp.client.genie.core.context.LampContext;
 import lamp.client.genie.core.context.MountPoint;
+import lamp.client.genie.spring.boot.base.impl.AppManifestImpl;
 import lamp.client.genie.utils.ArrayUtils;
 import lombok.extern.slf4j.Slf4j;
 import lamp.client.genie.spring.boot.base.exception.ErrorCode;
@@ -20,7 +21,7 @@ import java.util.List;
 @Component
 public class AppManifestRepository {
 
-	private static final String APP_CONFIG_FILE_NAME = "config.json";
+	private static final String MANIFEST_JSON = "manifest.json";
 
 	@Autowired
 	private LampContext lampContext;
@@ -32,11 +33,11 @@ public class AppManifestRepository {
 		if (!directory.exists()) {
 			directory.mkdirs();
 		}
-		File file = new File(directory, APP_CONFIG_FILE_NAME);
+		File file = new File(directory, MANIFEST_JSON);
 		try {
 			objectMapper.writeValue(file, appManifest);
 		} catch (IOException e) {
-			throw Exceptions.newException(ErrorCode.APP_CONFIG_SAVE_FAILED, e);
+			throw Exceptions.newException(ErrorCode.APP_MANIFEST_SAVE_FAILED, e);
 		}
 	}
 
@@ -46,14 +47,14 @@ public class AppManifestRepository {
 		File[] dirs = directory.listFiles(MountPoint.DIRECTORY);
 		if (ArrayUtils.isNotEmpty(dirs)) {
 			for (File dir : dirs) {
-				String serviceId = dir.getName();
+				String appId = dir.getName();
 				try {
-					AppManifest appManifest = findOne(serviceId);
+					AppManifest appManifest = findOne(appId);
 					if (appManifest != null) {
 						appManifestList.add(appManifest);
 					}
 				} catch (Exception e) {
-					log.info("AppConfig load failed", e);
+					log.info("AppManifest load failed", e);
 				}
 			}
 		}
@@ -62,21 +63,21 @@ public class AppManifestRepository {
 
 	public AppManifest findOne(String id) {
 		File directory = lampContext.getAppDirectory(id);
-		File file = new File(directory, APP_CONFIG_FILE_NAME);
+		File file = new File(directory, MANIFEST_JSON);
 
 		if (!file.exists()) {
 			return null;
 		}
 		try {
-			return objectMapper.readValue(file, AppManifest.class);
+			return objectMapper.readValue(file, AppManifestImpl.class);
 		} catch (IOException e) {
-			throw Exceptions.newException(ErrorCode.APP_CONFIG_READ_FAILED, e);
+			throw Exceptions.newException(ErrorCode.APP_MANIFEST_READ_FAILED, e);
 		}
 	}
 
 	public void delete(AppManifest appManifest) {
 		File directory = lampContext.getAppDirectory(appManifest.getId());
-		File file = new File(directory, APP_CONFIG_FILE_NAME);
+		File file = new File(directory, MANIFEST_JSON);
 		file.delete();
 	}
 

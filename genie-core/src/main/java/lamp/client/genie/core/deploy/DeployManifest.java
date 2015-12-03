@@ -12,6 +12,8 @@ import java.util.List;
 @ToString
 public class DeployManifest {
 
+	private String id;
+
 	private boolean overwrite;
 
 	private String filename;

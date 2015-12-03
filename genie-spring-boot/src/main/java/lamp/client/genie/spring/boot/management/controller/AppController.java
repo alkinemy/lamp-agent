@@ -1,26 +1,28 @@
 package lamp.client.genie.spring.boot.management.controller;
 
-import lamp.client.genie.spring.boot.management.service.AppDeployService;
+import lamp.client.genie.spring.boot.management.form.AppRegistrationForm;
+import lamp.client.genie.spring.boot.management.service.AppManagementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@RestController("/api/app")
+@RestController("/api/apps")
 public class AppController {
 
 	@Autowired
-	private AppDeployService appDeployService;
+	private AppManagementService appManagementService;
 
-//	@RequestMapping(value = "", method = RequestMethod.POST)
-//	public void deploy(@RequestBody AppDeployForm form) {
-//		appDeployService.deploy(form);
-//	}
-//
-//	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-//	public void undeploy(@PathVariable("id") String id) {
-////		appDeployService.base(form);
-//	}
+	@RequestMapping(value = "", method = RequestMethod.POST)
+	public void register(@RequestBody AppRegistrationForm form) {
+		appManagementService.register(form);
+	}
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public void deregister(@PathVariable("id") String id, @RequestParam(name = "forceStop", defaultValue = "false") Boolean forceStop) {
+		appManagementService.deregister(id, forceStop);
+	}
+
 //
 //	@RequestMapping(value = "/{id}/start", method = RequestMethod.POST)
 //	public void start(@PathVariable("id") String id) {

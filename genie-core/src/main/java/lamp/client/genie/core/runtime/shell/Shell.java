@@ -1,11 +1,18 @@
 package lamp.client.genie.core.runtime.shell;
 
-import lamp.client.genie.core.runtime.process.AppProcessStatus;
+import lamp.client.genie.core.runtime.process.AppProcessState;
 
 import java.io.IOException;
 
 public interface Shell {
-	AppProcessStatus getProcessStatus(String pid) throws IOException;
 
-	boolean processSigterm(String pid) throws IOException;
+	AppProcessState getProcessState(String pid);
+
+	void kill(String pid, Signal signal);
+
+	void close();
+
+	public static enum Signal {
+		TERM, KILL
+	}
 }

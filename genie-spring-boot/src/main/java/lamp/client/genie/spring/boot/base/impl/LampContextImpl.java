@@ -2,8 +2,8 @@ package lamp.client.genie.spring.boot.base.impl;
 
 import lamp.client.genie.core.context.LampContext;
 import lamp.client.genie.core.context.MountPoint;
-import lamp.client.genie.core.runtime.shell.LinuxShell;
 import lamp.client.genie.core.runtime.shell.Shell;
+import lamp.client.genie.core.runtime.shell.SigarShell;
 import lamp.client.genie.spring.boot.config.LampClientProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -16,15 +16,17 @@ public class LampContextImpl implements LampContext {
 	private static final String APP_DIRECTORY = "apps";
 	private static final String LOG_DIRECTORY = "logs";
 
-	private final ApplicationContext applicationContext;
 	private final Shell shell;
 	private LampClientProperties lampClientProperties;
 
 
-	public LampContextImpl(ApplicationContext applicationContext, LampClientProperties lampClientProperties) {
-		this.applicationContext = applicationContext;
+	public LampContextImpl(LampClientProperties lampClientProperties) {
 		this.lampClientProperties = lampClientProperties;
-		this.shell = new LinuxShell();
+		this.shell = new SigarShell();
+	}
+
+	public void close() {
+		shell.close();
 	}
 
 	@Override public String getHostname() {

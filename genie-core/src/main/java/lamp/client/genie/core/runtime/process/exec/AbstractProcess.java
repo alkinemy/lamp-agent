@@ -4,7 +4,7 @@ import lamp.client.genie.core.AppManifest;
 import lamp.client.genie.core.context.AppContext;
 import lamp.client.genie.core.exception.PidFileException;
 import lamp.client.genie.core.runtime.process.AppProcess;
-import lamp.client.genie.core.runtime.process.AppProcessStatus;
+import lamp.client.genie.core.runtime.process.AppProcessState;
 import lamp.client.genie.utils.FileUtils;
 import lamp.client.genie.utils.StringUtils;
 import lamp.client.genie.utils.VariableReplaceUtils;
@@ -65,17 +65,18 @@ public abstract class AbstractProcess implements AppProcess {
 		return null;
 	}
 
-	@Override public AppProcessStatus getStatus() {
+	@Override public AppProcessState getStatus() {
 		String pid = getId();
 		if (StringUtils.isBlank(pid)) {
-			return AppProcessStatus.NOT_RUNNING;
+			return AppProcessState.NOT_RUNNING;
 		}
-		try {
-			return getContext().getShell().getProcessStatus(pid);
-		} catch (IOException e) {
-			log.info("Unable to get process status", e);
-			return AppProcessStatus.NOT_RUNNING;
-		}
+		return getContext().getShell().getProcessState(pid);
+//		try {
+//
+//		} catch (IOException e) {
+//			log.info("Unable to get process status", e);
+//			return AppProcessState.NOT_RUNNING;
+//		}
 	}
 
 }
