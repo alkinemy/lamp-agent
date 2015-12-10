@@ -28,5 +28,4 @@ public class LampClientApiRegisterForm {
 	private String healthPath;
 	private String metricsPath;
 
-
 }

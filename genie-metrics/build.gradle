@@ -1,0 +1,15 @@
+jar {
+    baseName = 'genie-metrics'
+    version =  '0.0.1-SNAPSHOT'
+}
+
+dependencies {
+
+    providedCompile('org.slf4j:slf4j-api:1.7.12')
+
+    compile("io.dropwizard.metrics:metrics-core:3.1.2")
+    compile("io.dropwizard.metrics:metrics-healthchecks:3.1.2")
+
+    compile project(':genie-core')
+
+}

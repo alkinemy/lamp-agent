@@ -16,7 +16,7 @@ public class SigarShell implements Shell {
 		try {
 			SigarNativeLoader.loadNativeLibrary();
 		} catch (ArchNotSupportedException e) {
-			e.printStackTrace();
+			throw new ShellException("Unsupported platform", e);
 		}
 	}
 
@@ -51,4 +51,5 @@ public class SigarShell implements Shell {
 	@Override public void close() {
 		sigar.close();
 	}
+
 }
