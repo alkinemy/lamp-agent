@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "lamp.api.server")
+@ConfigurationProperties(prefix = "lamp.server")
 public class LampServerProperties {
 
 	private String url;

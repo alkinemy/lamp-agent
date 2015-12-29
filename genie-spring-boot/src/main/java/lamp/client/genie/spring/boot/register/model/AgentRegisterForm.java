@@ -9,7 +9,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-public class LampClientApiRegisterForm {
+public class AgentRegisterForm {
 
 	private String id;
 	private String name;
@@ -22,10 +22,14 @@ public class LampClientApiRegisterForm {
 	private String address;
 	private int port = -1;
 
+	private String homeDirectory;
+
 	private String secretKey;
 	private Date time;
 
+	private String healthType;
 	private String healthPath;
+	private String metricsType;
 	private String metricsPath;
 
 }

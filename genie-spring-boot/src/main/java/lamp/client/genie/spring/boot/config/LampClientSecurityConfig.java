@@ -14,7 +14,7 @@ public class LampClientSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-			.csrf().disable() //TODO 임시로 disable 시킴, 해결하기
+			.csrf().disable()
 			.authorizeRequests()
 			.antMatchers("/").permitAll()
 			.anyRequest().authenticated()

@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LampClientApiRegisterResult {
+public class AgentRegisterResult {
 
 	private Long registerId;
 

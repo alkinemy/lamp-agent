@@ -10,11 +10,11 @@ import org.springframework.core.annotation.Order;
 
 @Slf4j
 @Order(Ordered.LOWEST_PRECEDENCE)
-public class LampClientRegistrationApplicationListener implements ApplicationListener<ApplicationEvent> {
+public class AgentRegistrationApplicationListener implements ApplicationListener<ApplicationEvent> {
 
-	private final LampClientRegistrator lampClientRegistrator;
+	private final AgentRegistrator lampClientRegistrator;
 
-	public LampClientRegistrationApplicationListener(LampClientRegistrator lampClientRegistrator) {
+	public AgentRegistrationApplicationListener(AgentRegistrator lampClientRegistrator) {
 		this.lampClientRegistrator = lampClientRegistrator;
 	}
 

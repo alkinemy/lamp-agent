@@ -1,6 +1,6 @@
 package lamp.client.genie.spring.boot.register;
 
-public interface LampClientRegistrator {
+public interface AgentRegistrator {
 
 	void register();
 

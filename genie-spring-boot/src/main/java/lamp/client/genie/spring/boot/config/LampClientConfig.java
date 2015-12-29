@@ -1,11 +1,11 @@
 package lamp.client.genie.spring.boot.config;
 
 import lamp.client.genie.spring.boot.base.assembler.SmartAssembler;
-import lamp.client.genie.spring.boot.register.LampClientRegistrationApplicationListener;
-import lamp.client.genie.spring.boot.register.service.LampClientSecretKeyService;
-import lamp.client.genie.spring.boot.register.support.LampClientApiRegistrator;
+import lamp.client.genie.spring.boot.register.AgentRegistrationApplicationListener;
+import lamp.client.genie.spring.boot.register.service.AgentSecretKeyGenerator;
+import lamp.client.genie.spring.boot.register.support.AgentApiRegistrator;
 import lamp.client.genie.spring.boot.base.impl.LampContextImpl;
-import lamp.client.genie.spring.boot.register.LampClientRegistrator;
+import lamp.client.genie.spring.boot.register.AgentRegistrator;
 
 import lamp.client.genie.spring.boot.register.support.http.BasicAuthHttpRequestInterceptor;
 import lamp.client.genie.spring.boot.register.support.http.LampHttpRequestInterceptor;
@@ -14,7 +14,6 @@ import lamp.client.genie.utils.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -35,8 +34,8 @@ public class LampClientConfig {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public LampClientSecretKeyService lampClientSecretKeyService(LampClientProperties clientProperties) {
-		return new LampClientSecretKeyService(clientProperties);
+	public AgentSecretKeyGenerator agentSecretKeyGenerator(LampClientProperties clientProperties) {
+		return new AgentSecretKeyGenerator(clientProperties);
 	}
 
 
@@ -51,8 +50,8 @@ public class LampClientConfig {
 
 		@Bean
 		@ConditionalOnMissingBean
-		public LampClientRegistrator lampClientRegistrator(LampServerProperties serverProperties, LampClientProperties clientProperties) {
-			return new LampClientApiRegistrator(serverProperties, clientProperties, createRestTemplate(serverProperties, clientProperties));
+		public AgentRegistrator lampClientRegistrator(LampServerProperties serverProperties, LampClientProperties clientProperties) {
+			return new AgentApiRegistrator(serverProperties, clientProperties, createRestTemplate(serverProperties, clientProperties));
 		}
 
 		protected RestTemplate createRestTemplate(LampServerProperties serverProperties, LampClientProperties clientProperties) {
@@ -74,8 +73,8 @@ public class LampClientConfig {
 		}
 
 		@Bean
-		public LampClientRegistrationApplicationListener registrationApplicationListener(LampClientApiRegistrator lampClientApiRegistrator) {
-			return new LampClientRegistrationApplicationListener(lampClientApiRegistrator);
+		public AgentRegistrationApplicationListener registrationApplicationListener(AgentApiRegistrator lampClientApiRegistrator) {
+			return new AgentRegistrationApplicationListener(lampClientApiRegistrator);
 		}
 
 	}

@@ -45,8 +45,6 @@ public class LampClientProperties implements ApplicationListener<ApplicationEven
 	@Autowired
 	private ServerProperties serverProperties;
 
-	private Long registrationId;
-
 	private boolean initialized;
 
 	@PostConstruct
@@ -77,6 +75,14 @@ public class LampClientProperties implements ApplicationListener<ApplicationEven
 			return getHostname() + "-" + getPort();
 		} else {
 			return id;
+		}
+	}
+
+	public String getName() {
+		if (StringUtils.isBlank(name)) {
+			return getId();
+		} else {
+			return name;
 		}
 	}
 

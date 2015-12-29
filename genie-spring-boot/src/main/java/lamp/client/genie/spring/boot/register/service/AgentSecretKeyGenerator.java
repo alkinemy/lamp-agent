@@ -8,6 +8,7 @@ import lamp.client.genie.utils.StringUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import lamp.client.genie.spring.boot.config.LampClientProperties;
+import org.springframework.util.Base64Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,32 +16,28 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 @Slf4j
-public class LampClientSecretKeyService {
+public class AgentSecretKeyGenerator {
 
-	@Getter
-	private String secretKey;
-
-	public LampClientSecretKeyService(LampClientProperties lampClientProperties) {
+	public AgentSecretKeyGenerator(LampClientProperties lampClientProperties) {
 		String key = lampClientProperties.getSecretKey();
-		File secretKeyFile = lampClientProperties.getSecretKeyFile();
 		if (StringUtils.isBlank(key)) {
+			File secretKeyFile = lampClientProperties.getSecretKeyFile();
 			if (secretKeyFile.exists()) {
 				try {
 					key = FileUtils.readFileToString(secretKeyFile);
 				} catch (IOException e) {
 					log.warn("Can't read from the secretKey file (" + secretKeyFile.getAbsolutePath() + ")", e);
 				}
+			} else {
+				key = randomSecretKey();
+				try {
+					FileUtils.writeStringToFile(secretKeyFile, key, LampClientConstants.DEFAULT_CHARSET);
+				} catch (IOException e) {
+					log.warn("Can't write to the secretKey file (" + secretKeyFile.getAbsolutePath() + ")", e);
+				}
 			}
+			lampClientProperties.setSecretKey(key);
 		}
-		if (StringUtils.isBlank(key)) {
-			key = randomSecretKey();
-			try {
-				FileUtils.writeStringToFile(secretKeyFile, key, LampClientConstants.DEFAULT_CHARSET);
-			} catch (IOException e) {
-				log.warn("Can't write to the secretKey file (" + secretKeyFile.getAbsolutePath() + ")", e);
-			}
-		}
-		this.secretKey = key;
 	}
 
 
@@ -50,7 +47,7 @@ public class LampClientSecretKeyService {
 			secureRandom = SecureRandom.getInstance("SHA1PRNG");
 			byte[] bytes = new byte[24];
 			secureRandom.nextBytes(bytes);
-			return new String(bytes);
+			return Base64Utils.encodeToString(bytes);
 		} catch (NoSuchAlgorithmException e) {
 			throw Exceptions.newException(ErrorCode.SECRET_KEY_GENERATION_FAILED, e);
 		}
