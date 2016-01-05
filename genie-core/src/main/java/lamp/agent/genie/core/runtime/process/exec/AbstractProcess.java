@@ -1,0 +1,82 @@
+package lamp.agent.genie.core.runtime.process.exec;
+
+import lamp.agent.genie.core.context.AppContext;
+import lamp.agent.genie.core.runtime.process.AppProcessState;
+import lamp.agent.genie.utils.FileUtils;
+import lamp.agent.genie.utils.StringUtils;
+import lamp.agent.genie.utils.VariableReplaceUtils;
+import lamp.agent.genie.core.AppManifest;
+import lamp.agent.genie.core.exception.PidFileException;
+import lamp.agent.genie.core.runtime.process.AppProcess;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Objects;
+
+@Slf4j
+public abstract class AbstractProcess implements AppProcess {
+
+	@Getter
+	private final AppContext context;
+	@Getter
+	private final File pidFile;
+	@Getter
+	private File workingDirectory;
+	@Getter
+	private File systemLogFile;
+	@Getter
+	private String startCommandLine;
+	@Getter
+	private long startTimeout;
+	@Getter
+	private String stopCommandLine;
+	@Getter
+	private long stopTimeout;
+
+	public AbstractProcess(AppContext context) {
+		Objects.requireNonNull(context);
+		this.context = context;
+
+		AppManifest config = context.getAppManifest();
+
+		Map<String, Object> parameters = context.getParameters();
+		this.pidFile = config.getPidFile();
+		this.workingDirectory = config.getWorkDirectory();
+		this.systemLogFile = null;
+		this.startCommandLine = VariableReplaceUtils.replaceVariables(config.getStartCommandLine(), parameters);
+		this.startTimeout = config.getStartTimeout();
+		this.stopCommandLine = VariableReplaceUtils.replaceVariables(config.getStopCommandLine(), parameters);
+		this.stopTimeout = config.getStopTimeout();
+	}
+
+	@Override
+	public String getId() {
+		File pidFile = getContext().getPidFile();
+		if (pidFile != null && pidFile.exists()) {
+			try {
+				return FileUtils.readFileToString(pidFile);
+			} catch (IOException e) {
+				throw new PidFileException("Can't read pid file", e);
+			}
+		}
+		return null;
+	}
+
+	@Override public AppProcessState getStatus() {
+		String pid = getId();
+		if (StringUtils.isBlank(pid)) {
+			return AppProcessState.NOT_RUNNING;
+		}
+		return getContext().getShell().getProcessState(pid);
+//		try {
+//
+//		} catch (IOException e) {
+//			log.info("Unable to get process status", e);
+//			return AppProcessState.NOT_RUNNING;
+//		}
+	}
+
+}

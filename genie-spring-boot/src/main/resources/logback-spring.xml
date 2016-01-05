@@ -8,7 +8,7 @@
 		</encoder>
 	</appender>
 
-	<logger name="lamp.client" level="DEBUG"/>
+	<logger name="lamp.agent" level="DEBUG"/>
 
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />
