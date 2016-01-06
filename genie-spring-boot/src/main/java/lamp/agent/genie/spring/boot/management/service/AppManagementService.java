@@ -1,5 +1,7 @@
 package lamp.agent.genie.spring.boot.management.service;
 
+import lamp.agent.genie.core.exception.UnsupportedProcessTypeException;
+import lamp.agent.genie.core.runtime.process.AppProcessType;
 import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.impl.AppImpl;
@@ -11,7 +13,8 @@ import lamp.agent.genie.core.context.AppRegistry;
 import lamp.agent.genie.core.context.LampContext;
 import lamp.agent.genie.core.deploy.InstallManifest;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
-import lamp.agent.genie.spring.boot.base.impl.AppContextImpl;
+import lamp.agent.genie.spring.boot.base.impl.DaemonAppContext;
+import lamp.agent.genie.spring.boot.base.impl.DefaultAppContext;
 import lombok.extern.slf4j.Slf4j;
 import lamp.agent.genie.spring.boot.management.form.AppRegistrationForm;
 
@@ -71,8 +74,19 @@ public class AppManagementService {
 	}
 
 	protected App newAppInstance(AppManifest appManifest) {
-		AppContext appContext = new AppContextImpl(lampContext, appManifest);
+		AppContext appContext = newAppContextInstance(appManifest);
 		return new AppImpl(appContext);
+	}
+
+	protected AppContext newAppContextInstance(AppManifest appManifest) {
+		AppProcessType appProcessType = appManifest.getProcessType();
+		if (AppProcessType.DAEMON.equals(appProcessType)) {
+			return new DaemonAppContext(lampContext, appManifest);
+		} else if (AppProcessType.DEFAULT.equals(appProcessType)) {
+			return new DefaultAppContext(lampContext, appManifest);
+		} else {
+			throw new UnsupportedProcessTypeException(appProcessType);
+		}
 	}
 
 	@PreDestroy

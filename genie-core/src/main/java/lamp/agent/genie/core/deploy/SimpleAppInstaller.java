@@ -1,7 +1,7 @@
 package lamp.agent.genie.core.deploy;
 
 
-import lamp.agent.genie.core.exception.DeployException;
+import lamp.agent.genie.core.exception.InstallException;
 import lamp.agent.genie.core.deploy.command.InstallCommand;
 import lamp.agent.genie.utils.CollectionUtils;
 import lamp.agent.genie.core.AppManifest;
@@ -33,7 +33,7 @@ public class SimpleAppInstaller implements AppInstaller {
 				}
 			}
 		} catch (Exception e) {
-			throw new DeployException("Deploy failed", e);
+			throw new InstallException("Deploy failed", e);
 		}
 	}
 

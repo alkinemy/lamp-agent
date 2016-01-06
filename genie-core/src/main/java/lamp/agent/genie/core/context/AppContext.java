@@ -24,7 +24,9 @@ public interface AppContext {
 
 	AppStatus checkAndUpdateStatus();
 
-	AppProcess createProcess();
+	void createProcess();
+
+	void terminateProcess();
 
 	Map<String,Object> getParameters();
 

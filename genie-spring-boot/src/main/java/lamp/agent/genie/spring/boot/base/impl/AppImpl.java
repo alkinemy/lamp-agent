@@ -5,7 +5,6 @@ import lamp.agent.genie.core.App;
 import lamp.agent.genie.core.AppManifest;
 import lamp.agent.genie.core.AppStatus;
 import lamp.agent.genie.core.context.AppContext;
-import lamp.agent.genie.core.runtime.process.AppProcess;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lombok.Getter;
 
@@ -16,8 +15,6 @@ public class AppImpl implements App {
 
 	private final AppContext context;
 
-	@Getter
-	private AppProcess process;
 	@Getter
 	private Date startTime;
 	@Getter
@@ -58,7 +55,7 @@ public class AppImpl implements App {
 			this.startTime = new Date();
 			this.stopTime = null;
 
-			process = context.createProcess();
+			context.createProcess();
 
 		} catch (Exception e) {
 			context.updateStatus(AppStatus.NOT_RUNNING);
@@ -78,7 +75,8 @@ public class AppImpl implements App {
 			context.updateStatus(AppStatus.STOPPING);
 			this.stopTime = new Date();
 
-			context.getP.terminate();
+			context.terminateProcess();
+
 		} catch (Exception e) {
 			throw Exceptions.newException(ErrorCode.APP_STOP_FAILED, e);
 		}

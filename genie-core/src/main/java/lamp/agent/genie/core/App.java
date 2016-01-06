@@ -13,8 +13,6 @@ public interface App {
 
 	AppStatus getStatus();
 
-	AppProcess getProcess();
-
 	void start();
 
 	void stop();

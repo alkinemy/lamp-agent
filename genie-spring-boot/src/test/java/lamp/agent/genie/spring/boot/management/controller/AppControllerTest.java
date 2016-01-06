@@ -15,10 +15,12 @@ import org.springframework.boot.context.embedded.EmbeddedWebApplicationContext;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -27,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
+@ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(value = LampAgent.class)
 @WebIntegrationTest("server.port:0")
@@ -72,8 +75,8 @@ public class AppControllerTest {
 		parts.add("type", "type");
 		parts.add("version", "0.0.1");
 		parts.add("processType", AppProcessType.DAEMON.name());
-		parts.add("homeDirectoryPath", "/Users/kangwoo/Applications/zookeeper-3.4.6");
-		parts.add("workDirectoryPath", "/Users/kangwoo/Applications/zookeeper-3.4.6");
+		parts.add("homeDirectoryPath", "/Users/kangwoo/Applications/zookeeper-3.4.7");
+		parts.add("workDirectoryPath", "/Users/kangwoo/Applications/zookeeper-3.4.7");
 		parts.add("pidFilePath", "/tmp/zookeeper/zookeeper_server.pid");
 		parts.add("startCommandLine", "./bin/zkServer.sh start");
 		parts.add("stopCommandLine", "./bin/zkServer.sh stop");

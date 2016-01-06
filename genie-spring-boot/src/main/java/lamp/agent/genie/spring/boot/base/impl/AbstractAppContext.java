@@ -6,18 +6,16 @@ import lamp.agent.genie.core.context.AppContext;
 import lamp.agent.genie.core.context.LampContext;
 import lamp.agent.genie.core.runtime.process.AppProcess;
 import lamp.agent.genie.core.runtime.process.AppProcessState;
-import lamp.agent.genie.core.runtime.process.exec.AppProcessLauncher;
+import lamp.agent.genie.core.runtime.process.AppProcessType;
 import lamp.agent.genie.core.runtime.shell.Shell;
 import lombok.Getter;
-
 import org.apache.commons.collections.map.HashedMap;
 
 import java.io.File;
 import java.util.Map;
 
-public class AppContextImpl implements AppContext {
+public abstract class AbstractAppContext implements AppContext {
 
-	private AppProcessLauncher processLauncher = new AppProcessLauncher();
 	@Getter
 	private final LampContext lampContext;
 	@Getter
@@ -25,9 +23,10 @@ public class AppContextImpl implements AppContext {
 
 	private AppStatus appStatus = AppStatus.NOT_RUNNING;
 	private long lastCheckTimeMillis;
+	private AppProcess process;
 	private File systemLogFile;
 
-	public AppContextImpl(LampContext lampContext, AppManifest appManifest) {
+	public AbstractAppContext(LampContext lampContext, AppManifest appManifest) {
 		this.lampContext = lampContext;
 		this.appManifest = appManifest;
 
@@ -90,19 +89,11 @@ public class AppContextImpl implements AppContext {
 		}
 	}
 
-	@Override public AppProcess createProcess() {
-		return processLauncher.launch(this);
-	}
-
-
-	public AppProcess getProcess() {
-		return process;
-	}
+	public abstract AppProcess getProcess();
 
 	public AppProcessState getProcessStatus() {
 		AppProcess process = getProcess();
 		return process != null ? process.getStatus() : AppProcessState.NOT_RUNNING;
 	}
-
 
 }

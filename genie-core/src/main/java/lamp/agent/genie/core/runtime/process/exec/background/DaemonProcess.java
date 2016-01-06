@@ -20,11 +20,10 @@ public class DaemonProcess extends AbstractProcess {
 
 	public DaemonProcess(AppContext context) {
 		super(context);
+	}
 
-		AppProcessState status = getStatus();
-		if (AppProcessState.NOT_RUNNING.equals(status)) {
-			doStart();
-		}
+	public void start() {
+		doStart();
 	}
 
 	@Override public void terminate() {
