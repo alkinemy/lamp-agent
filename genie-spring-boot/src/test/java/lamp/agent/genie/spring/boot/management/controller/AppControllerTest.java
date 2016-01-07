@@ -2,9 +2,6 @@ package lamp.agent.genie.spring.boot.management.controller;
 
 import lamp.agent.genie.core.runtime.process.AppProcessType;
 import lamp.agent.genie.spring.boot.LampAgent;
-import lamp.agent.genie.spring.boot.config.LampAgentConfig;
-import lamp.agent.genie.spring.boot.config.LampAgentSecurityConfig;
-import lamp.agent.genie.spring.boot.management.form.AppRegistrationForm;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +12,7 @@ import org.springframework.boot.context.embedded.EmbeddedWebApplicationContext;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,8 +23,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
+
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -65,7 +63,7 @@ public class AppControllerTest {
 	}
 
 	@Test
-	public void testRegister() throws Exception {
+	public void testRegister_PreInstalled() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(this.authentication);
 
 		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
@@ -80,10 +78,32 @@ public class AppControllerTest {
 		parts.add("pidFilePath", "/tmp/zookeeper/zookeeper_server.pid");
 		parts.add("startCommandLine", "./bin/zkServer.sh start");
 		parts.add("stopCommandLine", "./bin/zkServer.sh stop");
+		parts.add("preInstalled", true);
 
 
 		template.postForEntity(getBaseUrl() + "/api/app", parts, Void.class);
+	}
 
+	@Test
+	public void testRegister_withInstall() throws Exception {
+		SecurityContextHolder.getContext().setAuthentication(this.authentication);
+
+		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+
+		parts.add("id", "test-2");
+		parts.add("name", "test");
+		parts.add("type", "type");
+		parts.add("version", "0.0.1");
+		parts.add("processType", AppProcessType.DEFAULT.name());
+		parts.add("pidFilePath", "/tmp/zookeeper/zookeeper_server.pid");
+		parts.add("startCommandLine", "./bin/zkServer.sh start");
+		parts.add("stopCommandLine", "./bin/zkServer.sh stop");
+		parts.add("preInstalled", false);
+		parts.add("filename", "helloworld");
+		parts.add("installFile", new FileSystemResource("/Users/kangwoo/lamp-client/genie-spring-boot/src/test/java/lamp/agent/genie/spring/boot/management/repository/AppManifestRepositoryTest.java"));
+		// UrlResource
+
+		template.postForEntity(getBaseUrl() + "/api/app", parts, Void.class);
 	}
 
 	@Test

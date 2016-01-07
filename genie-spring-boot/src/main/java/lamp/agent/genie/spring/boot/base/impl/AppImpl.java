@@ -34,7 +34,7 @@ public class AppImpl implements App {
 	}
 
 	@Override
-	public AppStatus getStatus() {
+	public synchronized AppStatus getStatus() {
 		return context.getStatus();
 	}
 

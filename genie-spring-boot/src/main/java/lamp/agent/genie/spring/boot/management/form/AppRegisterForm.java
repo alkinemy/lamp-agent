@@ -14,7 +14,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-public class AppRegistrationForm {
+public class AppRegisterForm {
 
 	@NotEmpty
 	private String id;
@@ -36,9 +36,9 @@ public class AppRegistrationForm {
 	@NotEmpty
 	private String pidFilePath;
 
-	private long checkStatusInterval;
+	private long checkStatusInterval = 1000L;
 
-	@NotNull
+	@NotEmpty
 	private String startCommandLine;
 	private Long startTimeout = ExecuteWatchdog.INFINITE_TIMEOUT;
 	private String stopCommandLine;
@@ -46,6 +46,9 @@ public class AppRegistrationForm {
 
 	private Map<String, Object> parameters;
 
+	// Install
+	private boolean preInstalled;
+	private String filename;
 	private MultipartFile installFile;
 
 }

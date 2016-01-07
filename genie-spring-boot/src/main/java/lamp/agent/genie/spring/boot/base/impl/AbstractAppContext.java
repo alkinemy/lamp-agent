@@ -44,6 +44,7 @@ public abstract class AbstractAppContext implements AppContext {
 		parameters.put("agentVersion", appManifest.getVersion());
 		parameters.put("mountPoint", appManifest.getHomeDirectory().getAbsolutePath());
 		parameters.put("workDirectory", appManifest.getWorkDirectory().getAbsolutePath());
+		parameters.put("filename", appManifest.getFilename());
 
 //		Environment environment = lampContext.getEnvironment();
 //		parameters.put("activeProfiles", environment.getActiveProfiles());

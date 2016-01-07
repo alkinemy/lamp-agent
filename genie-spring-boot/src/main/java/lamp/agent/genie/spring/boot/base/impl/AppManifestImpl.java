@@ -24,7 +24,6 @@ public class AppManifestImpl implements AppManifest {
 	private String type;
 	private String version;
 
-	private Boolean deploy;
 	private AppProcessType processType;
 
 	private String homeDirectoryPath;
@@ -41,6 +40,9 @@ public class AppManifestImpl implements AppManifest {
 	private long stopTimeout = ExecuteWatchdog.INFINITE_TIMEOUT;
 	private boolean autoStart;
 	private boolean autoStop;
+
+	private String filename;
+	private boolean preInstalled;
 
 	private Map<String, Object> parameters;
 

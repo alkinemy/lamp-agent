@@ -2,10 +2,9 @@ package lamp.agent.genie.spring.boot.management.controller;
 
 import lamp.agent.genie.core.AppStatus;
 import lamp.agent.genie.spring.boot.management.service.AppManagementService;
-import lamp.agent.genie.spring.boot.management.form.AppRegistrationForm;
+import lamp.agent.genie.spring.boot.management.form.AppRegisterForm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -17,7 +16,7 @@ public class AppController {
 	private AppManagementService appManagementService;
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	public void register(AppRegistrationForm form) {
+	public void register(AppRegisterForm form) {
 		appManagementService.register(form);
 	}
 
@@ -26,7 +25,6 @@ public class AppController {
 		appManagementService.deregister(id, forceStop);
 	}
 
-//
 	@RequestMapping(value = "/{id}/start", method = RequestMethod.GET)
 	public void start(@PathVariable("id") String id) {
 		log.info("[App] '{}' Starting", id);

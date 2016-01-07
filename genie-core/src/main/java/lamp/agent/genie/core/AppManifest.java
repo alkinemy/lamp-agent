@@ -14,7 +14,6 @@ public interface AppManifest {
 	String getType();
 	String getVersion();
 
-	Boolean getDeploy();
 	AppProcessType getProcessType();
 	long getCheckStatusInterval();
 
@@ -26,6 +25,10 @@ public interface AppManifest {
 
 	boolean isAutoStart();
 	boolean isAutoStop();
+
+	String getFilename();
+	boolean isPreInstalled();
+
 
 	Map<String, Object> getParameters();
 

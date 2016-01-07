@@ -14,8 +14,6 @@ public class InstallManifest {
 
 	private String id;
 
-	private boolean overwrite;
-
 	private String filename;
 
 	private List<InstallCommand> commands;

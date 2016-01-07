@@ -15,9 +15,11 @@ import lamp.agent.genie.core.deploy.InstallManifest;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lamp.agent.genie.spring.boot.base.impl.DaemonAppContext;
 import lamp.agent.genie.spring.boot.base.impl.DefaultAppContext;
+import lamp.agent.genie.spring.boot.management.form.AppUpdateForm;
 import lombok.extern.slf4j.Slf4j;
-import lamp.agent.genie.spring.boot.management.form.AppRegistrationForm;
+import lamp.agent.genie.spring.boot.management.form.AppRegisterForm;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +41,7 @@ public class AppManagementService {
 	private AppManifestService appManifestService;
 
 	@Autowired
-	private AppDeployService appInstallService;
+	private AppInstallService appInstallService;
 
 	@Autowired
 	private AppRegistry appRegistry;
@@ -113,23 +115,13 @@ public class AppManagementService {
 		return appRegistry.lookup(id);
 	}
 
-	public synchronized void register(AppRegistrationForm form) {
+	public synchronized void register(AppRegisterForm form) {
+		String id = form.getId();
+		Exceptions.throwsException(appRegistry.exists(id), ErrorCode.APP_ALWAYS_EXIST);
+
 		AppManifest appManifest = smartAssembler.assemble(form, AppManifest.class);
-		if (form.getInstallFile() != null) {
+		if (!appManifest.isPreInstalled()) {
 			InstallManifest installManifest = smartAssembler.assemble(form, InstallManifest.class);
-
-			boolean exists = appRegistry.exists(appManifest.getId());
-			if (!installManifest.isOverwrite()) {
-				Exceptions.throwsException(exists, ErrorCode.APP_IS_ALREADY_DEPLOYED, appManifest.getId());
-			}
-
-			if (exists) {
-				App app = appRegistry.lookup(appManifest.getId());
-				if (app.isRunning()) {
-					app.stop();
-				}
-			}
-
 			appInstallService.install(installManifest, appManifest, form.getInstallFile());
 		}
 
@@ -139,15 +131,34 @@ public class AppManagementService {
 		appManifestService.save(appManifest);
 	}
 
+	public synchronized void update(AppUpdateForm form) {
+		String id = form.getId();
+		App app = appRegistry.lookup(id);
+		AppManifest appManifest = app.getManifest();
+
+		if (form.getInstallFile() != null && !form.getInstallFile().isEmpty()) {
+			Exceptions.throwsException(app.isRunning(), ErrorCode.APP_IS_RUNNING);
+
+			appInstallService.uninstall(appManifest);
+
+			InstallManifest installManifest = smartAssembler.assemble(form, InstallManifest.class);
+			appInstallService.install(installManifest, appManifest, form.getInstallFile());
+		}
+
+		BeanUtils.copyProperties(form, appManifest, "id");
+
+		appManifestService.save(appManifest);
+	}
+
 	public synchronized void deregister(String id, boolean forceStop) {
 		App app = appRegistry.lookup(id);
 		AppManifest appManifest = app.getManifest();
-		if (appManifest.getDeploy()) {
+		if (!appManifest.isPreInstalled()) {
 			Exceptions.throwsException(app.isRunning() && !forceStop, ErrorCode.APP_IS_RUNNING, id);
 			if (app.isRunning() && forceStop) {
 				app.stop();
 			}
-			appInstallService.undeploy(app.getManifest());
+			appInstallService.uninstall(appManifest);
 		}
 
 		appRegistry.unbind(app.getId());

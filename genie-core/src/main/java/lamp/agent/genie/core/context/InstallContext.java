@@ -8,10 +8,11 @@ import java.io.IOException;
 
 public interface InstallContext {
 
-	InstallManifest getDeployManifest();
+	InstallManifest getInstallManifest();
 
 	AppManifest getAppManifest();
 
 	void transferTo(File dest) throws IOException;
 
+	File getInstallFile();
 }
