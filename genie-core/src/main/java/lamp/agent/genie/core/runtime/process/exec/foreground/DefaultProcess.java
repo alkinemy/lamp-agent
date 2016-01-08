@@ -33,7 +33,7 @@ public class DefaultProcess extends AbstractProcess {
 	protected ExecuteWatchdog doStart() {
 		String commandLine = getStartCommandLine();
 		long timeout = ExecuteWatchdog.INFINITE_TIMEOUT;
-		log.info("[App] '{}' startCmdLine : {}", getContext().getId(), commandLine);
+		log.info("[App:{}] startCmdLine : {}", getContext().getId(), commandLine);
 
 		return executeCommandLine(commandLine, timeout);
 	}
@@ -41,7 +41,7 @@ public class DefaultProcess extends AbstractProcess {
 	protected void doStop() {
 		String commandLine = getStopCommandLine();
 		long timeout = getStopTimeout();
-		log.info("[App] '{}' stopping : {}", getContext().getId(), commandLine);
+		log.info("[App:{}] stopCommandLine : {}", getContext().getId(), commandLine);
 		if (StringUtils.isNotBlank(commandLine)) {
 			this.executeWatchdog = executeCommandLine(commandLine, timeout);
 		} else {

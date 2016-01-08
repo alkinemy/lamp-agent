@@ -1,7 +1,5 @@
 package lamp.agent.genie.core;
 
-import lamp.agent.genie.core.AppConfig;
-import lamp.agent.genie.core.AppStatus;
 import lamp.agent.genie.core.install.InstallConfig;
 import lamp.agent.genie.core.runtime.shell.Shell;
 

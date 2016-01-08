@@ -14,6 +14,7 @@ import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -91,7 +92,7 @@ public class AppControllerTest {
 	}
 
 	@Test
-	public void testRegister_withInstall() throws Exception {
+	public void testRegister_Install_Default() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(this.authentication);
 
 		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
@@ -99,16 +100,39 @@ public class AppControllerTest {
 		parts.add("id", "test-2");
 		parts.add("name", "test");
 		parts.add("type", "type");
-		parts.add("version", "0.0.1");
+		parts.add("version", "0.0.1-SNAPSHOT");
 		parts.add("processType", AppProcessType.DEFAULT.name());
-		parts.add("pidFile", "mock-app.pid");
-		parts.add("startCommandLine", "java -jar ${filename}");
+		parts.add("pidFile", "test-app.pid");
+		parts.add("startCommandLine", "java -jar ${filename} --server.port=19092");
 		parts.add("stopCommandLine", "");
 		parts.add("preInstalled", false);
 		parts.add("installFile", new ClassPathResource("apps/test-app-0.0.1-SNAPSHOT.jar"));
 		parts.add("filename", "test-app.jar");
 
-		template.postForEntity(getBaseUrl() + "/api/app", parts, Void.class);
+		ResponseEntity<Void> responseEntity = template.postForEntity(getBaseUrl() + "/api/app", parts, Void.class);
+		assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
+	}
+
+	@Test
+	public void testRegister_Install_Daemon() throws Exception {
+		SecurityContextHolder.getContext().setAuthentication(this.authentication);
+
+		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+
+		parts.add("id", "test-3");
+		parts.add("name", "test");
+		parts.add("type", "type");
+		parts.add("version", "0.0.1-SNAPSHOT");
+		parts.add("processType", AppProcessType.DAEMON.name());
+		parts.add("pidFile", "test-app.pid");
+		parts.add("startCommandLine", "nohup java -jar ${filename} --server.port=19093 &");
+		parts.add("stopCommandLine", "kill -TERM $(cat ${pidFile}) ");
+		parts.add("preInstalled", false);
+		parts.add("installFile", new ClassPathResource("apps/test-app-0.0.1-SNAPSHOT.jar"));
+		parts.add("filename", "test-app.jar");
+
+		ResponseEntity<Void> responseEntity = template.postForEntity(getBaseUrl() + "/api/app", parts, Void.class);
+		assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
 	}
 
 	@Test

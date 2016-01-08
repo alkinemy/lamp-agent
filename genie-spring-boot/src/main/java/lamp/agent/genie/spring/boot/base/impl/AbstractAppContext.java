@@ -8,6 +8,7 @@ import lamp.agent.genie.core.install.InstallConfig;
 import lamp.agent.genie.core.runtime.process.AppProcess;
 import lamp.agent.genie.core.runtime.process.AppProcessState;
 import lamp.agent.genie.core.runtime.shell.Shell;
+import lamp.agent.genie.utils.StringUtils;
 import lombok.Getter;
 import org.springframework.context.expression.MapAccessor;
 import org.springframework.expression.Expression;
@@ -34,7 +35,7 @@ public abstract class AbstractAppContext implements AppContext {
 	private ExpressionParser parser = new SpelExpressionParser();
 
 	private AppStatus appStatus = AppStatus.NOT_RUNNING;
-	private long lastCheckTimeMillis;
+	private long lastCheckTimeMillis = 1000;
 
 
 	public AbstractAppContext(LampContext lampContext, AppConfig appConfig, InstallConfig installConfig) {
@@ -58,6 +59,7 @@ public abstract class AbstractAppContext implements AppContext {
 		if (installConfig != null) {
 			parameters.put("filename", installConfig.getFilename());
 		}
+		parameters.put("pidFile", appConfig.getPidFile());
 
 //		Environment environment = lampContext.getEnvironment();
 //		parameters.put("activeProfiles", environment.getActiveProfiles());
@@ -76,7 +78,12 @@ public abstract class AbstractAppContext implements AppContext {
 			}
 		}
 
-		return parameters;
+		String pidFile = (String) parameters.get("pidFile");
+		if (StringUtils.isNotBlank(pidFile) && !pidFile.startsWith("/")) {
+			pidFile = new File((String) parameters.get("workDirectory"), pidFile).getAbsolutePath();
+		}
+
+	return parameters;
 	}
 
 	public String getId() {

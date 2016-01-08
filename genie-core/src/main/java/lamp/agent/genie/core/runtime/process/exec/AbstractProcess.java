@@ -49,8 +49,10 @@ public abstract class AbstractProcess implements AppProcess {
 		Map<String, Object> parameters = context.getParameters();
 
 		this.systemLogFile = context.getSystemLogFile();
-		this.pidFile = getPidFile(appConfig.getPidFile(), parameters);
+
 		this.workDirectory = new File(context.getValue(appConfig.getWorkDirectory(), parameters));
+		this.pidFile = getPidFile(appConfig.getPidFile(), parameters);
+
 		this.startCommandLine = context.getValue(appConfig.getStartCommandLine(), parameters);
 		this.startTimeout = context.getValue(appConfig.getStartTimeout(), parameters);
 		this.stopCommandLine = context.getValue(appConfig.getStopCommandLine(), parameters);
@@ -81,6 +83,7 @@ public abstract class AbstractProcess implements AppProcess {
 	@Override
 	public String getId() {
 		File pidFile = getPidFile();
+		log.debug("[App:{}] pidFile = {}", context.getId(), pidFile != null ? pidFile.getAbsolutePath() : null);
 		if (pidFile != null && pidFile.exists()) {
 			try {
 				return FileUtils.readFileToString(pidFile);
