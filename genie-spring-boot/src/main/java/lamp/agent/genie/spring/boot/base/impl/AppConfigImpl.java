@@ -22,11 +22,11 @@ public class AppConfigImpl implements AppConfig {
 
 	private AppProcessType processType;
 
-	private String pidFile;
-	private String logFile;
-
 	private String homeDirectory;
 	private String workDirectory;
+
+	private String pidFile;
+	private String logFile;
 
 	private long checkStatusInterval;
 

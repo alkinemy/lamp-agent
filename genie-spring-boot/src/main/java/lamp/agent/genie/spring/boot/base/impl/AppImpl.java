@@ -44,7 +44,7 @@ public class AppImpl implements App {
 	}
 
 	@Override public File getLogFile() {
-		String logFile = context.getValue(getManifest().getLogFile(), context.getParameters());
+		String logFile = context.getParsedAppConfig().getLogFile();
 		return logFile != null ? new File(logFile) : null;
 	}
 

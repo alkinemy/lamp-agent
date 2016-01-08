@@ -16,6 +16,13 @@ public interface AppConfig {
 
 	AppProcessType getProcessType();
 	long getCheckStatusInterval();
+	boolean isPreInstalled();
+
+	String getHomeDirectory();
+	String getWorkDirectory();
+
+	String getPidFile();
+	String getLogFile();
 
 	String getStartCommandLine();
 	long getStartTimeout();
@@ -25,13 +32,6 @@ public interface AppConfig {
 
 	boolean isAutoStart();
 	boolean isAutoStop();
-
-	boolean isPreInstalled();
-
-	String getPidFile();
-	String getLogFile();
-	String getHomeDirectory();
-	String getWorkDirectory();
 
 	Map<String, Object> getParameters();
 

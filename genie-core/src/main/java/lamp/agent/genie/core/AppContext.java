@@ -10,6 +10,8 @@ public interface AppContext {
 
 	AppConfig getAppConfig();
 
+	AppConfig getParsedAppConfig();
+
 	InstallConfig getInstallConfig();
 
 	String getId();

@@ -46,17 +46,17 @@ public abstract class AbstractProcess implements AppProcess {
 
 	protected void init() {
 		AppConfig appConfig = context.getAppConfig();
-		Map<String, Object> parameters = context.getParameters();
+		AppConfig parsedAppConfig = context.getParsedAppConfig();
 
 		this.systemLogFile = context.getSystemLogFile();
 
-		this.workDirectory = new File(context.getValue(appConfig.getWorkDirectory(), parameters));
-		this.pidFile = getPidFile(appConfig.getPidFile(), parameters);
+		this.workDirectory = new File(parsedAppConfig.getWorkDirectory());
+		this.pidFile = new File(parsedAppConfig.getPidFile());
 
-		this.startCommandLine = context.getValue(appConfig.getStartCommandLine(), parameters);
-		this.startTimeout = context.getValue(appConfig.getStartTimeout(), parameters);
-		this.stopCommandLine = context.getValue(appConfig.getStopCommandLine(), parameters);
-		this.stopTimeout = context.getValue(appConfig.getStopTimeout(), parameters);
+		this.startCommandLine = parsedAppConfig.getStartCommandLine();
+		this.startTimeout = parsedAppConfig.getStartTimeout();
+		this.stopCommandLine = parsedAppConfig.getStopCommandLine();
+		this.stopTimeout = parsedAppConfig.getStopTimeout();
 
 		this.lastModified = appConfig.getLastModified();
 	}
@@ -66,17 +66,6 @@ public abstract class AbstractProcess implements AppProcess {
 		if (this.lastModified != appConfig.getLastModified()) {
 			log.info("[{}] Process refresh", appConfig.getId());
 			init();
-		}
-	}
-
-	protected File getPidFile(String pidFile, Object parameters) {
-		String pidFilePath = context.getValue(pidFile, parameters);
-		if (StringUtils.isBlank(pidFilePath)) {
-			return null;
-		} else if (pidFilePath.startsWith("/")) {
-			return new File(pidFilePath);
-		} else {
-			return new File(getWorkDirectory(), pidFilePath);
 		}
 	}
 

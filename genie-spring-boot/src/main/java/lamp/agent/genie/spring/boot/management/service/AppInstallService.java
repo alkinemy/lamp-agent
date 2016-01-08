@@ -31,10 +31,9 @@ public class AppInstallService {
 	}
 
 	public void install(AppContext appContext, MultipartFile multipartFile) {
-		AppConfig appConfig = appContext.getAppConfig();
 		InstallConfig installConfig = appContext.getInstallConfig();
 
-		File installDirectory = new File(appContext.getValue(appConfig.getHomeDirectory(), appContext.getParameters()));
+		File installDirectory = new File(appContext.getParsedAppConfig().getHomeDirectory());
 		if (!installDirectory.exists()) {
 			installDirectory.mkdirs();
 		}
