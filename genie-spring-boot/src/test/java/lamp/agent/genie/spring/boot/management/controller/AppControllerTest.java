@@ -12,6 +12,7 @@ import org.springframework.boot.context.embedded.EmbeddedWebApplicationContext;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,8 +23,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import sun.tools.java.ClassPath;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -73,9 +77,11 @@ public class AppControllerTest {
 		parts.add("type", "type");
 		parts.add("version", "0.0.1");
 		parts.add("processType", AppProcessType.DAEMON.name());
-		parts.add("homeDirectoryPath", "/Users/kangwoo/Applications/zookeeper-3.4.7");
-		parts.add("workDirectoryPath", "/Users/kangwoo/Applications/zookeeper-3.4.7");
-		parts.add("pidFilePath", "/tmp/zookeeper/zookeeper_server.pid");
+		parts.add("homeDirectory", "/Users/kangwoo/Applications/zookeeper-3.4.7");
+		parts.add("workDirectory", "${homeDirectory}");
+
+		parts.add("pidFile", "/tmp/zookeeper/zookeeper_server.pid");
+		parts.add("logFile", "${workDirectory}/zookeeper.out");
 		parts.add("startCommandLine", "./bin/zkServer.sh start");
 		parts.add("stopCommandLine", "./bin/zkServer.sh stop");
 		parts.add("preInstalled", true);
@@ -95,19 +101,24 @@ public class AppControllerTest {
 		parts.add("type", "type");
 		parts.add("version", "0.0.1");
 		parts.add("processType", AppProcessType.DEFAULT.name());
-		parts.add("pidFilePath", "/tmp/zookeeper/zookeeper_server.pid");
-		parts.add("startCommandLine", "./bin/zkServer.sh start");
-		parts.add("stopCommandLine", "./bin/zkServer.sh stop");
+		parts.add("pidFile", "mock-app.pid");
+		parts.add("startCommandLine", "java -jar ${filename}");
+		parts.add("stopCommandLine", "");
 		parts.add("preInstalled", false);
-		parts.add("filename", "helloworld");
-		parts.add("installFile", new FileSystemResource("/Users/kangwoo/lamp-client/genie-spring-boot/src/test/java/lamp/agent/genie/spring/boot/management/repository/AppManifestRepositoryTest.java"));
-		// UrlResource
+		parts.add("installFile", new ClassPathResource("apps/test-app-0.0.1-SNAPSHOT.jar"));
+		parts.add("filename", "test-app.jar");
 
 		template.postForEntity(getBaseUrl() + "/api/app", parts, Void.class);
 	}
 
 	@Test
 	public void testDeregister() throws Exception {
+		SecurityContextHolder.getContext().setAuthentication(this.authentication);
 
+		Map<String, Object> urlVariables = new HashMap<>();
+
+		urlVariables.put("id", "test-2");
+
+		template.delete(getBaseUrl() + "/api/app/{id}", urlVariables);
 	}
 }

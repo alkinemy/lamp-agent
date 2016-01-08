@@ -16,7 +16,7 @@ apply plugin: 'spring-boot'
 
 
 jar {
-    baseName = 'lamp-agent'
+    baseName = 'test-app'
     version =  '0.0.1-SNAPSHOT'
 
     manifest {
@@ -29,15 +29,9 @@ jar {
 dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test")
 
-    compile project(':genie-core')
-
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-configuration-processor")
-    compile("org.springframework.boot:spring-boot-starter-security")
-
-    compile('javax.activation:activation:1.1.1')
-    compile('org.modelmapper:modelmapper:0.7.4')
 
 }
 

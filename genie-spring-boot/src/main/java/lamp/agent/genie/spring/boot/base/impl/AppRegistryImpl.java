@@ -3,7 +3,7 @@ package lamp.agent.genie.spring.boot.base.impl;
 import com.google.common.collect.ImmutableList;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.core.App;
-import lamp.agent.genie.core.context.AppRegistry;
+import lamp.agent.genie.core.AppRegistry;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import org.springframework.stereotype.Component;
 

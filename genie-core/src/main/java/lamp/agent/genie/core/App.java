@@ -1,15 +1,16 @@
 package lamp.agent.genie.core;
 
 
-import lamp.agent.genie.core.runtime.process.AppProcess;
-
+import java.io.File;
 import java.util.Date;
 
 public interface App {
 
 	String getId();
 
-	AppManifest getManifest();
+	AppContext getContext();
+
+	AppConfig getManifest();
 
 	AppStatus getStatus();
 
@@ -18,6 +19,8 @@ public interface App {
 	void stop();
 
 	boolean isRunning();
+
+	File getLogFile();
 
 	Date getStartTime();
 

@@ -1,4 +1,4 @@
-package lamp.agent.genie.core.context;
+package lamp.agent.genie.core;
 
 
 import lamp.agent.genie.core.App;

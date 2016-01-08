@@ -2,17 +2,18 @@ package lamp.agent.genie.spring.boot.base.impl;
 
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.core.App;
-import lamp.agent.genie.core.AppManifest;
+import lamp.agent.genie.core.AppConfig;
 import lamp.agent.genie.core.AppStatus;
-import lamp.agent.genie.core.context.AppContext;
+import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lombok.Getter;
 
-
+import java.io.File;
 import java.util.Date;
 
 public class AppImpl implements App {
 
+	@Getter
 	private final AppContext context;
 
 	@Getter
@@ -29,8 +30,8 @@ public class AppImpl implements App {
 		return context.getId();
 	}
 
-	@Override public AppManifest getManifest() {
-		return context.getAppManifest();
+	@Override public AppConfig getManifest() {
+		return context.getAppConfig();
 	}
 
 	@Override
@@ -40,6 +41,11 @@ public class AppImpl implements App {
 
 	@Override public boolean isRunning() {
 		return AppStatus.RUNNING.equals(getStatus());
+	}
+
+	@Override public File getLogFile() {
+		String logFile = context.getValue(getManifest().getLogFile(), context.getParameters());
+		return logFile != null ? new File(logFile) : null;
 	}
 
 	@Override

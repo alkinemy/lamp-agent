@@ -1,8 +1,8 @@
-package lamp.agent.genie.core.context;
+package lamp.agent.genie.core;
 
-import lamp.agent.genie.core.AppManifest;
+import lamp.agent.genie.core.AppConfig;
 import lamp.agent.genie.core.AppStatus;
-import lamp.agent.genie.core.runtime.process.AppProcess;
+import lamp.agent.genie.core.install.InstallConfig;
 import lamp.agent.genie.core.runtime.shell.Shell;
 
 import java.io.File;
@@ -10,13 +10,17 @@ import java.util.Map;
 
 public interface AppContext {
 
-	AppManifest getAppManifest();
+	AppConfig getAppConfig();
+
+	InstallConfig getInstallConfig();
 
 	String getId();
 
 	Shell getShell();
 
-	File getPidFile();
+	File getSystemLogFile();
+
+	<T> T getValue(T value, Object parameters);
 
 	AppStatus getStatus();
 
@@ -29,5 +33,6 @@ public interface AppContext {
 	void terminateProcess();
 
 	Map<String,Object> getParameters();
+
 
 }

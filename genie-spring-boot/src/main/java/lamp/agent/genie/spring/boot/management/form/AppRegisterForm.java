@@ -29,12 +29,13 @@ public class AppRegisterForm {
 	@NotNull
 	private AppProcessType processType;
 
-	private String homeDirectoryPath;
-	private String workDirectoryPath;
-	private String logDirectoryPath;
+	private String homeDirectory;
+	private String workDirectory;
 
 	@NotEmpty
-	private String pidFilePath;
+	private String pidFile;
+	private String logFile;
+
 
 	private long checkStatusInterval = 1000L;
 

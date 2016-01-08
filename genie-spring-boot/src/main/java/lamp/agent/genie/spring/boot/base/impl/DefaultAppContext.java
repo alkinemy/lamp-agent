@@ -1,12 +1,9 @@
 package lamp.agent.genie.spring.boot.base.impl;
 
-import lamp.agent.genie.core.AppManifest;
-import lamp.agent.genie.core.AppStatus;
-import lamp.agent.genie.core.context.LampContext;
+import lamp.agent.genie.core.AppConfig;
+import lamp.agent.genie.core.LampContext;
+import lamp.agent.genie.core.install.InstallConfig;
 import lamp.agent.genie.core.runtime.process.AppProcess;
-import lamp.agent.genie.core.runtime.process.AppProcessState;
-import lamp.agent.genie.core.runtime.process.AppProcessType;
-import lamp.agent.genie.core.runtime.process.exec.background.DaemonProcess;
 import lamp.agent.genie.core.runtime.process.exec.foreground.DefaultProcess;
 
 public class DefaultAppContext extends AbstractAppContext {
@@ -14,8 +11,8 @@ public class DefaultAppContext extends AbstractAppContext {
 
 	private DefaultProcess process;
 
-	public DefaultAppContext(LampContext lampContext, AppManifest appManifest) {
-		super(lampContext, appManifest);
+	public DefaultAppContext(LampContext lampContext, AppConfig appConfig, InstallConfig installConfig) {
+		super(lampContext, appConfig, installConfig);
 	}
 
 

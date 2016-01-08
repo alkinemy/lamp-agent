@@ -1,6 +1,6 @@
 package lamp.agent.genie.spring.boot.config;
 
-import lamp.agent.genie.core.context.MountPoint;
+import lamp.agent.genie.core.MountPoint;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.Getter;
 import lombok.Setter;

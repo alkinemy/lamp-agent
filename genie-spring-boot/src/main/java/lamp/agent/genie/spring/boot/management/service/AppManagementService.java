@@ -6,12 +6,12 @@ import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.impl.AppImpl;
 import lamp.agent.genie.core.App;
-import lamp.agent.genie.core.AppManifest;
+import lamp.agent.genie.core.AppConfig;
 import lamp.agent.genie.core.AppStatus;
-import lamp.agent.genie.core.context.AppContext;
-import lamp.agent.genie.core.context.AppRegistry;
-import lamp.agent.genie.core.context.LampContext;
-import lamp.agent.genie.core.deploy.InstallManifest;
+import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.core.AppRegistry;
+import lamp.agent.genie.core.LampContext;
+import lamp.agent.genie.core.install.InstallConfig;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lamp.agent.genie.spring.boot.base.impl.DaemonAppContext;
 import lamp.agent.genie.spring.boot.base.impl.DefaultAppContext;
@@ -21,10 +21,13 @@ import lamp.agent.genie.spring.boot.management.form.AppRegisterForm;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.io.File;
 import java.util.List;
 
 @Slf4j
@@ -38,7 +41,10 @@ public class AppManagementService {
 	private SmartAssembler smartAssembler;
 
 	@Autowired
-	private AppManifestService appManifestService;
+	private AppConfigService appConfigService;
+
+	@Autowired
+	private InstallConfigService installConfigService;
 
 	@Autowired
 	private AppInstallService appInstallService;
@@ -48,17 +54,18 @@ public class AppManagementService {
 
 	@PostConstruct
 	public void init() {
-		List<AppManifest> appManifests = appManifestService.getAppManifests();
-		for (AppManifest appManifest : appManifests) {
+		List<AppConfig> appConfigs = appConfigService.getAppManifests();
+		for (AppConfig appConfig : appConfigs) {
 			try {
-				App app = newAppInstance(appManifest);
+				App app = newAppInstance(appConfig);
 				appRegistry.bind(app.getId(), app);
 				log.info("[App] '{}' registered", app.getId());
 			} catch (Exception e) {
-				log.warn("[App] " + appManifest.getId() + " Registration fail error", e);
+				log.warn("[App] " + appConfig.getId() + " Registration fail error", e);
 			}
 		}
 
+		// AUTO START
 		List<App> apps = appRegistry.list();
 		for (App app : apps) {
 			try {
@@ -75,20 +82,28 @@ public class AppManagementService {
 
 	}
 
-	protected App newAppInstance(AppManifest appManifest) {
-		AppContext appContext = newAppContextInstance(appManifest);
+	protected App newAppInstance(AppConfig appConfig) {
+		AppContext appContext = newAppContextInstance(appConfig);
 		return new AppImpl(appContext);
 	}
 
-	protected AppContext newAppContextInstance(AppManifest appManifest) {
-		AppProcessType appProcessType = appManifest.getProcessType();
+	protected AppContext newAppContextInstance(AppConfig appConfig, InstallConfig installConfig) {
+		AppProcessType appProcessType = appConfig.getProcessType();
 		if (AppProcessType.DAEMON.equals(appProcessType)) {
-			return new DaemonAppContext(lampContext, appManifest);
+			return new DaemonAppContext(lampContext, appConfig, installConfig);
 		} else if (AppProcessType.DEFAULT.equals(appProcessType)) {
-			return new DefaultAppContext(lampContext, appManifest);
+			return new DefaultAppContext(lampContext, appConfig, installConfig);
 		} else {
 			throw new UnsupportedProcessTypeException(appProcessType);
 		}
+	}
+
+	protected AppContext newAppContextInstance(AppConfig appConfig) {
+		InstallConfig installConfig = null;
+		if (!appConfig.isPreInstalled()) {
+			installConfig = installConfigService.getInstallConfig(appConfig.getId());
+		}
+		return newAppContextInstance(appConfig, installConfig);
 	}
 
 	@PreDestroy
@@ -119,51 +134,54 @@ public class AppManagementService {
 		String id = form.getId();
 		Exceptions.throwsException(appRegistry.exists(id), ErrorCode.APP_ALWAYS_EXIST);
 
-		AppManifest appManifest = smartAssembler.assemble(form, AppManifest.class);
-		if (!appManifest.isPreInstalled()) {
-			InstallManifest installManifest = smartAssembler.assemble(form, InstallManifest.class);
-			appInstallService.install(installManifest, appManifest, form.getInstallFile());
+		AppConfig appConfig = smartAssembler.assemble(form, AppConfig.class);
+		if (!appConfig.isPreInstalled()) {
+			InstallConfig installConfig = smartAssembler.assemble(form, InstallConfig.class);
+			AppContext appContext = newAppContextInstance(appConfig, installConfig);
+			appInstallService.install(appContext, form.getInstallFile());
 		}
 
-		App app = newAppInstance(appManifest);
+		App app = newAppInstance(appConfig);
 		appRegistry.bind(app.getId(), app);
 
-		appManifestService.save(appManifest);
+		appConfigService.save(appConfig);
 	}
 
 	public synchronized void update(AppUpdateForm form) {
 		String id = form.getId();
 		App app = appRegistry.lookup(id);
-		AppManifest appManifest = app.getManifest();
+		AppConfig appConfig = app.getManifest();
 
 		if (form.getInstallFile() != null && !form.getInstallFile().isEmpty()) {
 			Exceptions.throwsException(app.isRunning(), ErrorCode.APP_IS_RUNNING);
 
-			appInstallService.uninstall(appManifest);
+			appInstallService.uninstall(app.getContext());
 
-			InstallManifest installManifest = smartAssembler.assemble(form, InstallManifest.class);
-			appInstallService.install(installManifest, appManifest, form.getInstallFile());
+			InstallConfig installConfig = smartAssembler.assemble(form, InstallConfig.class);
+			AppContext newAppContext = newAppContextInstance(appConfig, installConfig);
+			appInstallService.install(newAppContext, form.getInstallFile());
 		}
 
-		BeanUtils.copyProperties(form, appManifest, "id");
+		BeanUtils.copyProperties(form, appConfig, "id");
 
-		appManifestService.save(appManifest);
+		appConfigService.save(appConfig);
 	}
 
 	public synchronized void deregister(String id, boolean forceStop) {
 		App app = appRegistry.lookup(id);
-		AppManifest appManifest = app.getManifest();
-		if (!appManifest.isPreInstalled()) {
+		AppConfig appConfig = app.getManifest();
+		if (!appConfig.isPreInstalled()) {
+			InstallConfig installConfig = installConfigService.getInstallConfig(id);
 			Exceptions.throwsException(app.isRunning() && !forceStop, ErrorCode.APP_IS_RUNNING, id);
 			if (app.isRunning() && forceStop) {
 				app.stop();
 			}
-			appInstallService.uninstall(appManifest);
+			appInstallService.uninstall(newAppContextInstance(appConfig, installConfig));
 		}
 
 		appRegistry.unbind(app.getId());
 
-		appManifestService.delete(appManifest);
+		appConfigService.delete(appConfig);
 	}
 
 	public synchronized void start(String id) {
@@ -187,6 +205,18 @@ public class AppManagementService {
 	public synchronized AppStatus status(String id) {
 		App app = appRegistry.lookup(id);
 		return app.getStatus();
+	}
+
+	public Resource getLogFileResource(String id) {
+		App app = appRegistry.lookup(id);
+		File logFile = app.getLogFile();
+		return logFile != null ? new FileSystemResource(logFile) : null;
+	}
+
+	public Resource getSystemLogFileResource(String id) {
+		App app = appRegistry.lookup(id);
+		File logFile = app.getContext().getSystemLogFile();
+		return logFile != null ? new FileSystemResource(logFile) : null;
 	}
 
 	//

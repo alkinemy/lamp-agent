@@ -1,8 +1,7 @@
 package lamp.agent.genie.core.runtime.process.exec.background;
 
-import lamp.agent.genie.core.context.AppContext;
+import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.exception.CommandExecuteException;
-import lamp.agent.genie.core.runtime.process.AppProcessState;
 import lamp.agent.genie.core.runtime.process.exec.AbstractProcess;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.CommandLine;
@@ -34,14 +33,14 @@ public class DaemonProcess extends AbstractProcess {
 	protected ExecuteWatchdog doStart() {
 		String commandLine = getStartCommandLine();
 		long timeout = getStartTimeout();
-		log.info("[App] '{}' start : {}", getContext().getId(), commandLine);
+		log.info("[App:{}] startCmdLine = {}", getContext().getId(), commandLine);
 		return executeCommandLine(commandLine, timeout);
 	}
 
 	protected void doStop() {
 		String commandLine = getStopCommandLine();
 		long timeout = getStopTimeout();
-		log.info("[App] '{}' stopCmdLine : {}", getContext().getId(), commandLine);
+		log.info("[App:{}] stopCommandLine = {}", getContext().getId(), commandLine);
 
 		executeCommandLine(commandLine, timeout);
 	}
@@ -52,10 +51,12 @@ public class DaemonProcess extends AbstractProcess {
 			CommandLine cmdLine = CommandLine.parse(command);
 
 			DefaultExecutor executor = new DefaultExecutor();
-			executor.setWorkingDirectory(getWorkingDirectory());
+			log.info("[App:{}] workDirectory = {}", getWorkDirectory().getAbsolutePath());
+			executor.setWorkingDirectory(getWorkDirectory());
 			File systemLogFile = getSystemLogFile();
 			PumpStreamHandler streamHandler;
 			if (systemLogFile != null) {
+				log.info("[App:[]] systemLogFile = {}", getContext().getId(), systemLogFile.getAbsolutePath());
 				streamHandler = new PumpStreamHandler(new BufferedOutputStream(new FileOutputStream(systemLogFile)));
 			} else {
 				streamHandler = new PumpStreamHandler();

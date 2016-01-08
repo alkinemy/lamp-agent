@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.Map;
 
 
-public interface AppManifest {
+public interface AppConfig {
 
 	String getId();
 	String getName();
@@ -26,18 +26,17 @@ public interface AppManifest {
 	boolean isAutoStart();
 	boolean isAutoStop();
 
-	String getFilename();
 	boolean isPreInstalled();
 
+	String getPidFile();
+	String getLogFile();
+	String getHomeDirectory();
+	String getWorkDirectory();
 
 	Map<String, Object> getParameters();
 
-	File getPidFile();
+	long getLastModified();
 
-	File getHomeDirectory();
 
-	File getWorkDirectory();
-
-	File getLogDirectory();
 
 }

@@ -1,7 +1,8 @@
 package lamp.agent.genie.spring.boot.base.impl;
 
-import lamp.agent.genie.core.AppManifest;
-import lamp.agent.genie.core.context.LampContext;
+import lamp.agent.genie.core.AppConfig;
+import lamp.agent.genie.core.LampContext;
+import lamp.agent.genie.core.install.InstallConfig;
 import lamp.agent.genie.core.runtime.process.AppProcess;
 import lamp.agent.genie.core.runtime.process.exec.background.DaemonProcess;
 
@@ -9,15 +10,10 @@ public class DaemonAppContext extends AbstractAppContext {
 
 	private DaemonProcess process;
 
-	public DaemonAppContext(LampContext lampContext, AppManifest appManifest) {
-		super(lampContext, appManifest);
+	public DaemonAppContext(LampContext lampContext, AppConfig appConfig, InstallConfig installConfig) {
+		super(lampContext, appConfig, installConfig);
 
 		this.process = new DaemonProcess(this);
-
-//		AppProcessState status = this.process.getStatus();
-//		if (AppProcessState.NOT_RUNNING.equals(status)) {
-//			createProcess();
-//		}
 	}
 
 

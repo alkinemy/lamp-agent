@@ -1,8 +1,8 @@
 package lamp.agent.genie.spring.boot.management.repository;
 
-import lamp.agent.genie.core.AppManifest;
-import lamp.agent.genie.core.context.LampContext;
-import lamp.agent.genie.spring.boot.base.impl.AppManifestImpl;
+import lamp.agent.genie.core.AppConfig;
+import lamp.agent.genie.core.LampContext;
+import lamp.agent.genie.spring.boot.base.impl.AppConfigImpl;
 import lamp.agent.genie.utils.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -18,9 +18,9 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AppManifestRepositoryTest {
+public class AppConfigRepositoryTest {
 
-	@InjectMocks AppManifestRepository appManifestRepository;
+	@InjectMocks AppConfigRepository appConfigRepository;
 
 	@Mock LampContext lampContext;
 
@@ -45,7 +45,7 @@ public class AppManifestRepositoryTest {
 	public void testSave() throws Exception {
 		assertThat(manifestFile).doesNotExist();
 
-		AppManifestImpl appManifest = saveAppManifest();
+		AppConfigImpl appManifest = saveAppManifest();
 
 		assertThat(manifestFile).exists();
 	}
@@ -57,33 +57,33 @@ public class AppManifestRepositoryTest {
 
 	@Test
 	public void testFindOne() throws Exception {
-		AppManifestImpl testAppManifest = saveAppManifest();
+		AppConfigImpl testAppManifest = saveAppManifest();
 
-		AppManifest appManifest = appManifestRepository.findOne(appId);
-		assertThat(appManifest.getId()).isEqualTo(testAppManifest.getId());
+		AppConfig appConfig = appConfigRepository.findOne(appId);
+		assertThat(appConfig.getId()).isEqualTo(testAppManifest.getId());
 	}
 
 
 	@Test
 	public void testFindOne_Null() throws Exception {
-		AppManifest appManifest = appManifestRepository.findOne(appId);
-		assertThat(appManifest).isNull();
+		AppConfig appConfig = appConfigRepository.findOne(appId);
+		assertThat(appConfig).isNull();
 	}
 
 	@Test
 	public void testDelete() throws Exception {
-		AppManifestImpl testAppManifest = saveAppManifest();
+		AppConfigImpl testAppManifest = saveAppManifest();
 
 		assertThat(manifestFile).exists();
-		appManifestRepository.delete(testAppManifest);
+		appConfigRepository.delete(testAppManifest);
 		assertThat(manifestFile).doesNotExist();
 	}
 
 
-	private AppManifestImpl saveAppManifest() {
-		AppManifestImpl testAppManifest = new AppManifestImpl();
+	private AppConfigImpl saveAppManifest() {
+		AppConfigImpl testAppManifest = new AppConfigImpl();
 		testAppManifest.setId(appId);
-		appManifestRepository.save(testAppManifest);
+		appConfigRepository.save(testAppManifest);
 		return testAppManifest;
 	}
 }

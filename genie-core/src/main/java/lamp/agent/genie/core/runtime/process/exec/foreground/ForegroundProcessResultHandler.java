@@ -1,6 +1,6 @@
 package lamp.agent.genie.core.runtime.process.exec.foreground;
 
-import lamp.agent.genie.core.context.AppContext;
+import lamp.agent.genie.core.AppContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.ExecuteException;

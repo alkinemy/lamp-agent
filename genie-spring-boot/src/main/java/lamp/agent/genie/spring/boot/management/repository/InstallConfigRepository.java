@@ -2,8 +2,8 @@ package lamp.agent.genie.spring.boot.management.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
-import lamp.agent.genie.core.context.LampContext;
-import lamp.agent.genie.core.deploy.InstallManifest;
+import lamp.agent.genie.core.LampContext;
+import lamp.agent.genie.core.install.InstallConfig;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @Slf4j
 @Component
-public class InstallManifestRepository {
+public class InstallConfigRepository {
 
 	private static final String MANIFEST_JSON = "install.json";
 
@@ -23,7 +23,7 @@ public class InstallManifestRepository {
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
-	public void save(InstallManifest manifest) {
+	public void save(InstallConfig manifest) {
 		File directory = lampContext.getAppDirectory(manifest.getId());
 		if (!directory.exists()) {
 			directory.mkdirs();
@@ -35,7 +35,7 @@ public class InstallManifestRepository {
 			throw Exceptions.newException(ErrorCode.APP_MANIFEST_SAVE_FAILED, e);
 		}
 	}
-	public InstallManifest findOne(String id) {
+	public InstallConfig findOne(String id) {
 		File directory = lampContext.getAppDirectory(id);
 		File file = new File(directory, MANIFEST_JSON);
 
@@ -43,13 +43,13 @@ public class InstallManifestRepository {
 			return null;
 		}
 		try {
-			return objectMapper.readValue(file, InstallManifest.class);
+			return objectMapper.readValue(file, InstallConfig.class);
 		} catch (IOException e) {
 			throw Exceptions.newException(ErrorCode.APP_MANIFEST_READ_FAILED, e);
 		}
 	}
 
-	public void delete(InstallManifest manifest) {
+	public void delete(InstallConfig manifest) {
 		File directory = lampContext.getAppDirectory(manifest.getId());
 		File file = new File(directory, MANIFEST_JSON);
 		file.delete();

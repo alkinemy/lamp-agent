@@ -1,6 +1,6 @@
 package lamp.agent.genie.core.runtime.process.exec.foreground;
 
-import lamp.agent.genie.core.context.AppContext;
+import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.exception.CommandExecuteException;
 import lamp.agent.genie.core.runtime.process.exec.AbstractProcess;
 import lamp.agent.genie.utils.StringUtils;
@@ -57,7 +57,7 @@ public class DefaultProcess extends AbstractProcess {
 			ExecuteResultHandler executeResultHandler = new ForegroundProcessResultHandler(getContext(), command);
 			DaemonExecutor executor = new DaemonExecutor();
 			executor.setExitValues(EXIT_CODES);
-			executor.setWorkingDirectory(getWorkingDirectory());
+			executor.setWorkingDirectory(getWorkDirectory());
 			File systemLogFile = getSystemLogFile();
 			PumpStreamHandler streamHandler;
 			if (systemLogFile != null) {

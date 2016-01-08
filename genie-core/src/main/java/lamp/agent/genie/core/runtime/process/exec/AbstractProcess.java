@@ -1,13 +1,12 @@
 package lamp.agent.genie.core.runtime.process.exec;
 
-import lamp.agent.genie.core.context.AppContext;
+import lamp.agent.genie.core.AppConfig;
+import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.core.exception.PidFileException;
+import lamp.agent.genie.core.runtime.process.AppProcess;
 import lamp.agent.genie.core.runtime.process.AppProcessState;
 import lamp.agent.genie.utils.FileUtils;
 import lamp.agent.genie.utils.StringUtils;
-import lamp.agent.genie.utils.VariableReplaceUtils;
-import lamp.agent.genie.core.AppManifest;
-import lamp.agent.genie.core.exception.PidFileException;
-import lamp.agent.genie.core.runtime.process.AppProcess;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,9 +21,9 @@ public abstract class AbstractProcess implements AppProcess {
 	@Getter
 	private final AppContext context;
 	@Getter
-	private final File pidFile;
+	private File pidFile;
 	@Getter
-	private File workingDirectory;
+	private File workDirectory;
 	@Getter
 	private File systemLogFile;
 	@Getter
@@ -36,25 +35,52 @@ public abstract class AbstractProcess implements AppProcess {
 	@Getter
 	private long stopTimeout;
 
+	private long lastModified;
+
 	public AbstractProcess(AppContext context) {
 		Objects.requireNonNull(context);
 		this.context = context;
 
-		AppManifest config = context.getAppManifest();
+		init();
+	}
 
+	protected void init() {
+		AppConfig appConfig = context.getAppConfig();
 		Map<String, Object> parameters = context.getParameters();
-		this.pidFile = config.getPidFile();
-		this.workingDirectory = config.getWorkDirectory();
-		this.systemLogFile = null;
-		this.startCommandLine = VariableReplaceUtils.replaceVariables(config.getStartCommandLine(), parameters);
-		this.startTimeout = config.getStartTimeout();
-		this.stopCommandLine = VariableReplaceUtils.replaceVariables(config.getStopCommandLine(), parameters);
-		this.stopTimeout = config.getStopTimeout();
+
+		this.systemLogFile = context.getSystemLogFile();
+		this.pidFile = getPidFile(appConfig.getPidFile(), parameters);
+		this.workDirectory = new File(context.getValue(appConfig.getWorkDirectory(), parameters));
+		this.startCommandLine = context.getValue(appConfig.getStartCommandLine(), parameters);
+		this.startTimeout = context.getValue(appConfig.getStartTimeout(), parameters);
+		this.stopCommandLine = context.getValue(appConfig.getStopCommandLine(), parameters);
+		this.stopTimeout = context.getValue(appConfig.getStopTimeout(), parameters);
+
+		this.lastModified = appConfig.getLastModified();
+	}
+
+	public void refresh() {
+		AppConfig appConfig = context.getAppConfig();
+		if (this.lastModified != appConfig.getLastModified()) {
+			log.info("[{}] Process refresh", appConfig.getId());
+			init();
+		}
+	}
+
+	protected File getPidFile(String pidFile, Object parameters) {
+		String pidFilePath = context.getValue(pidFile, parameters);
+		if (StringUtils.isBlank(pidFilePath)) {
+			return null;
+		} else if (pidFilePath.startsWith("/")) {
+			return new File(pidFilePath);
+		} else {
+			return new File(getWorkDirectory(), pidFilePath);
+		}
 	}
 
 	@Override
 	public String getId() {
-		File pidFile = getContext().getPidFile();
+		File pidFile = getPidFile();
 		if (pidFile != null && pidFile.exists()) {
 			try {
 				return FileUtils.readFileToString(pidFile);
@@ -71,12 +97,6 @@ public abstract class AbstractProcess implements AppProcess {
 			return AppProcessState.NOT_RUNNING;
 		}
 		return getContext().getShell().getProcessState(pid);
-//		try {
-//
-//		} catch (IOException e) {
-//			log.info("Unable to get process status", e);
-//			return AppProcessState.NOT_RUNNING;
-//		}
 	}
 
 }

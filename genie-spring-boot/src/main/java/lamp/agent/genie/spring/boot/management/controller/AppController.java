@@ -1,10 +1,11 @@
 package lamp.agent.genie.spring.boot.management.controller;
 
 import lamp.agent.genie.core.AppStatus;
-import lamp.agent.genie.spring.boot.management.service.AppManagementService;
 import lamp.agent.genie.spring.boot.management.form.AppRegisterForm;
+import lamp.agent.genie.spring.boot.management.service.AppManagementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -45,13 +46,17 @@ public class AppController {
 		return appManagementService.status(id);
 	}
 
-//	@RequestMapping(value = "/{id}/systemLog", method = RequestMethod.GET)
-//	@ResponseBody
-//	public File systemLog(@PathVariable("id") String id) {
-//		log.info("[App] '{}' systemLog", id);
-//		File file = null; // agentManagementService.getSystemLogFile(id);
-//		// FIXME 파일 다운드로 구현????
-//		log.info("[App] '{}' systemLog", id);
-//		return file;
-//	}
+	@RequestMapping(value = "/{id}/logfile", method = RequestMethod.GET, produces = "text/plain")
+	public Resource logfile(@PathVariable("id") String id) {
+		Resource resource = appManagementService.getLogFileResource(id);
+		return resource;
+	}
+
+	@RequestMapping(value = "/{id}/systemLogfile", method = RequestMethod.GET, produces = "text/plain")
+	@ResponseBody
+	public Resource systemLogfile(@PathVariable("id") String id) {
+		Resource resource = appManagementService.getSystemLogFileResource(id);
+		return resource;
+	}
+
 }

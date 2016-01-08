@@ -1,12 +1,15 @@
 package lamp.agent.genie.spring.boot.management.service;
 
 
-import lamp.agent.genie.core.AppManifest;
-import lamp.agent.genie.core.deploy.AppInstaller;
-import lamp.agent.genie.core.deploy.InstallManifest;
-import lamp.agent.genie.core.deploy.SimpleAppInstaller;
+import lamp.agent.genie.core.AppConfig;
+import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.core.install.AppInstaller;
+import lamp.agent.genie.core.install.InstallConfig;
+import lamp.agent.genie.core.install.SimpleAppInstaller;
+import lamp.agent.genie.core.install.SimpleUninstallContext;
 import lamp.agent.genie.spring.boot.base.impl.MultipartFileInstallContext;
-import lamp.agent.genie.spring.boot.management.repository.InstallManifestRepository;
+import lamp.agent.genie.spring.boot.management.repository.InstallConfigRepository;
+import lamp.agent.genie.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,33 +23,41 @@ public class AppInstallService {
 	private AppInstaller appInstaller;
 
 	@Autowired
-	private InstallManifestRepository installManifestRepository;
+	private InstallConfigRepository installConfigRepository;
 
 	@PostConstruct
 	public void setUp() {
 		appInstaller = new SimpleAppInstaller();
 	}
 
-	public void install(InstallManifest installManifest, AppManifest appManifest, MultipartFile multipartFile) {
-		MultipartFileInstallContext context = MultipartFileInstallContext.of(installManifest, appManifest, multipartFile);
+	public void install(AppContext appContext, MultipartFile multipartFile) {
+		AppConfig appConfig = appContext.getAppConfig();
+		InstallConfig installConfig = appContext.getInstallConfig();
 
-		File homeDirectory = appManifest.getHomeDirectory();
-		String filename = installManifest.getFilename();
-		if (!homeDirectory.exists()) {
-			homeDirectory.mkdirs();
+		File installDirectory = new File(appContext.getValue(appConfig.getHomeDirectory(), appContext.getParameters()));
+		if (!installDirectory.exists()) {
+			installDirectory.mkdirs();
 		}
-		File installFile = new File(homeDirectory, filename);
-		context.setInstallFile(installFile);
+		installConfig.setDirectory(installDirectory.getAbsolutePath());
+
+		String filename = installConfig.getFilename();
+		if (StringUtils.isBlank(filename)) {
+			filename = multipartFile.getOriginalFilename();
+			installConfig.setFilename(filename);
+		}
+
+		MultipartFileInstallContext context = MultipartFileInstallContext.of(appContext, multipartFile);
 
 		appInstaller.install(context);
 
-		installManifestRepository.save(installManifest);
+		installConfigRepository.save(installConfig);
 	}
 
-	public void uninstall(AppManifest appManifest) {
-		InstallManifest installManifest = installManifestRepository.findOne(appManifest.getId());
+	public void uninstall(AppContext appContext) {
+		appInstaller.uninstall(SimpleUninstallContext.of(appContext));
 
-		installManifestRepository.delete(installManifest);
+		InstallConfig installConfig = appContext.getInstallConfig();
+		installConfigRepository.delete(installConfig);
 	}
 
 }

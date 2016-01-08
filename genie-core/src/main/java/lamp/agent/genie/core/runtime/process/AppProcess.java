@@ -9,4 +9,6 @@ public interface AppProcess {
 
 	void terminate();
 
+	void refresh();
+
 }

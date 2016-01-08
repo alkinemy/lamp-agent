@@ -1,8 +1,8 @@
 package lamp.agent.genie.spring.boot.base.impl;
 
 import lamp.agent.genie.spring.boot.config.LampAgentProperties;
-import lamp.agent.genie.core.context.LampContext;
-import lamp.agent.genie.core.context.MountPoint;
+import lamp.agent.genie.core.LampContext;
+import lamp.agent.genie.core.MountPoint;
 import lamp.agent.genie.core.runtime.shell.Shell;
 import lamp.agent.genie.core.runtime.shell.SigarShell;
 import lombok.extern.slf4j.Slf4j;

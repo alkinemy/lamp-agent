@@ -1,17 +1,23 @@
 package lamp.agent.genie.spring.boot.base.impl;
 
-import lamp.agent.genie.core.AppManifest;
+import lamp.agent.genie.core.AppConfig;
 import lamp.agent.genie.core.AppStatus;
-import lamp.agent.genie.core.context.AppContext;
-import lamp.agent.genie.core.context.LampContext;
+import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.core.LampContext;
+import lamp.agent.genie.core.install.InstallConfig;
 import lamp.agent.genie.core.runtime.process.AppProcess;
 import lamp.agent.genie.core.runtime.process.AppProcessState;
-import lamp.agent.genie.core.runtime.process.AppProcessType;
 import lamp.agent.genie.core.runtime.shell.Shell;
 import lombok.Getter;
-import org.apache.commons.collections.map.HashedMap;
+import org.springframework.context.expression.MapAccessor;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.common.TemplateParserContext;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.io.File;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class AbstractAppContext implements AppContext {
@@ -19,56 +25,80 @@ public abstract class AbstractAppContext implements AppContext {
 	@Getter
 	private final LampContext lampContext;
 	@Getter
-	private final AppManifest appManifest;
+	private final AppConfig appConfig;
+	@Getter
+	private final InstallConfig installConfig;
+	@Getter
+	private File systemLogFile;
+
+	private ExpressionParser parser = new SpelExpressionParser();
 
 	private AppStatus appStatus = AppStatus.NOT_RUNNING;
 	private long lastCheckTimeMillis;
-	private AppProcess process;
-	private File systemLogFile;
 
-	public AbstractAppContext(LampContext lampContext, AppManifest appManifest) {
+
+	public AbstractAppContext(LampContext lampContext, AppConfig appConfig, InstallConfig installConfig) {
 		this.lampContext = lampContext;
-		this.appManifest = appManifest;
+		this.appConfig = appConfig;
+		this.installConfig = installConfig;
 
-		this.systemLogFile = new File(lampContext.getLogDirectory(), appManifest.getId() + ".log");
+		this.systemLogFile = new File(lampContext.getLogDirectory(), appConfig.getId() + ".log");
 	}
 
-	public AppManifest getAppManifest() {
-		return appManifest;
+	public AppConfig getAppConfig() {
+		return appConfig;
 	}
 
 	public Map<String, Object> getParameters() {
-		Map<String, Object> parameters = new HashedMap();
-		parameters.put("agentId", appManifest.getId());
-		parameters.put("agentName", appManifest.getName());
-		parameters.put("agentVersion", appManifest.getVersion());
-		parameters.put("mountPoint", appManifest.getHomeDirectory().getAbsolutePath());
-		parameters.put("workDirectory", appManifest.getWorkDirectory().getAbsolutePath());
-		parameters.put("filename", appManifest.getFilename());
+		Map<String, Object> parameters = new LinkedHashMap<>();
+		parameters.put("id", appConfig.getId());
+		parameters.put("name", appConfig.getName());
+		parameters.put("homeDirectory", appConfig.getHomeDirectory());
+		parameters.put("workDirectory", appConfig.getWorkDirectory());
+		if (installConfig != null) {
+			parameters.put("filename", installConfig.getFilename());
+		}
 
 //		Environment environment = lampContext.getEnvironment();
 //		parameters.put("activeProfiles", environment.getActiveProfiles());
 //		parameters.put("env", environment);
-		if (appManifest.getParameters() != null) {
-			parameters.putAll(appManifest.getParameters());
+		if (appConfig.getParameters() != null) {
+			parameters.putAll(appConfig.getParameters());
 		}
+
+		for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+			Object value = entry.getValue();
+			if (value instanceof String) {
+				Expression expression = parser.parseExpression((String) value, new TemplateParserContext("${", "}"));
+				StandardEvaluationContext context = new StandardEvaluationContext(parameters);
+				context.addPropertyAccessor(new MapAccessor());
+				parameters.put(entry.getKey(), expression.getValue(context, value.getClass()));
+			}
+		}
+
 		return parameters;
 	}
 
 	public String getId() {
-		return appManifest.getId();
+		return appConfig.getId();
+	}
+
+	@Override public <T> T getValue(T value, Object parameters) {
+		if (value == null) {
+			return value;
+		}
+		Expression expression = parser.parseExpression(String.valueOf(value), new TemplateParserContext("${", "}"));
+		StandardEvaluationContext context = new StandardEvaluationContext(parameters);
+		context.addPropertyAccessor(new MapAccessor());
+		return (T) expression.getValue(context, value.getClass());
 	}
 
 	@Override public Shell getShell() {
 		return lampContext.getShell();
 	}
 
-	@Override public File getPidFile() {
-		return appManifest.getPidFile();
-	}
-
 	@Override public AppStatus getStatus() {
-		if (System.currentTimeMillis() - lastCheckTimeMillis > appManifest.getCheckStatusInterval()) {
+		if (System.currentTimeMillis() - lastCheckTimeMillis > appConfig.getCheckStatusInterval()) {
 			return checkAndUpdateStatus();
 		}
 
