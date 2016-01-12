@@ -11,8 +11,8 @@ public interface AppConfig {
 	String getId();
 	String getName();
 
-	String getType();
-	String getVersion();
+	String getAppName();
+	String getAppVersion();
 
 	AppProcessType getProcessType();
 	long getCheckStatusInterval();

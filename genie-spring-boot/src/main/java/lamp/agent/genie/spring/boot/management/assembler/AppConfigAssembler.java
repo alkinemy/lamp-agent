@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Component
 public class AppConfigAssembler extends AbstractListAssembler<AppRegisterForm, AppConfig> {
@@ -28,11 +30,15 @@ public class AppConfigAssembler extends AbstractListAssembler<AppRegisterForm, A
 		}
 
 		if (StringUtils.isBlank(appConfig.getWorkDirectory())) {
-			appConfig.setWorkDirectory(appConfig.getHomeDirectory());
+			appConfig.setWorkDirectory("${homeDirectory}");
+		}
+
+		if (StringUtils.isBlank(appConfig.getPidFile())) {
+			appConfig.setPidFile("${workDirectory}/${appName}.pid");
 		}
 
 		if (StringUtils.isBlank(appConfig.getLogFile())) {
-			appConfig.setLogFile(new File(appConfig.getHomeDirectory(), "/logs").getAbsolutePath());
+			appConfig.setLogFile("${homeDirectory}/logs/${appName}.log");
 		}
 
 		return appConfig;

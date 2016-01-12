@@ -75,8 +75,8 @@ public class AppControllerTest {
 
 		parts.add("id", "test-1");
 		parts.add("name", "test");
-		parts.add("type", "type");
-		parts.add("version", "0.0.1");
+		parts.add("appName", "test-app");
+		parts.add("appVersion", "0.0.1-SNAPSHOT");
 		parts.add("processType", AppProcessType.DAEMON.name());
 		parts.add("homeDirectory", "/Users/kangwoo/Applications/zookeeper-3.4.7");
 		parts.add("workDirectory", "${homeDirectory}");
@@ -99,10 +99,10 @@ public class AppControllerTest {
 
 		parts.add("id", "test-2");
 		parts.add("name", "test");
-		parts.add("type", "type");
-		parts.add("version", "0.0.1-SNAPSHOT");
+		parts.add("appName", "test-app");
+		parts.add("appVersion", "0.0.1-SNAPSHOT");
 		parts.add("processType", AppProcessType.DEFAULT.name());
-		parts.add("pidFile", "test-app.pid");
+		parts.add("pidFile", "${workDirectory}/test-app.pid");
 		parts.add("startCommandLine", "java -jar ${filename} --server.port=19092");
 		parts.add("stopCommandLine", "");
 		parts.add("preInstalled", false);
@@ -121,15 +121,17 @@ public class AppControllerTest {
 
 		parts.add("id", "test-3");
 		parts.add("name", "test");
-		parts.add("type", "type");
-		parts.add("version", "0.0.1-SNAPSHOT");
+		parts.add("appName", "test-app");
+		parts.add("appVersion", "0.0.1-SNAPSHOT");
 		parts.add("processType", AppProcessType.DAEMON.name());
-		parts.add("pidFile", "test-app.pid");
-		parts.add("startCommandLine", "nohup java -jar ${filename} --server.port=19093 &");
-		parts.add("stopCommandLine", "kill -TERM $(cat ${pidFile}) ");
+		parts.add("pidFile", "${workDirectory}/${appName}.pid");
+//		parts.add("startCommandLine", "nohup java -jar ${filename} --server.port=19093 1 > /dev/null 2 > &1 &");
+		parts.add("startCommandLine", "./${appName}.sh start");
+		parts.add("stopCommandLine", "");
 		parts.add("preInstalled", false);
 		parts.add("installFile", new ClassPathResource("apps/test-app-0.0.1-SNAPSHOT.jar"));
-		parts.add("filename", "test-app.jar");
+		parts.add("filename", "${appName}.jar");
+		parts.add("springBoot", true);
 
 		ResponseEntity<Void> responseEntity = template.postForEntity(getBaseUrl() + "/api/app", parts, Void.class);
 		assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();

@@ -22,9 +22,9 @@ public class AppRegisterForm {
 	private String name;
 
 	@NotEmpty
-	private String type;
+	private String appName;
 	@NotEmpty
-	private String version;
+	private String appVersion;
 
 	@NotNull
 	private AppProcessType processType;
@@ -51,5 +51,7 @@ public class AppRegisterForm {
 	private boolean preInstalled;
 	private String filename;
 	private MultipartFile installFile;
+
+	private boolean springBoot;
 
 }

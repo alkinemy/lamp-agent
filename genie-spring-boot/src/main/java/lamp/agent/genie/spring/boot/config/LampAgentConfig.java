@@ -11,11 +11,14 @@ import lamp.agent.genie.spring.boot.register.AgentRegistrator;
 import lamp.agent.genie.spring.boot.register.support.http.BasicAuthHttpRequestInterceptor;
 
 import lamp.agent.genie.utils.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -27,9 +30,10 @@ import java.util.List;
 @EnableConfigurationProperties({ LampAgentProperties.class })
 public class LampAgentConfig {
 
+
 	@Bean
-	public LampContextImpl lampContext(LampAgentProperties clientProperties) {
-		return new LampContextImpl(clientProperties);
+	public LampContextImpl lampContext(ApplicationContext applicationContext, LampAgentProperties clientProperties) {
+		return new LampContextImpl(applicationContext, clientProperties);
 	}
 
 	@Bean

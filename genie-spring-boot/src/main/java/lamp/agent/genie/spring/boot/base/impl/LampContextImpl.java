@@ -5,21 +5,27 @@ import lamp.agent.genie.core.LampContext;
 import lamp.agent.genie.core.MountPoint;
 import lamp.agent.genie.core.runtime.shell.Shell;
 import lamp.agent.genie.core.runtime.shell.SigarShell;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.EnvironmentCapable;
 
 import java.io.File;
 
 @Slf4j
-public class LampContextImpl implements LampContext {
+public class LampContextImpl implements LampContext, EnvironmentCapable {
 
 	private static final String APP_DIRECTORY = "apps";
 	private static final String LOG_DIRECTORY = "logs";
 
 	private final Shell shell;
 	private LampAgentProperties lampClientProperties;
+	@Getter
+	private Environment environment;
 
-
-	public LampContextImpl(LampAgentProperties lampClientProperties) {
+	public LampContextImpl(ApplicationContext applicationContext, LampAgentProperties lampClientProperties) {
+		this.environment = applicationContext.getEnvironment();
 		this.lampClientProperties = lampClientProperties;
 		this.shell = new SigarShell();
 	}
@@ -55,5 +61,6 @@ public class LampContextImpl implements LampContext {
 	@Override public Shell getShell() {
 		return shell;
 	}
+
 
 }

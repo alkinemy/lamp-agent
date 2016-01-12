@@ -1,26 +1,35 @@
 package lamp.agent.genie.spring.boot.management.service;
 
 
-import lamp.agent.genie.core.AppConfig;
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.install.AppInstaller;
 import lamp.agent.genie.core.install.InstallConfig;
 import lamp.agent.genie.core.install.SimpleAppInstaller;
 import lamp.agent.genie.core.install.SimpleUninstallContext;
+import lamp.agent.genie.core.install.command.Command;
 import lamp.agent.genie.spring.boot.base.impl.MultipartFileInstallContext;
 import lamp.agent.genie.spring.boot.management.repository.InstallConfigRepository;
+import lamp.agent.genie.spring.boot.management.service.install.SpringBootInstallCommand;
+import lamp.agent.genie.spring.boot.management.support.ExpressionParser;
 import lamp.agent.genie.utils.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @Service
 public class AppInstallService {
 
 	private AppInstaller appInstaller;
+
+	private ExpressionParser expressionParser;
 
 	@Autowired
 	private InstallConfigRepository installConfigRepository;
@@ -28,12 +37,18 @@ public class AppInstallService {
 	@PostConstruct
 	public void setUp() {
 		appInstaller = new SimpleAppInstaller();
+		expressionParser = new ExpressionParser();
 	}
 
 	public void install(AppContext appContext, MultipartFile multipartFile) {
+		Map<String, Object> parameters = appContext.getParameters();
 		InstallConfig installConfig = appContext.getInstallConfig();
-
-		File installDirectory = new File(appContext.getParsedAppConfig().getHomeDirectory());
+		String directory = installConfig.getDirectory();
+		if (StringUtils.isBlank(directory)) {
+			directory = appContext.getParsedAppConfig().getHomeDirectory();
+		}
+		directory = expressionParser.getValue(directory, parameters);
+		File installDirectory = new File(directory);
 		if (!installDirectory.exists()) {
 			installDirectory.mkdirs();
 		}
@@ -42,10 +57,16 @@ public class AppInstallService {
 		String filename = installConfig.getFilename();
 		if (StringUtils.isBlank(filename)) {
 			filename = multipartFile.getOriginalFilename();
-			installConfig.setFilename(filename);
+		}
+		filename = expressionParser.getValue(filename, parameters);
+		installConfig.setFilename(filename);
+
+		List<Command> commands = new ArrayList<>();
+		if (installConfig.isSpringBoot()) {
+			commands.add(new SpringBootInstallCommand());
 		}
 
-		MultipartFileInstallContext context = MultipartFileInstallContext.of(appContext, multipartFile);
+		MultipartFileInstallContext context = MultipartFileInstallContext.of(appContext, multipartFile, commands);
 
 		appInstaller.install(context);
 

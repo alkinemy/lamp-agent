@@ -54,7 +54,7 @@ public class DefaultProcess extends AbstractProcess {
 			CommandLine cmdLine = CommandLine.parse(command);
 
 			ExecuteWatchdog watchdog = new ExecuteWatchdog(timeout);
-			ExecuteResultHandler executeResultHandler = new ForegroundProcessResultHandler(getContext(), command);
+			ExecuteResultHandler executeResultHandler = new DefaultProcessResultHandler(getContext(), command);
 			DaemonExecutor executor = new DaemonExecutor();
 			executor.setExitValues(EXIT_CODES);
 			executor.setWorkingDirectory(getWorkDirectory());

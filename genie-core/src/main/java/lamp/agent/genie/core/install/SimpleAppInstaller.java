@@ -25,7 +25,8 @@ public class SimpleAppInstaller implements AppInstaller {
 			File file = new File(installConfig.getDirectory(), installConfig.getFilename());
 			context.transferTo(file);
 
-			List<Command> commands = installConfig.getCommands();
+			List<Command> commands = context.getCommands();
+
 			if (CollectionUtils.isNotEmpty(commands)) {
 				for (Command command : commands) {
 					command.execute(appContext);

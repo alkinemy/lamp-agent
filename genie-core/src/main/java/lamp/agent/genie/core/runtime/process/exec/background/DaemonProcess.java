@@ -3,6 +3,8 @@ package lamp.agent.genie.core.runtime.process.exec.background;
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.exception.CommandExecuteException;
 import lamp.agent.genie.core.runtime.process.exec.AbstractProcess;
+import lamp.agent.genie.core.runtime.shell.Shell;
+import lamp.agent.genie.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -34,15 +36,20 @@ public class DaemonProcess extends AbstractProcess {
 		String commandLine = getStartCommandLine();
 		long timeout = getStartTimeout();
 		log.info("[App:{}] startCmdLine = {}", getContext().getId(), commandLine);
+
 		return executeCommandLine(commandLine, timeout);
 	}
 
 	protected void doStop() {
 		String commandLine = getStopCommandLine();
-		long timeout = getStopTimeout();
 		log.info("[App:{}] stopCommandLine = {}", getContext().getId(), commandLine);
-
-		executeCommandLine(commandLine, timeout);
+		if (StringUtils.isNotBlank(commandLine)) {
+			long timeout = getStopTimeout();
+			executeCommandLine(commandLine, timeout);
+		} else {
+			String pid = getId();
+			getContext().getShell().kill(pid, Shell.Signal.TERM);
+		}
 	}
 
 	protected ExecuteWatchdog executeCommandLine(String command, long timeout) throws CommandExecuteException {
@@ -63,8 +70,7 @@ public class DaemonProcess extends AbstractProcess {
 			}
 			executor.setStreamHandler(streamHandler);
 			executor.setWatchdog(watchdog);
-
-			executor.execute(cmdLine, new BackgroundProcessResultHandler(getContext(), command));
+			executor.execute(cmdLine, new DaemonProcessResultHandler(getContext(), command));
 		} catch (Exception e) {
 			throw new CommandExecuteException(command, e);
 		}

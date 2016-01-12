@@ -17,8 +17,8 @@ public class AppConfigImpl implements AppConfig {
 	private String id;
 	private String name;
 
-	private String type;
-	private String version;
+	private String appName;
+	private String appVersion;
 
 	private AppProcessType processType;
 

@@ -6,12 +6,12 @@ import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.ExecuteException;
 
 @Slf4j
-public class ForegroundProcessResultHandler extends DefaultExecuteResultHandler {
+public class DefaultProcessResultHandler extends DefaultExecuteResultHandler {
 
 	private final AppContext context;
 	private final String command;
 
-	public ForegroundProcessResultHandler(AppContext context, String command) {
+	public DefaultProcessResultHandler(AppContext context, String command) {
 		this.context = context;
 		this.command = command;
 	}
