@@ -16,6 +16,7 @@ import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lamp.agent.genie.spring.boot.base.impl.DaemonAppContext;
 import lamp.agent.genie.spring.boot.base.impl.DefaultAppContext;
 import lamp.agent.genie.spring.boot.management.form.AppUpdateForm;
+import lamp.agent.genie.spring.boot.management.repository.AppCorrectStatusRepository;
 import lombok.extern.slf4j.Slf4j;
 import lamp.agent.genie.spring.boot.management.form.AppRegisterForm;
 
@@ -52,6 +53,9 @@ public class AppManagementService {
 	@Autowired
 	private AppRegistry appRegistry;
 
+	@Autowired
+	private AppCorrectStatusService appCorrectStatusService;
+
 	@PostConstruct
 	public void init() {
 		List<AppConfig> appConfigs = appConfigService.getAppManifests();
@@ -59,9 +63,9 @@ public class AppManagementService {
 			try {
 				App app = newAppInstance(appConfig);
 				appRegistry.bind(app.getId(), app);
-				log.info("[App] '{}' registered", app.getId());
+				log.info("[App:{}] registered", app.getId());
 			} catch (Exception e) {
-				log.warn("[App] " + appConfig.getId() + " Registration fail error", e);
+				log.warn("[App: " + appConfig.getId() + "] Registration fail error", e);
 			}
 		}
 
@@ -69,14 +73,14 @@ public class AppManagementService {
 		List<App> apps = appRegistry.list();
 		for (App app : apps) {
 			try {
-				if (app.getManifest().isAutoStart()
+				if (AppStatus.RUNNING.equals(app.getCorrectStatus())
 						&& AppStatus.NOT_RUNNING.equals(app.getStatus())) {
-					log.info("[App] '{}' staring", app.getId());
+					log.info("[App:{}] staring", app.getId());
 					app.start();
-					log.info("[App] '{}' started", app.getId());
+					log.info("[App:{}] started", app.getId());
 				}
 			} catch (Exception e) {
-				log.warn("[App] " + app.getId() + " Start failed", e);
+				log.warn("[App:" + app.getId() + "] Start failed", e);
 			}
 		}
 
@@ -84,7 +88,7 @@ public class AppManagementService {
 
 	protected App newAppInstance(AppConfig appConfig) {
 		AppContext appContext = newAppContextInstance(appConfig);
-		return new AppImpl(appContext);
+		return new AppImpl(appContext, appCorrectStatusService.getCorrectStatus(appConfig.getId()));
 	}
 
 	protected AppContext newAppContextInstance(AppConfig appConfig, InstallConfig installConfig) {
@@ -108,18 +112,6 @@ public class AppManagementService {
 
 	@PreDestroy
 	public void close() {
-		List<App> apps = appRegistry.list();
-		for (App app : apps) {
-			// TODO STARTING 처리 필요
-			if (app.getManifest().isAutoStop()
-					&& app.isRunning()) {
-				try {
-					app.stop();
-				} catch(Exception e) {
-					log.warn("App closing error", e);
-				}
-			}
-		}
 	}
 
 	public synchronized List<App> getApps() {
@@ -188,18 +180,14 @@ public class AppManagementService {
 		App app = appRegistry.lookup(id);
 		app.start();
 
-//		AppConfig appConfig = base.getConfig();
-//		appConfig.setStatus(AppStatus.RUNNING);
-//		agentDefinitionService.save(appConfig);
+		appCorrectStatusService.updateCorrectStatus(app.getId(), AppStatus.RUNNING);
 	}
 
 	public synchronized void stop(String id) {
+		appCorrectStatusService.updateCorrectStatus(id, AppStatus.NOT_RUNNING);
+
 		App app = appRegistry.lookup(id);
 		app.stop();
-
-//		AppConfig appConfig = base.getConfig();
-//		appConfig.setStatus(AppStatus.NOT_RUNNING);
-//		agentDefinitionService.save(appConfig);
 	}
 
 	public synchronized AppStatus status(String id) {

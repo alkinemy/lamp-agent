@@ -2,7 +2,6 @@ package lamp.agent.genie.core;
 
 import lamp.agent.genie.core.runtime.process.AppProcessType;
 
-import java.io.File;
 import java.util.Map;
 
 
@@ -30,8 +29,7 @@ public interface AppConfig {
 	String getStopCommandLine();
 	long getStopTimeout();
 
-	boolean isAutoStart();
-	boolean isAutoStop();
+	boolean isMonitor();
 
 	Map<String, Object> getParameters();
 

@@ -51,7 +51,7 @@ public class CommandService {
 				constructor = commandClass.getConstructor();
 			} else {
 				Class<?> parameterType = value.getClass();
-				if (value instanceof Map) {
+				if (Map.class.isAssignableFrom(parameterType)) {
 					parameterType = Map.class;
 				}
 				constructor = commandClass.getConstructor(parameterType);

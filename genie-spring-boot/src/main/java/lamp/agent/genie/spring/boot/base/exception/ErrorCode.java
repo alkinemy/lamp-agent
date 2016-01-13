@@ -16,6 +16,8 @@ public enum ErrorCode {
 	APP_STOP_FAILED("애플리케이션을 중지 할 수 없습니다."),
 	APP_CONFIG_SAVE_FAILED("애플리케이션 설정 정보를 저장하는 중 에러가 발생하였습니다."),
 	APP_CONFIG_READ_FAILED("애플리케이션 설정 정보를 읽어오는 중 에러가 발생하였습니다."),
+	APP_CORRECT_STATUS_SAVE_FAILED("애플리케이션 상태 정보를 저장하는 중 에러가 발생하였습니다."),
+	APP_CORRECT_STATUS_READ_FAILED("애플리케이션 상태 정보를 읽어오는 중 에러가 발생하였습니다."),
 	CANNOT_CONNECT_TO_AGENT_SERVER("에이전트 서버에 접속할 수 없습니다."),
 	ARTIFACT_REPOSITORY_CONNECT_FAILED("Artifact Repository에 접속할수 없습니다."),
 	ARTIFACT_REPOSITORY_CLEAN_FAILED("Artifact Repository를 정리하는 중 에러가 발생하였습니다."),

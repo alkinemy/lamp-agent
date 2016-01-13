@@ -14,11 +14,15 @@ public interface App {
 
 	AppStatus getStatus();
 
+	AppStatus getCorrectStatus();
+
 	void start();
 
 	void stop();
 
 	boolean isRunning();
+
+	boolean isMonitor();
 
 	File getLogFile();
 

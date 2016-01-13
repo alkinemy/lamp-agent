@@ -61,7 +61,6 @@ public class AppControllerTest {
 				.getBean(AuthenticationManager.class);
 		this.authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken("user", "password"));
-
 	}
 
 	@After
@@ -90,7 +89,8 @@ public class AppControllerTest {
 		parts.add("preInstalled", true);
 
 
-		template.postForEntity(getBaseUrl() + "/api/app", parts, Void.class);
+		ResponseEntity<Void> responseEntity = template.postForEntity(getBaseUrl() + "/api/app", parts, Void.class);
+		assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
 	}
 
 	@Test
@@ -112,6 +112,7 @@ public class AppControllerTest {
 		parts.add("filename", "test-app.jar");
 
 		ResponseEntity<Void> responseEntity = template.postForEntity(getBaseUrl() + "/api/app", parts, Void.class);
+
 		assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
 	}
 
@@ -132,6 +133,7 @@ public class AppControllerTest {
 		parts.add("preInstalled", false);
 		parts.add("installFile", new ClassPathResource("apps/test-app-0.0.1-SNAPSHOT.jar"));
 		parts.add("filename", "${appName}.jar");
+		parts.add("monitor", "true");
 
 		Map<String, Object> commandsHashMap = new LinkedHashMap<>();
 		{
@@ -147,6 +149,7 @@ public class AppControllerTest {
 		parts.add("commands", objectMapper.writeValueAsString(commandsHashMap));
 
 		ResponseEntity<Void> responseEntity = template.postForEntity(getBaseUrl() + "/api/app", parts, Void.class);
+
 		assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
 	}
 

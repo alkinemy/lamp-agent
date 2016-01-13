@@ -44,6 +44,8 @@ public class AppUpdateForm {
 	private String stopCommandLine;
 	private Long stopTimeout = ExecuteWatchdog.INFINITE_TIMEOUT;
 
+	private boolean monitor;
+
 	private Map<String, Object> parameters;
 
 	private MultipartFile installFile;

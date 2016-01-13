@@ -89,8 +89,7 @@ public abstract class AbstractAppContext implements AppContext {
 			parameters.put("startTimeout", appConfig.getStartTimeout());
 			parameters.put("stopCommandLine", appConfig.getStopCommandLine());
 			parameters.put("stopTimeout", appConfig.getStopTimeout());
-			parameters.put("autoStart", appConfig.isAutoStart());
-			parameters.put("autoStop", appConfig.isAutoStop());
+			parameters.put("monitor", appConfig.isMonitor());
 
 			if (installConfig != null) {
 				parameters.put("filename", installConfig.getFilename());
@@ -105,8 +104,6 @@ public abstract class AbstractAppContext implements AppContext {
 			if (appConfig.getParameters() != null) {
 				parameters.putAll(appConfig.getParameters());
 			}
-
-
 
 			for (Map.Entry<String, Object> entry : parameters.entrySet()) {
 				Object value = entry.getValue();

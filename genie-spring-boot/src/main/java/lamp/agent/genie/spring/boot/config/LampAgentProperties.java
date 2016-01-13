@@ -39,6 +39,9 @@ public class LampAgentProperties implements ApplicationListener<ApplicationEvent
 	private String healthPath;
 	private String metricsPath;
 
+	private boolean monitor;
+	private long monitorPeriod;
+
 	@Autowired
 	private ManagementServerProperties managementServerProperties;
 

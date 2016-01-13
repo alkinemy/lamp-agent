@@ -1,9 +1,9 @@
 #!/bin/sh
 
-JARFile="test-app.jar"
-PIDFile="test-app.pid"
+JARFile="lamp-agent.jar"
+PIDFile="lamp-agent.pid"
 JVM_OPTS="-Xms64m -Xmx128m"
-SPRING_OPTS="--spring.profiles.active=develop --spring.config.name=test-app"
+SPRING_OPTS="--spring.profiles.active=develop --spring.config.name=lamp-agent"
 
 function check_if_pid_file_exists {
     if [ ! -f $PIDFile ]

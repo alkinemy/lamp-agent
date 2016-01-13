@@ -1,5 +1,6 @@
 package lamp.agent.genie.spring.boot.base.impl;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lamp.agent.genie.core.AppConfig;
 import lamp.agent.genie.core.runtime.process.AppProcessType;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AppConfigImpl implements AppConfig {
 
 	private String id;
@@ -34,8 +36,8 @@ public class AppConfigImpl implements AppConfig {
 	private long startTimeout = ExecuteWatchdog.INFINITE_TIMEOUT;
 	private String stopCommandLine;
 	private long stopTimeout = ExecuteWatchdog.INFINITE_TIMEOUT;
-	private boolean autoStart;
-	private boolean autoStop;
+
+	private boolean monitor;
 
 	private boolean preInstalled;
 

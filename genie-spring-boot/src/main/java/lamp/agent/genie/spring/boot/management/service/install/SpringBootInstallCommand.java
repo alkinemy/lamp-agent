@@ -72,7 +72,7 @@ public class SpringBootInstallCommand implements ExtendedCommand {
 		}
 
 		File scriptFile = new File(appConfig.getWorkDirectory(), scriptFilename);
-		log.info("scriptFile = {}", scriptFile.getAbsolutePath());
+		log.debug("scriptFile = {}", scriptFile.getAbsolutePath());
 
 		parameters.put("JVM_OPTS", getValue(StringUtils.defaultIfBlank(jvmOpts, DEFAULT_JVM_OPTS), parameters));
 		parameters.put("SPRING_OPTS", getValue(StringUtils.defaultIfBlank(springOpts, DEFAULT_SPRING_OPTS), parameters));

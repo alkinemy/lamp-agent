@@ -1,6 +1,7 @@
 package lamp.agent.genie.spring.boot.config;
 
 import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
+import lamp.agent.genie.spring.boot.management.service.AppMonitorService;
 import lamp.agent.genie.spring.boot.register.AgentRegistrationApplicationListener;
 import lamp.agent.genie.spring.boot.register.support.http.LampHttpRequestInterceptor;
 import lamp.agent.genie.spring.boot.register.service.AgentSecretKeyGenerator;
@@ -11,16 +12,15 @@ import lamp.agent.genie.spring.boot.register.AgentRegistrator;
 import lamp.agent.genie.spring.boot.register.support.http.BasicAuthHttpRequestInterceptor;
 
 import lamp.agent.genie.utils.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -32,20 +32,35 @@ public class LampAgentConfig {
 
 
 	@Bean
-	public LampContextImpl lampContext(ApplicationContext applicationContext, LampAgentProperties clientProperties) {
-		return new LampContextImpl(applicationContext, clientProperties);
+	public LampContextImpl lampContext(ApplicationContext applicationContext, LampAgentProperties agentProperties) {
+		return new LampContextImpl(applicationContext, agentProperties);
 	}
 
 	@Bean
 	@ConditionalOnMissingBean
-	public AgentSecretKeyGenerator agentSecretKeyGenerator(LampAgentProperties clientProperties) {
-		return new AgentSecretKeyGenerator(clientProperties);
+	public AgentSecretKeyGenerator agentSecretKeyGenerator(LampAgentProperties agentProperties) {
+		return new AgentSecretKeyGenerator(agentProperties);
 	}
 
 
 	@Bean
 	public SmartAssembler smartAssembler() {
 		return new SmartAssembler();
+	}
+
+	@Bean
+	@ConditionalOnProperty(name = "lamp.agent.monitor", havingValue = "true")
+	public ScheduledTaskRegistrar taskRegistrar(final LampAgentProperties agentProperties, final AppMonitorService appMonitorService) {
+		ScheduledTaskRegistrar registrar = new ScheduledTaskRegistrar();
+		Runnable registrationTask = new Runnable() {
+			@Override
+			public void run() {
+				appMonitorService.monitor();
+			}
+		};
+
+		registrar.addFixedRateTask(registrationTask, agentProperties.getMonitorPeriod());
+		return registrar;
 	}
 
 	@ConditionalOnProperty(name = "lamp.server.type", havingValue = "rest")
@@ -81,5 +96,7 @@ public class LampAgentConfig {
 		}
 
 	}
+
+
 
 }

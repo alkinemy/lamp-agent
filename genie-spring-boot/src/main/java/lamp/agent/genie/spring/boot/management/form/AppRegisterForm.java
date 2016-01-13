@@ -46,6 +46,8 @@ public class AppRegisterForm {
 	private String stopCommandLine;
 	private Long stopTimeout = ExecuteWatchdog.INFINITE_TIMEOUT;
 
+	private boolean monitor;
+
 	private Map<String, Object> parameters;
 
 	// Install

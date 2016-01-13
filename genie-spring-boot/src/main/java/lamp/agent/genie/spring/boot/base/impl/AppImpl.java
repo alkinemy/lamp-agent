@@ -11,6 +11,7 @@ import lombok.Getter;
 import java.io.File;
 import java.util.Date;
 
+
 public class AppImpl implements App {
 
 	@Getter
@@ -21,8 +22,11 @@ public class AppImpl implements App {
 	@Getter
 	private Date stopTime;
 
-	public AppImpl(AppContext context) {
+	private AppStatus correctStatus;
+
+	public AppImpl(AppContext context, AppStatus correctStatus) {
 		this.context = context;
+		this.correctStatus = correctStatus;
 	}
 
 	@Override
@@ -39,8 +43,16 @@ public class AppImpl implements App {
 		return context.getStatus();
 	}
 
+	@Override public AppStatus getCorrectStatus() {
+		return correctStatus;
+	}
+
 	@Override public boolean isRunning() {
 		return AppStatus.RUNNING.equals(getStatus());
+	}
+
+	@Override public boolean isMonitor() {
+		return context.getAppConfig().isMonitor();
 	}
 
 	@Override public File getLogFile() {
@@ -63,6 +75,7 @@ public class AppImpl implements App {
 
 			context.createProcess();
 
+			correctStatus = AppStatus.RUNNING;
 		} catch (Exception e) {
 			context.updateStatus(AppStatus.NOT_RUNNING);
 			throw Exceptions.newException(ErrorCode.APP_START_FAILED, e);
@@ -71,6 +84,8 @@ public class AppImpl implements App {
 
 	@Override
 	public synchronized void stop() {
+		correctStatus = AppStatus.NOT_RUNNING;
+
 		AppStatus currentStatus = getStatus();
 		boolean canStop = AppStatus.RUNNING.equals(currentStatus);
 		if (!canStop) {
