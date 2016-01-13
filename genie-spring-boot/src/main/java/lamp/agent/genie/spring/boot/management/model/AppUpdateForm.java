@@ -1,4 +1,4 @@
-package lamp.agent.genie.spring.boot.management.form;
+package lamp.agent.genie.spring.boot.management.model;
 
 import lamp.agent.genie.core.runtime.process.AppProcessType;
 import lombok.Getter;

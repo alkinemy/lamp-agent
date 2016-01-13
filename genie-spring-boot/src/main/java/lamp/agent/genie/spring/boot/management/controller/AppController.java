@@ -1,7 +1,7 @@
 package lamp.agent.genie.spring.boot.management.controller;
 
 import lamp.agent.genie.core.AppStatus;
-import lamp.agent.genie.spring.boot.management.form.AppRegisterForm;
+import lamp.agent.genie.spring.boot.management.model.AppRegisterForm;
 import lamp.agent.genie.spring.boot.management.service.AppManagementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

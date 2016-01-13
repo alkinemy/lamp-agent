@@ -13,14 +13,14 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Date;
 
 @Slf4j
-public class AgentApiRegistrator implements AgentRegistrator {
+public class ApiAgentRegistrator implements AgentRegistrator {
 
 	private final LampServerProperties lampServerProperties;
 	private final LampAgentProperties lampClientProperties;
 
 	private final RestTemplate restTemplate;
 
-	public AgentApiRegistrator(
+	public ApiAgentRegistrator(
 			LampServerProperties lampServerProperties, LampAgentProperties lampClientProperties,
 			RestTemplate restTemplate) {
 		this.lampServerProperties = lampServerProperties;

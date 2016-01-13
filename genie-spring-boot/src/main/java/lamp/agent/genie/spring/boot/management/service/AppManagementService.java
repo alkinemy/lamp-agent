@@ -15,10 +15,12 @@ import lamp.agent.genie.core.install.InstallConfig;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lamp.agent.genie.spring.boot.base.impl.DaemonAppContext;
 import lamp.agent.genie.spring.boot.base.impl.DefaultAppContext;
-import lamp.agent.genie.spring.boot.management.form.AppUpdateForm;
-import lamp.agent.genie.spring.boot.management.repository.AppCorrectStatusRepository;
+import lamp.agent.genie.spring.boot.management.model.AppUpdateForm;
+import lamp.agent.genie.spring.boot.register.model.AgentEvent;
+import lamp.agent.genie.spring.boot.register.model.AgentEventLevel;
+import lamp.agent.genie.spring.boot.register.model.AgentEventName;
 import lombok.extern.slf4j.Slf4j;
-import lamp.agent.genie.spring.boot.management.form.AppRegisterForm;
+import lamp.agent.genie.spring.boot.management.model.AppRegisterForm;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,9 @@ public class AppManagementService {
 
 	@Autowired
 	private AppCorrectStatusService appCorrectStatusService;
+
+	@Autowired
+	private AgentEventPublishService agentEventPublishService;
 
 	@PostConstruct
 	public void init() {
@@ -181,6 +186,8 @@ public class AppManagementService {
 		app.start();
 
 		appCorrectStatusService.updateCorrectStatus(app.getId(), AppStatus.RUNNING);
+
+		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_STARTED, id));
 	}
 
 	public synchronized void stop(String id) {
@@ -188,6 +195,8 @@ public class AppManagementService {
 
 		App app = appRegistry.lookup(id);
 		app.stop();
+
+		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_STOPPED, id));
 	}
 
 	public synchronized AppStatus status(String id) {

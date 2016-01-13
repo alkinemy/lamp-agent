@@ -1,4 +1,4 @@
-package lamp.agent.genie.spring.boot.management.form;
+package lamp.agent.genie.spring.boot.management.model;
 
 import lamp.agent.genie.core.runtime.process.AppProcessType;
 import lombok.Getter;
@@ -9,7 +9,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Getter

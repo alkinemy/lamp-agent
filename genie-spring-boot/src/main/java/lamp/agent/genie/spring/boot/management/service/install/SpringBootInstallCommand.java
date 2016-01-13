@@ -21,7 +21,8 @@ import java.util.Map;
 public class SpringBootInstallCommand implements ExtendedCommand {
 
 	private static final String DEFAULT_JVM_OPTS = "-Xms64m -Xmx128m";
-	private static final String DEFAULT_SPRING_OPTS = "--spring.profiles.active=${activeProfiles} --spring.config.name=${appName}";
+	private static final String DEFAULT_SPRING_OPTS = "--spring.profiles.active=${activeProfiles}";
+//	private static final String DEFAULT_SPRING_OPTS = "--spring.profiles.active=${activeProfiles} --spring.config.name=${appName}";
 
 	private ExpressionParser parser = new ExpressionParser();
 

@@ -2,7 +2,7 @@ package lamp.agent.genie.spring.boot.management.assembler;
 
 import lamp.agent.genie.core.install.InstallConfig;
 import lamp.agent.genie.spring.boot.base.assembler.AbstractListAssembler;
-import lamp.agent.genie.spring.boot.management.form.AppRegisterForm;
+import lamp.agent.genie.spring.boot.management.model.AppRegisterForm;
 import org.springframework.stereotype.Component;
 
 @Component

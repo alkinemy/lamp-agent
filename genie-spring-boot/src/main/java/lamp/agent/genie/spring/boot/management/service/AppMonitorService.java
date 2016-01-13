@@ -2,6 +2,8 @@ package lamp.agent.genie.spring.boot.management.service;
 
 import lamp.agent.genie.core.App;
 import lamp.agent.genie.core.AppStatus;
+import lamp.agent.genie.spring.boot.register.model.AgentEvent;
+import lamp.agent.genie.spring.boot.register.model.AgentEventName;
 import lamp.agent.genie.utils.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ public class AppMonitorService {
 	@Autowired
 	private AppManagementService appManagementService;
 
+	@Autowired
+	private AgentEventPublishService agentEventPublishService;
 
 	public void monitor() {
 		List<App> apps = appManagementService.getApps();
@@ -29,6 +33,8 @@ public class AppMonitorService {
 					&& AppStatus.NOT_RUNNING.equals(app.getStatus())
 					&& AppStatus.RUNNING.equals(app.getCorrectStatus())) {
 				log.warn("[App:{}} Not Running. Trying to start App", app.getId());
+				agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_STARTING_BY_MONITOR, app.getId()));
+
 				appManagementService.start(app.getId());
 			}
 		}

@@ -2,10 +2,12 @@ package lamp.agent.genie.spring.boot.config;
 
 import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
 import lamp.agent.genie.spring.boot.management.service.AppMonitorService;
+import lamp.agent.genie.spring.boot.register.AgentEventPublisher;
 import lamp.agent.genie.spring.boot.register.AgentRegistrationApplicationListener;
+import lamp.agent.genie.spring.boot.register.support.ApiAgentEventPublisher;
 import lamp.agent.genie.spring.boot.register.support.http.LampHttpRequestInterceptor;
 import lamp.agent.genie.spring.boot.register.service.AgentSecretKeyGenerator;
-import lamp.agent.genie.spring.boot.register.support.AgentApiRegistrator;
+import lamp.agent.genie.spring.boot.register.support.ApiAgentRegistrator;
 import lamp.agent.genie.spring.boot.base.impl.LampContextImpl;
 import lamp.agent.genie.spring.boot.register.AgentRegistrator;
 
@@ -20,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.web.client.RestTemplate;
 
@@ -64,13 +67,20 @@ public class LampAgentConfig {
 	}
 
 	@ConditionalOnProperty(name = "lamp.server.type", havingValue = "rest")
+	@EnableAsync
 	@EnableConfigurationProperties({ LampServerProperties.class })
 	public static class LampServerConfig {
 
 		@Bean
 		@ConditionalOnMissingBean
-		public AgentRegistrator lampClientRegistrator(LampServerProperties serverProperties, LampAgentProperties clientProperties) {
-			return new AgentApiRegistrator(serverProperties, clientProperties, createRestTemplate(serverProperties, clientProperties));
+		public AgentRegistrator agentRegistrator(LampServerProperties serverProperties, LampAgentProperties clientProperties) {
+			return new ApiAgentRegistrator(serverProperties, clientProperties, createRestTemplate(serverProperties, clientProperties));
+		}
+
+		@Bean
+		@ConditionalOnMissingBean
+		public AgentEventPublisher agentEventPublisher(LampServerProperties serverProperties, LampAgentProperties clientProperties) {
+			return new ApiAgentEventPublisher(serverProperties, clientProperties, createRestTemplate(serverProperties, clientProperties));
 		}
 
 		protected RestTemplate createRestTemplate(LampServerProperties serverProperties, LampAgentProperties clientProperties) {
@@ -91,7 +101,7 @@ public class LampAgentConfig {
 		}
 
 		@Bean
-		public AgentRegistrationApplicationListener registrationApplicationListener(AgentApiRegistrator lampClientApiRegistrator) {
+		public AgentRegistrationApplicationListener registrationApplicationListener(ApiAgentRegistrator lampClientApiRegistrator) {
 			return new AgentRegistrationApplicationListener(lampClientApiRegistrator);
 		}
 

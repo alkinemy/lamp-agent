@@ -4,15 +4,13 @@ import lamp.agent.genie.core.AppConfig;
 import lamp.agent.genie.core.LampContext;
 import lamp.agent.genie.spring.boot.base.assembler.AbstractListAssembler;
 import lamp.agent.genie.spring.boot.base.impl.AppConfigImpl;
-import lamp.agent.genie.spring.boot.management.form.AppRegisterForm;
+import lamp.agent.genie.spring.boot.management.model.AppRegisterForm;
 import lamp.agent.genie.utils.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Component
 public class AppConfigAssembler extends AbstractListAssembler<AppRegisterForm, AppConfig> {
