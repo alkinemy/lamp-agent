@@ -21,7 +21,7 @@ import java.util.List;
 @Component
 public class AppConfigRepository {
 
-	private static final String MANIFEST_JSON = "manifest.json";
+	private static final String CONFIG_JSON = "config.json";
 
 	@Autowired
 	private LampContext lampContext;
@@ -33,11 +33,11 @@ public class AppConfigRepository {
 		if (!directory.exists()) {
 			directory.mkdirs();
 		}
-		File file = new File(directory, MANIFEST_JSON);
+		File file = new File(directory, CONFIG_JSON);
 		try {
 			objectMapper.writeValue(file, appConfig);
 		} catch (IOException e) {
-			throw Exceptions.newException(ErrorCode.APP_MANIFEST_SAVE_FAILED, e);
+			throw Exceptions.newException(ErrorCode.APP_CONFIG_SAVE_FAILED, e);
 		}
 	}
 
@@ -54,7 +54,7 @@ public class AppConfigRepository {
 						appConfigList.add(appConfig);
 					}
 				} catch (Exception e) {
-					log.info("AppManifest load failed", e);
+					log.info("AppConfig load failed", e);
 				}
 			}
 		}
@@ -63,7 +63,7 @@ public class AppConfigRepository {
 
 	public AppConfig findOne(String id) {
 		File directory = lampContext.getAppDirectory(id);
-		File file = new File(directory, MANIFEST_JSON);
+		File file = new File(directory, CONFIG_JSON);
 
 		if (!file.exists()) {
 			return null;
@@ -71,13 +71,13 @@ public class AppConfigRepository {
 		try {
 			return objectMapper.readValue(file, AppConfigImpl.class);
 		} catch (IOException e) {
-			throw Exceptions.newException(ErrorCode.APP_MANIFEST_READ_FAILED, e);
+			throw Exceptions.newException(ErrorCode.APP_CONFIG_READ_FAILED, e);
 		}
 	}
 
 	public void delete(AppConfig appConfig) {
 		File directory = lampContext.getAppDirectory(appConfig.getId());
-		File file = new File(directory, MANIFEST_JSON);
+		File file = new File(directory, CONFIG_JSON);
 		file.delete();
 	}
 

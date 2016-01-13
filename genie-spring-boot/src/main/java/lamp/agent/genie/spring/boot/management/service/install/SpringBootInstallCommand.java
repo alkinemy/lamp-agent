@@ -1,6 +1,5 @@
 package lamp.agent.genie.spring.boot.management.service.install;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lamp.agent.genie.core.AppConfig;
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.exception.CommandExecuteException;
@@ -10,23 +9,16 @@ import lamp.agent.genie.core.install.command.FileSetExecutableCommand;
 import lamp.agent.genie.spring.boot.management.support.ExpressionParser;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.springframework.context.expression.MapAccessor;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.expression.Expression;
-
-import org.springframework.expression.common.TemplateParserContext;
-
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.io.File;
 import java.io.InputStream;
 import java.util.Map;
 
 @Slf4j
-public class SpringBootInstallCommand implements Command {
+public class SpringBootInstallCommand implements ExtendedCommand {
 
 	private static final String DEFAULT_JVM_OPTS = "-Xms64m -Xmx128m";
 	private static final String DEFAULT_SPRING_OPTS = "--spring.profiles.active=${activeProfiles} --spring.config.name=${appName}";
@@ -44,6 +36,7 @@ public class SpringBootInstallCommand implements Command {
 	private String springOpts;
 
 	public SpringBootInstallCommand() {
+		this(null, null, DEFAULT_JVM_OPTS, DEFAULT_SPRING_OPTS);
 	}
 
 	public SpringBootInstallCommand(String launchScriptFilename, String launchScript, String jvmOpts, String springOpts) {
@@ -51,6 +44,13 @@ public class SpringBootInstallCommand implements Command {
 		this.launchScript = launchScript;
 		this.jvmOpts = jvmOpts;
 		this.springOpts = springOpts;
+	}
+
+	public SpringBootInstallCommand(Map<String, Object> parameters) {
+		this.launchScriptFilename = (String) parameters.get("launchScriptFilename");
+		this.launchScript = (String) parameters.get("launchScript");
+		this.jvmOpts = (String) parameters.get("jvmOpts");
+		this.springOpts = (String) parameters.get("springOpts");
 	}
 
 
@@ -63,7 +63,7 @@ public class SpringBootInstallCommand implements Command {
 		}
 		String script = launchScript;
 		if (StringUtils.isBlank(script)) {
-			ClassPathResource resource = new ClassPathResource("script/launch.sh");
+			ClassPathResource resource = new ClassPathResource("script/app.sh");
 			try (InputStream inputStream = resource.getInputStream()) {
 				script = IOUtils.toString(inputStream, "UTF-8");
 			} catch (Exception e) {

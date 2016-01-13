@@ -1,5 +1,6 @@
 package lamp.agent.genie.spring.boot.management.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lamp.agent.genie.core.runtime.process.AppProcessType;
 import lamp.agent.genie.spring.boot.LampAgent;
 import org.junit.After;
@@ -28,6 +29,7 @@ import sun.tools.java.ClassPath;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -125,13 +127,24 @@ public class AppControllerTest {
 		parts.add("appVersion", "0.0.1-SNAPSHOT");
 		parts.add("processType", AppProcessType.DAEMON.name());
 		parts.add("pidFile", "${workDirectory}/${appName}.pid");
-//		parts.add("startCommandLine", "nohup java -jar ${filename} --server.port=19093 1 > /dev/null 2 > &1 &");
 		parts.add("startCommandLine", "./${appName}.sh start");
 		parts.add("stopCommandLine", "");
 		parts.add("preInstalled", false);
 		parts.add("installFile", new ClassPathResource("apps/test-app-0.0.1-SNAPSHOT.jar"));
 		parts.add("filename", "${appName}.jar");
-		parts.add("springBoot", true);
+
+		Map<String, Object> commandsHashMap = new LinkedHashMap<>();
+		{
+			Map<String, Object> commandParameters = new HashMap<>();
+			commandParameters.put("launchScriptFilename", "");
+			commandParameters.put("launchScript", "");
+			commandParameters.put("jvmOpts", "-Xms128m -Xmx256m");
+			commandParameters.put("springOpts", "");
+
+			commandsHashMap.put("SpringBootInstallCommand", commandParameters);
+		}
+		ObjectMapper objectMapper = new ObjectMapper();
+		parts.add("commands", objectMapper.writeValueAsString(commandsHashMap));
 
 		ResponseEntity<Void> responseEntity = template.postForEntity(getBaseUrl() + "/api/app", parts, Void.class);
 		assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();

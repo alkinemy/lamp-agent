@@ -1,7 +1,10 @@
 package lamp.agent.genie.spring.boot.management.service;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.core.exception.CommandException;
+import lamp.agent.genie.core.exception.UnknownCommandException;
 import lamp.agent.genie.core.install.AppInstaller;
 import lamp.agent.genie.core.install.InstallConfig;
 import lamp.agent.genie.core.install.SimpleAppInstaller;
@@ -9,6 +12,7 @@ import lamp.agent.genie.core.install.SimpleUninstallContext;
 import lamp.agent.genie.core.install.command.Command;
 import lamp.agent.genie.spring.boot.base.impl.MultipartFileInstallContext;
 import lamp.agent.genie.spring.boot.management.repository.InstallConfigRepository;
+import lamp.agent.genie.spring.boot.management.service.install.ExtendedCommand;
 import lamp.agent.genie.spring.boot.management.service.install.SpringBootInstallCommand;
 import lamp.agent.genie.spring.boot.management.support.ExpressionParser;
 import lamp.agent.genie.utils.StringUtils;
@@ -19,7 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,12 +33,17 @@ import java.util.Map;
 @Service
 public class AppInstallService {
 
+	private ObjectMapper objectMapper = new ObjectMapper();
+
 	private AppInstaller appInstaller;
 
 	private ExpressionParser expressionParser;
 
 	@Autowired
 	private InstallConfigRepository installConfigRepository;
+
+	@Autowired
+	private CommandService commandService;
 
 	@PostConstruct
 	public void setUp() {
@@ -61,10 +72,7 @@ public class AppInstallService {
 		filename = expressionParser.getValue(filename, parameters);
 		installConfig.setFilename(filename);
 
-		List<Command> commands = new ArrayList<>();
-		if (installConfig.isSpringBoot()) {
-			commands.add(new SpringBootInstallCommand());
-		}
+		List<Command> commands = commandService.createCommands(installConfig.getCommands());
 
 		MultipartFileInstallContext context = MultipartFileInstallContext.of(appContext, multipartFile, commands);
 

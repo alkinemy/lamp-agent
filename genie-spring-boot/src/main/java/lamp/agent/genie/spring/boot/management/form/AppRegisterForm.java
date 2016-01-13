@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Getter
@@ -52,6 +53,6 @@ public class AppRegisterForm {
 	private String filename;
 	private MultipartFile installFile;
 
-	private boolean springBoot;
+	private String commands;
 
 }

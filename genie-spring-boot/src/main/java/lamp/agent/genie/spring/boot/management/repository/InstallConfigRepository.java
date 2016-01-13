@@ -32,7 +32,7 @@ public class InstallConfigRepository {
 		try {
 			objectMapper.writeValue(file, manifest);
 		} catch (IOException e) {
-			throw Exceptions.newException(ErrorCode.APP_MANIFEST_SAVE_FAILED, e);
+			throw Exceptions.newException(ErrorCode.APP_CONFIG_SAVE_FAILED, e);
 		}
 	}
 	public InstallConfig findOne(String id) {
@@ -45,7 +45,7 @@ public class InstallConfigRepository {
 		try {
 			return objectMapper.readValue(file, InstallConfig.class);
 		} catch (IOException e) {
-			throw Exceptions.newException(ErrorCode.APP_MANIFEST_READ_FAILED, e);
+			throw Exceptions.newException(ErrorCode.APP_CONFIG_READ_FAILED, e);
 		}
 	}
 
