@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 
+import static org.apache.commons.exec.ExecuteWatchdog.INFINITE_TIMEOUT;
+
 @Getter
 @Setter
 @ToString
@@ -29,21 +31,20 @@ public class AppRegisterForm {
 	@NotNull
 	private AppProcessType processType;
 
-	private String homeDirectory;
+	private String appDirectory;
 	private String workDirectory;
 
 	@NotEmpty
 	private String pidFile;
 	private String logFile;
 
-
 	private long checkStatusInterval = 1000L;
 
 	@NotEmpty
 	private String startCommandLine;
-	private Long startTimeout = ExecuteWatchdog.INFINITE_TIMEOUT;
+	private Long startTimeout = INFINITE_TIMEOUT;
 	private String stopCommandLine;
-	private Long stopTimeout = ExecuteWatchdog.INFINITE_TIMEOUT;
+	private Long stopTimeout = INFINITE_TIMEOUT;
 
 	private boolean monitor;
 

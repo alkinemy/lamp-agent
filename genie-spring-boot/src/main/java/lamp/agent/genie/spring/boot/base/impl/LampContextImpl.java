@@ -50,7 +50,7 @@ public class LampContextImpl implements LampContext, EnvironmentCapable {
 		return getMountPoint().getDirectory(APP_DIRECTORY, true);
 	}
 
-	@Override public File getAppDirectory(String id) {
+	@Override public File getAppMetaInfoDirectory(String id) {
 		return new File(getAppDirectory(), id);
 	}
 

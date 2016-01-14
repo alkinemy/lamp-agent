@@ -14,7 +14,7 @@ public interface LampContext {
 
 	File getAppDirectory();
 
-	File getAppDirectory(String id);
+	File getAppMetaInfoDirectory(String id);
 
 	File getLogDirectory();
 

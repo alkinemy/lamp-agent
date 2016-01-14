@@ -29,7 +29,7 @@ public class AppConfigRepository {
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	public void save(AppConfig appConfig) {
-		File directory = lampContext.getAppDirectory(appConfig.getId());
+		File directory = lampContext.getAppMetaInfoDirectory(appConfig.getId());
 		if (!directory.exists()) {
 			directory.mkdirs();
 		}
@@ -62,7 +62,7 @@ public class AppConfigRepository {
 	}
 
 	public AppConfig findOne(String id) {
-		File directory = lampContext.getAppDirectory(id);
+		File directory = lampContext.getAppMetaInfoDirectory(id);
 		File file = new File(directory, CONFIG_JSON);
 
 		if (!file.exists()) {
@@ -76,7 +76,7 @@ public class AppConfigRepository {
 	}
 
 	public void delete(AppConfig appConfig) {
-		File directory = lampContext.getAppDirectory(appConfig.getId());
+		File directory = lampContext.getAppMetaInfoDirectory(appConfig.getId());
 		File file = new File(directory, CONFIG_JSON);
 		file.delete();
 	}

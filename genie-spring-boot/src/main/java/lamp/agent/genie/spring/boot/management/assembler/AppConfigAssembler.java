@@ -22,13 +22,13 @@ public class AppConfigAssembler extends AbstractListAssembler<AppRegisterForm, A
 		AppConfigImpl appConfig = new AppConfigImpl();
 		BeanUtils.copyProperties(form, appConfig, AppConfigImpl.class);
 
-		if (StringUtils.isBlank(appConfig.getHomeDirectory())) {
-			File homeDirectory = new File(lampContext.getAppDirectory(), appConfig.getId() + "/app");
-			appConfig.setHomeDirectory(homeDirectory.getAbsolutePath());
+		if (StringUtils.isBlank(appConfig.getAppDirectory())) {
+			File appDirectory = new File(lampContext.getAppDirectory(), appConfig.getId() + "/app");
+			appConfig.setAppDirectory(appDirectory.getAbsolutePath());
 		}
 
 		if (StringUtils.isBlank(appConfig.getWorkDirectory())) {
-			appConfig.setWorkDirectory("${homeDirectory}");
+			appConfig.setWorkDirectory("${appDirectory}");
 		}
 
 		if (StringUtils.isBlank(appConfig.getPidFile())) {
@@ -36,7 +36,7 @@ public class AppConfigAssembler extends AbstractListAssembler<AppRegisterForm, A
 		}
 
 		if (StringUtils.isBlank(appConfig.getLogFile())) {
-			appConfig.setLogFile("${homeDirectory}/logs/${appName}.log");
+			appConfig.setLogFile("${appDirectory}/logs/${appName}.log");
 		}
 
 		return appConfig;

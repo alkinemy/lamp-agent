@@ -24,7 +24,7 @@ public class InstallConfigRepository {
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	public void save(InstallConfig manifest) {
-		File directory = lampContext.getAppDirectory(manifest.getId());
+		File directory = lampContext.getAppMetaInfoDirectory(manifest.getId());
 		if (!directory.exists()) {
 			directory.mkdirs();
 		}
@@ -36,7 +36,7 @@ public class InstallConfigRepository {
 		}
 	}
 	public InstallConfig findOne(String id) {
-		File directory = lampContext.getAppDirectory(id);
+		File directory = lampContext.getAppMetaInfoDirectory(id);
 		File file = new File(directory, MANIFEST_JSON);
 
 		if (!file.exists()) {
@@ -50,7 +50,7 @@ public class InstallConfigRepository {
 	}
 
 	public void delete(InstallConfig manifest) {
-		File directory = lampContext.getAppDirectory(manifest.getId());
+		File directory = lampContext.getAppMetaInfoDirectory(manifest.getId());
 		File file = new File(directory, MANIFEST_JSON);
 		file.delete();
 	}

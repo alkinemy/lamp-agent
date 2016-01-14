@@ -17,7 +17,7 @@ public interface AppConfig {
 	long getCheckStatusInterval();
 	boolean isPreInstalled();
 
-	String getHomeDirectory();
+	String getAppDirectory();
 	String getWorkDirectory();
 
 	String getPidFile();

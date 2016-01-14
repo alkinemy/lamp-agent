@@ -56,7 +56,7 @@ public class AppInstallService {
 		InstallConfig installConfig = appContext.getInstallConfig();
 		String directory = installConfig.getDirectory();
 		if (StringUtils.isBlank(directory)) {
-			directory = appContext.getParsedAppConfig().getHomeDirectory();
+			directory = appContext.getParsedAppConfig().getAppDirectory();
 		}
 		directory = expressionParser.getValue(directory, parameters);
 		File installDirectory = new File(directory);

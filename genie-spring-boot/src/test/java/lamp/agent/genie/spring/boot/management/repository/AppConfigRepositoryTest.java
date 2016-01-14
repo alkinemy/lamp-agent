@@ -33,7 +33,7 @@ public class AppConfigRepositoryTest {
 		appDirectory = new File(System.getProperty("java.io.tmpdir"), "lamp-test/" + System.currentTimeMillis() + "/apps");
 		manifestFile = new File(appDirectory, "manifest.json");
 
-		when(lampContext.getAppDirectory(appId)).thenReturn(appDirectory);
+		when(lampContext.getAppMetaInfoDirectory(appId)).thenReturn(appDirectory);
 	}
 
 	@After

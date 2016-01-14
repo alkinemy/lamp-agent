@@ -55,7 +55,7 @@ public class ApiAgentRegistrator implements AgentRegistrator {
 		agentRegisterForm.setType(lampClientProperties.getType());
 		agentRegisterForm.setVersion(lampClientProperties.getVersion());
 		agentRegisterForm.setSecretKey(lampClientProperties.getSecretKey());
-		agentRegisterForm.setHomeDirectory(lampClientProperties.getMountPointPath());
+		agentRegisterForm.setAppDirectory(lampClientProperties.getMountPointPath());
 		agentRegisterForm.setTime(new Date());
 		return agentRegisterForm;
 	}

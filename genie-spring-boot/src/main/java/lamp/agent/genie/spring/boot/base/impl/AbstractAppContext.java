@@ -81,10 +81,12 @@ public abstract class AbstractAppContext implements AppContext {
 			parameters.put("processType", appConfig.getProcessType());
 			parameters.put("checkStatusInterval", appConfig.getCheckStatusInterval());
 			parameters.put("preInstalled", appConfig.isPreInstalled());
-			parameters.put("homeDirectory", appConfig.getHomeDirectory());
+			parameters.put("appDirectory", appConfig.getAppDirectory());
 			parameters.put("workDirectory", appConfig.getWorkDirectory());
 			parameters.put("pidFile", appConfig.getPidFile());
 			parameters.put("logFile", appConfig.getLogFile());
+			parameters.put("systemLogFile", systemLogFile.getAbsolutePath());
+
 			parameters.put("startCommandLine", appConfig.getStartCommandLine());
 			parameters.put("startTimeout", appConfig.getStartTimeout());
 			parameters.put("stopCommandLine", appConfig.getStopCommandLine());

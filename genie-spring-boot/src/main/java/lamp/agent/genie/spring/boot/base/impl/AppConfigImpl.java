@@ -6,9 +6,10 @@ import lamp.agent.genie.core.runtime.process.AppProcessType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.commons.exec.ExecuteWatchdog;
 
 import java.util.Map;
+
+import static org.apache.commons.exec.ExecuteWatchdog.INFINITE_TIMEOUT;
 
 @Getter
 @Setter
@@ -24,7 +25,7 @@ public class AppConfigImpl implements AppConfig {
 
 	private AppProcessType processType;
 
-	private String homeDirectory;
+	private String appDirectory;
 	private String workDirectory;
 
 	private String pidFile;
@@ -33,9 +34,9 @@ public class AppConfigImpl implements AppConfig {
 	private long checkStatusInterval;
 
 	private String startCommandLine;
-	private long startTimeout = ExecuteWatchdog.INFINITE_TIMEOUT;
+	private long startTimeout = INFINITE_TIMEOUT;
 	private String stopCommandLine;
-	private long stopTimeout = ExecuteWatchdog.INFINITE_TIMEOUT;
+	private long stopTimeout = INFINITE_TIMEOUT;
 
 	private boolean monitor;
 
