@@ -76,7 +76,7 @@ public class AppControllerTest {
 
 		parts.add("id", "test-1");
 		parts.add("name", "test");
-		parts.add("appName", "test-app");
+		parts.add("appId", "test-app");
 		parts.add("appVersion", "0.0.1-SNAPSHOT");
 		parts.add("processType", AppProcessType.DAEMON.name());
 		parts.add("homeDirectory", "/Users/kangwoo/Applications/zookeeper-3.4.7");
@@ -101,7 +101,7 @@ public class AppControllerTest {
 
 		parts.add("id", "test-2");
 		parts.add("name", "test");
-		parts.add("appName", "test-app");
+		parts.add("appId", "test-app");
 		parts.add("appVersion", "0.0.1-SNAPSHOT");
 		parts.add("processType", AppProcessType.DEFAULT.name());
 		parts.add("pidFile", "${workDirectory}/test-app.pid");
@@ -124,15 +124,15 @@ public class AppControllerTest {
 
 		parts.add("id", "test-3");
 		parts.add("name", "test");
-		parts.add("appName", "test-app");
+		parts.add("appId", "test-app");
 		parts.add("appVersion", "0.0.1-SNAPSHOT");
 		parts.add("processType", AppProcessType.DAEMON.name());
-		parts.add("pidFile", "${workDirectory}/${appName}.pid");
-		parts.add("startCommandLine", "./${appName}.sh start");
+		parts.add("pidFile", "${workDirectory}/${appId}.pid");
+		parts.add("startCommandLine", "./${appId}.sh start");
 		parts.add("stopCommandLine", "");
 		parts.add("preInstalled", false);
 		parts.add("installFile", new ClassPathResource("apps/test-app-0.0.1-SNAPSHOT.jar"));
-		parts.add("filename", "${appName}.jar");
+		parts.add("filename", "${appId}.jar");
 		parts.add("monitor", "true");
 
 		Map<String, Object> commandsHashMap = new LinkedHashMap<>();

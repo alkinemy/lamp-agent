@@ -21,17 +21,15 @@ public class AppUpdateForm {
 	@NotEmpty
 	private String name;
 
+	private String appName;
 	@NotEmpty
-	private String type;
-	@NotEmpty
-	private String version;
+	private String appVersion;
 
 	@NotNull
 	private AppProcessType processType;
 
-	private String homeDirectoryPath;
-	private String workDirectoryPath;
-	private String logDirectoryPath;
+	private String appDirectory;
+	private String workDirectory;
 
 	@NotEmpty
 	private String pidFilePath;

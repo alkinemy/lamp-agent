@@ -67,7 +67,6 @@ public abstract class AbstractAppContext implements AppContext {
 		} catch (Exception e) {
 			throw Exceptions.newException(ErrorCode.APP_CONFIG_PARSE_FAILED, e);
 		}
-
 	}
 
 	public Map<String, Object> getParameters() {
@@ -76,7 +75,7 @@ public abstract class AbstractAppContext implements AppContext {
 			Map<String, Object> parameters = new LinkedHashMap<>();
 			parameters.put("id", appConfig.getId());
 			parameters.put("name", appConfig.getName());
-			parameters.put("appName", appConfig.getAppName());
+			parameters.put("appId", appConfig.getAppId());
 			parameters.put("appVersion", appConfig.getAppVersion());
 			parameters.put("processType", appConfig.getProcessType());
 			parameters.put("checkStatusInterval", appConfig.getCheckStatusInterval());

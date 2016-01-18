@@ -32,11 +32,11 @@ public class AppConfigAssembler extends AbstractListAssembler<AppRegisterForm, A
 		}
 
 		if (StringUtils.isBlank(appConfig.getPidFile())) {
-			appConfig.setPidFile("${workDirectory}/${appName}.pid");
+			appConfig.setPidFile("${workDirectory}/${appId}.pid");
 		}
 
 		if (StringUtils.isBlank(appConfig.getLogFile())) {
-			appConfig.setLogFile("${appDirectory}/logs/${appName}.log");
+			appConfig.setLogFile("${appDirectory}/logs/${appId}.log");
 		}
 
 		return appConfig;

@@ -3,7 +3,6 @@ package lamp.agent.genie.spring.boot.management.service.install;
 import lamp.agent.genie.core.AppConfig;
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.exception.CommandExecuteException;
-import lamp.agent.genie.core.install.command.Command;
 import lamp.agent.genie.core.install.command.FileCreateCommand;
 import lamp.agent.genie.core.install.command.FileSetExecutableCommand;
 import lamp.agent.genie.spring.boot.management.support.ExpressionParser;
@@ -22,7 +21,7 @@ public class SpringBootInstallCommand implements ExtendedCommand {
 
 	private static final String DEFAULT_JVM_OPTS = "-Xms64m -Xmx128m";
 	private static final String DEFAULT_SPRING_OPTS = "--spring.profiles.active=${activeProfiles}";
-//	private static final String DEFAULT_SPRING_OPTS = "--spring.profiles.active=${activeProfiles} --spring.config.name=${appName}";
+//	private static final String DEFAULT_SPRING_OPTS = "--spring.profiles.active=${activeProfiles} --spring.config.name=${appId}";
 
 	private ExpressionParser parser = new ExpressionParser();
 
@@ -60,7 +59,7 @@ public class SpringBootInstallCommand implements ExtendedCommand {
 		Map<String, Object> parameters = appContext.getParameters();
 		String scriptFilename = launchScriptFilename;
 		if (StringUtils.isBlank(scriptFilename)) {
-			scriptFilename = appConfig.getAppName() + ".sh"; // TODO OS Type?
+			scriptFilename = appConfig.getAppId() + ".sh"; // TODO OS Type?
 		}
 		String script = launchScript;
 		if (StringUtils.isBlank(script)) {

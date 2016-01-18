@@ -46,7 +46,7 @@ public class AppMonitorService {
 					appMonitorMap.put(app.getId(), appMonitor);
 				}
 				long currentTimeMillis = System.currentTimeMillis();
-				// TODO 체크 로직 개선 필요
+				// TODO 로직 개선 필요
 				long diffTimeMillis = currentTimeMillis - appMonitor.getLastRetryTimeMillis();
 				if (diffTimeMillis > ONE_MINUTE) {
 					// 1분이 지났을 경우, 정상적으로 실행되었다고 보고 리셋함.
@@ -56,7 +56,7 @@ public class AppMonitorService {
 				}
 				appMonitor.setLastRetryTimeMillis(currentTimeMillis);
 
-				log.warn("[App:{}} Not Running. Trying to start App (retry={})", app.getId(), appMonitor.getRetryCount());
+				log.warn("[App:{}] Not Running. Trying to start App (retry={})", app.getId(), appMonitor.getRetryCount());
 
 				agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_STARTING_BY_MONITOR, app.getId()));
 

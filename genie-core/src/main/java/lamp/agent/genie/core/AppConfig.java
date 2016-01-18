@@ -10,7 +10,7 @@ public interface AppConfig {
 	String getId();
 	String getName();
 
-	String getAppName();
+	String getAppId();
 	String getAppVersion();
 
 	AppProcessType getProcessType();

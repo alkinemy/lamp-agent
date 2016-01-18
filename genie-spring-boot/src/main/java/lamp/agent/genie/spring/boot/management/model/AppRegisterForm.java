@@ -24,6 +24,7 @@ public class AppRegisterForm {
 	private String name;
 
 	@NotEmpty
+	private String appId;
 	private String appName;
 	@NotEmpty
 	private String appVersion;
