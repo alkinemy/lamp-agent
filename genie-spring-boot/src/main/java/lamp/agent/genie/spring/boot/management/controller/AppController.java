@@ -1,12 +1,17 @@
 package lamp.agent.genie.spring.boot.management.controller;
 
+import lamp.agent.genie.core.App;
 import lamp.agent.genie.core.AppStatus;
+import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
+import lamp.agent.genie.spring.boot.management.model.AppDto;
 import lamp.agent.genie.spring.boot.management.model.AppRegisterForm;
 import lamp.agent.genie.spring.boot.management.service.AppManagementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -15,6 +20,15 @@ public class AppController {
 
 	@Autowired
 	private AppManagementService appManagementService;
+
+	@Autowired
+	private SmartAssembler smartAssembler;
+
+	@RequestMapping(value = "", method = RequestMethod.GET)
+	public List<AppDto> list() {
+		List<App> apps = appManagementService.getApps();
+		return smartAssembler.assemble(apps, App.class, AppDto.class);
+	}
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public void register(AppRegisterForm form) {

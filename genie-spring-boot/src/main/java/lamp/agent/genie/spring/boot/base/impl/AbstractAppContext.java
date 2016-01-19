@@ -127,16 +127,6 @@ public abstract class AbstractAppContext implements AppContext {
 		return appConfig.getId();
 	}
 
-	@Override public <T> T getValue(T value, Object parameters) {
-		if (value == null) {
-			return value;
-		}
-		Expression expression = parser.parseExpression(String.valueOf(value), new TemplateParserContext("${", "}"));
-		StandardEvaluationContext context = new StandardEvaluationContext(parameters);
-		context.addPropertyAccessor(new MapAccessor());
-		return (T) expression.getValue(context, value.getClass());
-	}
-
 	@Override public Shell getShell() {
 		return lampContext.getShell();
 	}

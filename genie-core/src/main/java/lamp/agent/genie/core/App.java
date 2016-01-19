@@ -10,7 +10,7 @@ public interface App {
 
 	AppContext getContext();
 
-	AppConfig getManifest();
+	AppConfig getConfig();
 
 	AppStatus getStatus();
 

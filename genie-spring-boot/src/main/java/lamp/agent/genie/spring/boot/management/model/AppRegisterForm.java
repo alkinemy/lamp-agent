@@ -23,6 +23,7 @@ public class AppRegisterForm {
 	@NotEmpty
 	private String name;
 
+	private String appGroupId;
 	@NotEmpty
 	private String appId;
 	private String appName;

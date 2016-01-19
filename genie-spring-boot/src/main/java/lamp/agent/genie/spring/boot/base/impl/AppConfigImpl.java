@@ -19,7 +19,9 @@ public class AppConfigImpl implements AppConfig {
 
 	private String id;
 	private String name;
+	private String description;
 
+	private String appGroupId;
 	private String appId;
 	private String appName;
 	private String appVersion;

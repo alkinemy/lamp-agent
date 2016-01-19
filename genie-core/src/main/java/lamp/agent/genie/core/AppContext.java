@@ -1,6 +1,7 @@
 package lamp.agent.genie.core;
 
 import lamp.agent.genie.core.install.InstallConfig;
+import lamp.agent.genie.core.runtime.process.AppProcess;
 import lamp.agent.genie.core.runtime.shell.Shell;
 
 import java.io.File;
@@ -20,7 +21,7 @@ public interface AppContext {
 
 	File getSystemLogFile();
 
-	<T> T getValue(T value, Object parameters);
+	AppProcess getProcess();
 
 	AppStatus getStatus();
 

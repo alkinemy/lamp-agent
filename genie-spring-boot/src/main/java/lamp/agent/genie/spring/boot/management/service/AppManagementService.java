@@ -17,7 +17,6 @@ import lamp.agent.genie.spring.boot.base.impl.DaemonAppContext;
 import lamp.agent.genie.spring.boot.base.impl.DefaultAppContext;
 import lamp.agent.genie.spring.boot.management.model.AppUpdateForm;
 import lamp.agent.genie.spring.boot.register.model.AgentEvent;
-import lamp.agent.genie.spring.boot.register.model.AgentEventLevel;
 import lamp.agent.genie.spring.boot.register.model.AgentEventName;
 import lombok.extern.slf4j.Slf4j;
 import lamp.agent.genie.spring.boot.management.model.AppRegisterForm;
@@ -147,7 +146,7 @@ public class AppManagementService {
 	public synchronized void update(AppUpdateForm form) {
 		String id = form.getId();
 		App app = appRegistry.lookup(id);
-		AppConfig appConfig = app.getManifest();
+		AppConfig appConfig = app.getConfig();
 
 		if (form.getInstallFile() != null && !form.getInstallFile().isEmpty()) {
 			Exceptions.throwsException(app.isRunning(), ErrorCode.APP_IS_RUNNING);
@@ -166,7 +165,7 @@ public class AppManagementService {
 
 	public synchronized void deregister(String id, boolean forceStop) {
 		App app = appRegistry.lookup(id);
-		AppConfig appConfig = app.getManifest();
+		AppConfig appConfig = app.getConfig();
 		if (!appConfig.isPreInstalled()) {
 			InstallConfig installConfig = installConfigService.getInstallConfig(id);
 			Exceptions.throwsException(app.isRunning() && !forceStop, ErrorCode.APP_IS_RUNNING, id);

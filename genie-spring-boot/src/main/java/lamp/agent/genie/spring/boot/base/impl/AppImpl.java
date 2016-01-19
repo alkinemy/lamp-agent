@@ -34,7 +34,7 @@ public class AppImpl implements App {
 		return context.getId();
 	}
 
-	@Override public AppConfig getManifest() {
+	@Override public AppConfig getConfig() {
 		return context.getAppConfig();
 	}
 
