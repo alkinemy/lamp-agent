@@ -11,7 +11,7 @@ subprojects {
     apply plugin: 'eclipse'
     apply plugin: 'idea'
 
-    project.group = 'lamp.client'
+    project.group = 'lamp.agent'
     project.version = '0.0.1-SNAPSHOT'
 
     repositories {
