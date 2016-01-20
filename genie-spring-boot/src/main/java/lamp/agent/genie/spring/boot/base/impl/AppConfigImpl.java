@@ -36,6 +36,7 @@ public class AppConfigImpl implements AppConfig {
 
 	private long checkStatusInterval;
 
+	private String commandShell;
 	private String startCommandLine;
 	private long startTimeout = INFINITE_TIMEOUT;
 	private String stopCommandLine;

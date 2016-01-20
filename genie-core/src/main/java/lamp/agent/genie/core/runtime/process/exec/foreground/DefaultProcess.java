@@ -51,7 +51,7 @@ public class DefaultProcess extends AbstractProcess {
 
 	protected ExecuteWatchdog executeCommandLine(String command, long timeout) throws CommandExecuteException {
 		try {
-			CommandLine cmdLine = CommandLine.parse(command);
+			CommandLine cmdLine = parseCommandLine(command);
 
 			ExecuteWatchdog watchdog = new ExecuteWatchdog(timeout);
 			ExecuteResultHandler executeResultHandler = new DefaultProcessResultHandler(getContext(), command);

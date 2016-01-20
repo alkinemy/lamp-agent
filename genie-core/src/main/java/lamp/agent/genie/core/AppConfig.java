@@ -26,6 +26,8 @@ public interface AppConfig {
 	String getPidFile();
 	String getLogFile();
 
+	String getCommandShell();
+
 	String getStartCommandLine();
 	long getStartTimeout();
 

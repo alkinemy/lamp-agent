@@ -86,6 +86,7 @@ public abstract class AbstractAppContext implements AppContext {
 			parameters.put("logFile", appConfig.getLogFile());
 			parameters.put("systemLogFile", systemLogFile.getAbsolutePath());
 
+			parameters.put("commandShell", appConfig.getCommandShell());
 			parameters.put("startCommandLine", appConfig.getStartCommandLine());
 			parameters.put("startTimeout", appConfig.getStartTimeout());
 			parameters.put("stopCommandLine", appConfig.getStopCommandLine());

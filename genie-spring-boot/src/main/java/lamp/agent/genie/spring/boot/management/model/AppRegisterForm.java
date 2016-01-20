@@ -42,6 +42,7 @@ public class AppRegisterForm {
 
 	private long checkStatusInterval = 1000L;
 
+	private String commandShell;
 	@NotEmpty
 	private String startCommandLine;
 	private Long startTimeout = INFINITE_TIMEOUT;

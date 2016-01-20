@@ -9,6 +9,7 @@ import lamp.agent.genie.utils.FileUtils;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.exec.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +41,6 @@ public abstract class AbstractProcess implements AppProcess {
 	public AbstractProcess(AppContext context) {
 		Objects.requireNonNull(context);
 		this.context = context;
-
 		init();
 	}
 
@@ -66,6 +66,24 @@ public abstract class AbstractProcess implements AppProcess {
 		if (this.lastModified != appConfig.getLastModified()) {
 			log.info("[{}] Process refresh", appConfig.getId());
 			init();
+		}
+	}
+
+	protected CommandLine parseCommandLine(String command) {
+		String commandShell = getContext().getParsedAppConfig().getCommandShell();
+		if (StringUtils.isNotBlank(commandShell)) {
+			String[] commandShellArray = StringUtils.split(commandShell, " ");
+			CommandLine commandLine = new CommandLine(commandShellArray[0]);
+			if (commandShellArray.length > 1) {
+				for (int i = 1; i < commandShellArray.length; i++) {
+					commandLine.addArgument(commandShellArray[i], false);
+				}
+			}
+			commandLine.addArgument(command, false);
+
+			return commandLine;
+		} else {
+			return CommandLine.parse(command);
 		}
 	}
 
