@@ -1,7 +1,7 @@
 package lamp.agent.genie.spring.boot.base.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lamp.agent.genie.core.AppConfig;
+import lamp.agent.genie.core.AppSpec;
 import lamp.agent.genie.core.runtime.process.AppProcessType;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +15,7 @@ import static org.apache.commons.exec.ExecuteWatchdog.INFINITE_TIMEOUT;
 @Setter
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AppConfigImpl implements AppConfig {
+public class AppSpecImpl implements AppSpec {
 
 	private String id;
 	private String name;

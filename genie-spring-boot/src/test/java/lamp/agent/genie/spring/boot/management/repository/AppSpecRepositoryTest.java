@@ -1,8 +1,8 @@
 package lamp.agent.genie.spring.boot.management.repository;
 
-import lamp.agent.genie.core.AppConfig;
+import lamp.agent.genie.core.AppSpec;
 import lamp.agent.genie.core.LampContext;
-import lamp.agent.genie.spring.boot.base.impl.AppConfigImpl;
+import lamp.agent.genie.spring.boot.base.impl.AppSpecImpl;
 import lamp.agent.genie.utils.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -18,9 +18,9 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AppConfigRepositoryTest {
+public class AppSpecRepositoryTest {
 
-	@InjectMocks AppConfigRepository appConfigRepository;
+	@InjectMocks AppSpecRepository appSpecRepository;
 
 	@Mock LampContext lampContext;
 
@@ -45,7 +45,7 @@ public class AppConfigRepositoryTest {
 	public void testSave() throws Exception {
 //		assertThat(manifestFile).doesNotExist();
 //
-//		AppConfigImpl appManifest = saveAppManifest();
+//		AppSpecImpl appManifest = saveAppManifest();
 //
 //		assertThat(manifestFile).exists();
 	}
@@ -57,22 +57,22 @@ public class AppConfigRepositoryTest {
 
 	@Test
 	public void testFindOne() throws Exception {
-		AppConfigImpl testAppManifest = saveAppManifest();
+		AppSpecImpl testAppManifest = saveAppManifest();
 
-		AppConfig appConfig = appConfigRepository.findOne(appId);
-		assertThat(appConfig.getId()).isEqualTo(testAppManifest.getId());
+		AppSpec appSpec = appSpecRepository.findOne(appId);
+		assertThat(appSpec.getId()).isEqualTo(testAppManifest.getId());
 	}
 
 
 	@Test
 	public void testFindOne_Null() throws Exception {
-		AppConfig appConfig = appConfigRepository.findOne(appId);
-		assertThat(appConfig).isNull();
+		AppSpec appSpec = appSpecRepository.findOne(appId);
+		assertThat(appSpec).isNull();
 	}
 
 	@Test
 	public void testDelete() throws Exception {
-//		AppConfigImpl testAppManifest = saveAppManifest();
+//		AppSpecImpl testAppManifest = saveAppManifest();
 //
 //		assertThat(manifestFile).exists();
 //		appConfigRepository.delete(testAppManifest);
@@ -80,10 +80,10 @@ public class AppConfigRepositoryTest {
 	}
 
 
-	private AppConfigImpl saveAppManifest() {
-		AppConfigImpl testAppManifest = new AppConfigImpl();
+	private AppSpecImpl saveAppManifest() {
+		AppSpecImpl testAppManifest = new AppSpecImpl();
 		testAppManifest.setId(appId);
-		appConfigRepository.save(testAppManifest);
+		appSpecRepository.save(testAppManifest);
 		return testAppManifest;
 	}
 }

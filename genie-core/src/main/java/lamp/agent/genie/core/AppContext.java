@@ -1,6 +1,6 @@
 package lamp.agent.genie.core;
 
-import lamp.agent.genie.core.install.InstallConfig;
+import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.core.runtime.process.AppProcess;
 import lamp.agent.genie.core.runtime.shell.Shell;
 
@@ -9,11 +9,11 @@ import java.util.Map;
 
 public interface AppContext {
 
-	AppConfig getAppConfig();
+	AppSpec getAppSpec();
 
-	AppConfig getParsedAppConfig();
+	AppSpec getParsedAppSpec();
 
-	InstallConfig getInstallConfig();
+	InstallSpec getInstallSpec();
 
 	String getId();
 

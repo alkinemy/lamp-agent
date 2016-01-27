@@ -1,6 +1,6 @@
 package lamp.agent.genie.core.runtime.process.exec;
 
-import lamp.agent.genie.core.AppConfig;
+import lamp.agent.genie.core.AppSpec;
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.exception.PidFileException;
 import lamp.agent.genie.core.runtime.process.AppProcess;
@@ -13,7 +13,6 @@ import org.apache.commons.exec.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -45,32 +44,32 @@ public abstract class AbstractProcess implements AppProcess {
 	}
 
 	protected void init() {
-		AppConfig appConfig = context.getAppConfig();
-		AppConfig parsedAppConfig = context.getParsedAppConfig();
+		AppSpec appSpec = context.getAppSpec();
+		AppSpec parsedAppSpec = context.getParsedAppSpec();
 
 		this.systemLogFile = context.getSystemLogFile();
 
-		this.workDirectory = new File(parsedAppConfig.getWorkDirectory());
-		this.pidFile = new File(parsedAppConfig.getPidFile());
+		this.workDirectory = new File(parsedAppSpec.getWorkDirectory());
+		this.pidFile = new File(parsedAppSpec.getPidFile());
 
-		this.startCommandLine = parsedAppConfig.getStartCommandLine();
-		this.startTimeout = parsedAppConfig.getStartTimeout();
-		this.stopCommandLine = parsedAppConfig.getStopCommandLine();
-		this.stopTimeout = parsedAppConfig.getStopTimeout();
+		this.startCommandLine = parsedAppSpec.getStartCommandLine();
+		this.startTimeout = parsedAppSpec.getStartTimeout();
+		this.stopCommandLine = parsedAppSpec.getStopCommandLine();
+		this.stopTimeout = parsedAppSpec.getStopTimeout();
 
-		this.lastModified = appConfig.getLastModified();
+		this.lastModified = appSpec.getLastModified();
 	}
 
 	public void refresh() {
-		AppConfig appConfig = context.getAppConfig();
-		if (this.lastModified != appConfig.getLastModified()) {
-			log.info("[{}] Process refresh", appConfig.getId());
+		AppSpec appSpec = context.getAppSpec();
+		if (this.lastModified != appSpec.getLastModified()) {
+			log.info("[{}] Process refresh", appSpec.getId());
 			init();
 		}
 	}
 
 	protected CommandLine parseCommandLine(String command) {
-		String commandShell = getContext().getParsedAppConfig().getCommandShell();
+		String commandShell = getContext().getParsedAppSpec().getCommandShell();
 		if (StringUtils.isNotBlank(commandShell)) {
 			String[] commandShellArray = StringUtils.split(commandShell, " ");
 			CommandLine commandLine = new CommandLine(commandShellArray[0]);

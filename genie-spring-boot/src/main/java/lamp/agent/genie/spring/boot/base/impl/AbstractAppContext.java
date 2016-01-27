@@ -1,10 +1,10 @@
 package lamp.agent.genie.spring.boot.base.impl;
 
-import lamp.agent.genie.core.AppConfig;
+import lamp.agent.genie.core.AppSpec;
 import lamp.agent.genie.core.AppStatus;
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.LampContext;
-import lamp.agent.genie.core.install.InstallConfig;
+import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.core.runtime.process.AppProcess;
 import lamp.agent.genie.core.runtime.process.AppProcessState;
 import lamp.agent.genie.core.runtime.shell.Shell;
@@ -32,9 +32,9 @@ public abstract class AbstractAppContext implements AppContext {
 	@Getter
 	private final LampContext lampContext;
 	@Getter
-	private final AppConfig appConfig;
+	private final AppSpec appSpec;
 	@Getter
-	private final InstallConfig installConfig;
+	private final InstallSpec installSpec;
 	@Getter
 	private File systemLogFile;
 
@@ -44,23 +44,23 @@ public abstract class AbstractAppContext implements AppContext {
 	private long lastCheckTimeMillis = 1000;
 
 
-	public AbstractAppContext(LampContext lampContext, AppConfig appConfig, InstallConfig installConfig) {
+	public AbstractAppContext(LampContext lampContext, AppSpec appSpec, InstallSpec installSpec) {
 		this.lampContext = lampContext;
-		this.appConfig = appConfig;
-		this.installConfig = installConfig;
+		this.appSpec = appSpec;
+		this.installSpec = installSpec;
 
-		this.systemLogFile = new File(lampContext.getLogDirectory(), appConfig.getId() + ".log");
+		this.systemLogFile = new File(lampContext.getLogDirectory(), appSpec.getId() + ".log");
 	}
 
-	public AppConfig getAppConfig() {
-		return appConfig;
+	public AppSpec getAppSpec() {
+		return appSpec;
 	}
 
-	public AppConfig getParsedAppConfig() {
+	public AppSpec getParsedAppSpec() {
 		Map<String, Object> parameters = getParameters();
 
 		try {
-			AppConfigImpl parsedConfig = new AppConfigImpl();
+			AppSpecImpl parsedConfig = new AppSpecImpl();
 			BeanUtils.populate(parsedConfig, parameters);
 
 			return parsedConfig;
@@ -73,28 +73,28 @@ public abstract class AbstractAppContext implements AppContext {
 
 		try {
 			Map<String, Object> parameters = new LinkedHashMap<>();
-			parameters.put("id", appConfig.getId());
-			parameters.put("name", appConfig.getName());
-			parameters.put("appId", appConfig.getAppId());
-			parameters.put("appVersion", appConfig.getAppVersion());
-			parameters.put("processType", appConfig.getProcessType());
-			parameters.put("checkStatusInterval", appConfig.getCheckStatusInterval());
-			parameters.put("preInstalled", appConfig.isPreInstalled());
-			parameters.put("appDirectory", appConfig.getAppDirectory());
-			parameters.put("workDirectory", appConfig.getWorkDirectory());
-			parameters.put("pidFile", appConfig.getPidFile());
-			parameters.put("logFile", appConfig.getLogFile());
+			parameters.put("id", appSpec.getId());
+			parameters.put("name", appSpec.getName());
+			parameters.put("appId", appSpec.getAppId());
+			parameters.put("appVersion", appSpec.getAppVersion());
+			parameters.put("processType", appSpec.getProcessType());
+			parameters.put("checkStatusInterval", appSpec.getCheckStatusInterval());
+			parameters.put("preInstalled", appSpec.isPreInstalled());
+			parameters.put("appDirectory", appSpec.getAppDirectory());
+			parameters.put("workDirectory", appSpec.getWorkDirectory());
+			parameters.put("pidFile", appSpec.getPidFile());
+			parameters.put("logFile", appSpec.getLogFile());
 			parameters.put("systemLogFile", systemLogFile.getAbsolutePath());
 
-			parameters.put("commandShell", appConfig.getCommandShell());
-			parameters.put("startCommandLine", appConfig.getStartCommandLine());
-			parameters.put("startTimeout", appConfig.getStartTimeout());
-			parameters.put("stopCommandLine", appConfig.getStopCommandLine());
-			parameters.put("stopTimeout", appConfig.getStopTimeout());
-			parameters.put("monitor", appConfig.isMonitor());
+			parameters.put("commandShell", appSpec.getCommandShell());
+			parameters.put("startCommandLine", appSpec.getStartCommandLine());
+			parameters.put("startTimeout", appSpec.getStartTimeout());
+			parameters.put("stopCommandLine", appSpec.getStopCommandLine());
+			parameters.put("stopTimeout", appSpec.getStopTimeout());
+			parameters.put("monitor", appSpec.isMonitor());
 
-			if (installConfig != null) {
-				parameters.put("filename", installConfig.getFilename());
+			if (installSpec != null) {
+				parameters.put("filename", installSpec.getFilename());
 			}
 
 			if (lampContext instanceof EnvironmentCapable) {
@@ -103,8 +103,8 @@ public abstract class AbstractAppContext implements AppContext {
 				parameters.put("env", environment);
 			}
 
-			if (appConfig.getParameters() != null) {
-				parameters.putAll(appConfig.getParameters());
+			if (appSpec.getParameters() != null) {
+				parameters.putAll(appSpec.getParameters());
 			}
 
 			for (Map.Entry<String, Object> entry : parameters.entrySet()) {
@@ -125,7 +125,7 @@ public abstract class AbstractAppContext implements AppContext {
 	}
 
 	public String getId() {
-		return appConfig.getId();
+		return appSpec.getId();
 	}
 
 	@Override public Shell getShell() {
@@ -133,7 +133,7 @@ public abstract class AbstractAppContext implements AppContext {
 	}
 
 	@Override public AppStatus getStatus() {
-		if (System.currentTimeMillis() - lastCheckTimeMillis > appConfig.getCheckStatusInterval()) {
+		if (System.currentTimeMillis() - lastCheckTimeMillis > appSpec.getCheckStatusInterval()) {
 			return checkAndUpdateStatus();
 		}
 

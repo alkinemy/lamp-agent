@@ -1,21 +1,21 @@
 package lamp.agent.genie.spring.boot.management.assembler;
 
-import lamp.agent.genie.core.install.InstallConfig;
+import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.spring.boot.base.assembler.AbstractListAssembler;
 import lamp.agent.genie.spring.boot.management.model.AppRegisterForm;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InstallConfigAssembler extends AbstractListAssembler<AppRegisterForm, InstallConfig> {
+public class InstallConfigAssembler extends AbstractListAssembler<AppRegisterForm, InstallSpec> {
 
-	@Override protected InstallConfig doAssemble(AppRegisterForm form) {
-		InstallConfig installConfig = new InstallConfig();
-		installConfig.setId(form.getId());
-		installConfig.setDirectory(null);
-		installConfig.setFilename(form.getFilename());
-		installConfig.setCommands(form.getCommands());
+	@Override protected InstallSpec doAssemble(AppRegisterForm form) {
+		InstallSpec installSpec = new InstallSpec();
+		installSpec.setId(form.getId());
+		installSpec.setDirectory(null);
+		installSpec.setFilename(form.getFilename());
+		installSpec.setCommands(form.getCommands());
 
-		return installConfig;
+		return installSpec;
 	}
 
 

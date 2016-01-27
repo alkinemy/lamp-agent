@@ -1,9 +1,9 @@
 package lamp.agent.genie.spring.boot.management.service;
 
-import lamp.agent.genie.core.install.InstallConfig;
+import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
-import lamp.agent.genie.spring.boot.management.repository.InstallConfigRepository;
+import lamp.agent.genie.spring.boot.management.repository.InstallSpecRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,25 +13,25 @@ import org.springframework.stereotype.Service;
 public class InstallConfigService {
 
 	@Autowired
-	private InstallConfigRepository installConfigRepository;
+	private InstallSpecRepository installSpecRepository;
 
-	public void save(InstallConfig installConfig) {
-		installConfigRepository.save(installConfig);
+	public void save(InstallSpec installSpec) {
+		installSpecRepository.save(installSpec);
 	}
 
-	public InstallConfig getInstallConfig(String id) {
-		InstallConfig installConfig = installConfigRepository.findOne(id);
-		Exceptions.throwsException(installConfig == null, ErrorCode.APP_NOT_FOUND, id);
-		return installConfig;
+	public InstallSpec getInstallConfig(String id) {
+		InstallSpec installSpec = installSpecRepository.findOne(id);
+		Exceptions.throwsException(installSpec == null, ErrorCode.APP_NOT_FOUND, id);
+		return installSpec;
 	}
 
-	public InstallConfig getInstallConfig(String id, InstallConfig defaultValue) {
-		InstallConfig installConfig = installConfigRepository.findOne(id);
-		return installConfig != null ? installConfig : defaultValue;
+	public InstallSpec getInstallConfig(String id, InstallSpec defaultValue) {
+		InstallSpec installSpec = installSpecRepository.findOne(id);
+		return installSpec != null ? installSpec : defaultValue;
 	}
 
-	public void delete(InstallConfig installConfig) {
-		installConfigRepository.delete(installConfig);
+	public void delete(InstallSpec installSpec) {
+		installSpecRepository.delete(installSpec);
 	}
 
 }

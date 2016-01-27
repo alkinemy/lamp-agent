@@ -11,7 +11,7 @@ import lamp.agent.genie.core.runtime.process.exec.background.DaemonProcess;
 public class AppProcessLauncher {
 
 	public AppProcess launch(AppContext appContext) {
-		AppProcessType appProcessType = appContext.getAppConfig().getProcessType();
+		AppProcessType appProcessType = appContext.getAppSpec().getProcessType();
 		AppProcess process;
 		if (AppProcessType.DEFAULT.equals(appProcessType)) {
 			process = new DefaultProcess(appContext);

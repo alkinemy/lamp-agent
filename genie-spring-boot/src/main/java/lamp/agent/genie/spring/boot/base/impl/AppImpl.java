@@ -2,7 +2,7 @@ package lamp.agent.genie.spring.boot.base.impl;
 
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.core.App;
-import lamp.agent.genie.core.AppConfig;
+import lamp.agent.genie.core.AppSpec;
 import lamp.agent.genie.core.AppStatus;
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
@@ -34,8 +34,8 @@ public class AppImpl implements App {
 		return context.getId();
 	}
 
-	@Override public AppConfig getConfig() {
-		return context.getAppConfig();
+	@Override public AppSpec getConfig() {
+		return context.getAppSpec();
 	}
 
 	@Override
@@ -52,11 +52,11 @@ public class AppImpl implements App {
 	}
 
 	@Override public boolean isMonitor() {
-		return context.getAppConfig().isMonitor();
+		return context.getAppSpec().isMonitor();
 	}
 
 	@Override public File getLogFile() {
-		String logFile = context.getParsedAppConfig().getLogFile();
+		String logFile = context.getParsedAppSpec().getLogFile();
 		return logFile != null ? new File(logFile) : null;
 	}
 

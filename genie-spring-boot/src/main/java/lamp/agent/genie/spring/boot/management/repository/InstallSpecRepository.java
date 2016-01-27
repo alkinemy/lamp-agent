@@ -3,7 +3,7 @@ package lamp.agent.genie.spring.boot.management.repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.core.LampContext;
-import lamp.agent.genie.core.install.InstallConfig;
+import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,44 +14,44 @@ import java.io.IOException;
 
 @Slf4j
 @Component
-public class InstallConfigRepository {
+public class InstallSpecRepository {
 
-	private static final String MANIFEST_JSON = "install.json";
+	private static final String SPEC_FILE = "install-spec.json";
 
 	@Autowired
 	private LampContext lampContext;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
-	public void save(InstallConfig manifest) {
+	public void save(InstallSpec manifest) {
 		File directory = lampContext.getAppMetaInfoDirectory(manifest.getId());
 		if (!directory.exists()) {
 			directory.mkdirs();
 		}
-		File file = new File(directory, MANIFEST_JSON);
+		File file = new File(directory, SPEC_FILE);
 		try {
 			objectMapper.writeValue(file, manifest);
 		} catch (IOException e) {
 			throw Exceptions.newException(ErrorCode.APP_CONFIG_SAVE_FAILED, e);
 		}
 	}
-	public InstallConfig findOne(String id) {
+	public InstallSpec findOne(String id) {
 		File directory = lampContext.getAppMetaInfoDirectory(id);
-		File file = new File(directory, MANIFEST_JSON);
+		File file = new File(directory, SPEC_FILE);
 
 		if (!file.exists()) {
 			return null;
 		}
 		try {
-			return objectMapper.readValue(file, InstallConfig.class);
+			return objectMapper.readValue(file, InstallSpec.class);
 		} catch (IOException e) {
 			throw Exceptions.newException(ErrorCode.APP_CONFIG_READ_FAILED, e);
 		}
 	}
 
-	public void delete(InstallConfig manifest) {
+	public void delete(InstallSpec manifest) {
 		File directory = lampContext.getAppMetaInfoDirectory(manifest.getId());
-		File file = new File(directory, MANIFEST_JSON);
+		File file = new File(directory, SPEC_FILE);
 		file.delete();
 	}
 

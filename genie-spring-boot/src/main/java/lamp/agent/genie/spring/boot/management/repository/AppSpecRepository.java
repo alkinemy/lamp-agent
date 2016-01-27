@@ -1,11 +1,11 @@
 package lamp.agent.genie.spring.boot.management.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lamp.agent.genie.core.AppSpec;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
-import lamp.agent.genie.core.AppConfig;
 import lamp.agent.genie.core.LampContext;
 import lamp.agent.genie.core.MountPoint;
-import lamp.agent.genie.spring.boot.base.impl.AppConfigImpl;
+import lamp.agent.genie.spring.boot.base.impl.AppSpecImpl;
 import lamp.agent.genie.utils.ArrayUtils;
 import lombok.extern.slf4j.Slf4j;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
@@ -19,65 +19,65 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class AppConfigRepository {
+public class AppSpecRepository {
 
-	private static final String CONFIG_JSON = "config.json";
+	private static final String SPEC_FILE = "app-spec.json";
 
 	@Autowired
 	private LampContext lampContext;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
-	public void save(AppConfig appConfig) {
-		File directory = lampContext.getAppMetaInfoDirectory(appConfig.getId());
+	public void save(AppSpec appSpec) {
+		File directory = lampContext.getAppMetaInfoDirectory(appSpec.getId());
 		if (!directory.exists()) {
 			directory.mkdirs();
 		}
-		File file = new File(directory, CONFIG_JSON);
+		File file = new File(directory, SPEC_FILE);
 		try {
-			objectMapper.writeValue(file, appConfig);
+			objectMapper.writeValue(file, appSpec);
 		} catch (IOException e) {
 			throw Exceptions.newException(ErrorCode.APP_CONFIG_SAVE_FAILED, e);
 		}
 	}
 
-	public List<AppConfig> findAll() {
-		List<AppConfig> appConfigList = new ArrayList<>();
+	public List<AppSpec> findAll() {
+		List<AppSpec> appSpecList = new ArrayList<>();
 		File directory = lampContext.getAppDirectory();
 		File[] dirs = directory.listFiles(MountPoint.DIRECTORY);
 		if (ArrayUtils.isNotEmpty(dirs)) {
 			for (File dir : dirs) {
 				String appId = dir.getName();
 				try {
-					AppConfig appConfig = findOne(appId);
-					if (appConfig != null) {
-						appConfigList.add(appConfig);
+					AppSpec appSpec = findOne(appId);
+					if (appSpec != null) {
+						appSpecList.add(appSpec);
 					}
 				} catch (Exception e) {
-					log.info("AppConfig load failed", e);
+					log.info("AppSpec load failed", e);
 				}
 			}
 		}
-		return appConfigList;
+		return appSpecList;
 	}
 
-	public AppConfig findOne(String id) {
+	public AppSpec findOne(String id) {
 		File directory = lampContext.getAppMetaInfoDirectory(id);
-		File file = new File(directory, CONFIG_JSON);
+		File file = new File(directory, SPEC_FILE);
 
 		if (!file.exists()) {
 			return null;
 		}
 		try {
-			return objectMapper.readValue(file, AppConfigImpl.class);
+			return objectMapper.readValue(file, AppSpecImpl.class);
 		} catch (IOException e) {
 			throw Exceptions.newException(ErrorCode.APP_CONFIG_READ_FAILED, e);
 		}
 	}
 
-	public void delete(AppConfig appConfig) {
-		File directory = lampContext.getAppMetaInfoDirectory(appConfig.getId());
-		File file = new File(directory, CONFIG_JSON);
+	public void delete(AppSpec appSpec) {
+		File directory = lampContext.getAppMetaInfoDirectory(appSpec.getId());
+		File file = new File(directory, SPEC_FILE);
 		file.delete();
 	}
 

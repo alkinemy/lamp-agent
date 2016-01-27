@@ -1,8 +1,8 @@
 package lamp.agent.genie.spring.boot.base.impl;
 
-import lamp.agent.genie.core.AppConfig;
+import lamp.agent.genie.core.AppSpec;
 import lamp.agent.genie.core.LampContext;
-import lamp.agent.genie.core.install.InstallConfig;
+import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.core.runtime.process.AppProcess;
 import lamp.agent.genie.core.runtime.process.exec.background.DaemonProcess;
 
@@ -10,8 +10,8 @@ public class DaemonAppContext extends AbstractAppContext {
 
 	private DaemonProcess process;
 
-	public DaemonAppContext(LampContext lampContext, AppConfig appConfig, InstallConfig installConfig) {
-		super(lampContext, appConfig, installConfig);
+	public DaemonAppContext(LampContext lampContext, AppSpec appSpec, InstallSpec installSpec) {
+		super(lampContext, appSpec, installSpec);
 
 		this.process = new DaemonProcess(this);
 	}

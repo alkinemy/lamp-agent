@@ -20,9 +20,9 @@ public class SimpleAppInstaller implements AppInstaller {
 	@Override public void install(InstallContext context) {
 		try {
 			AppContext appContext = context.getAppContext();
-			InstallConfig installConfig = appContext.getInstallConfig();
+			InstallSpec installSpec = appContext.getInstallSpec();
 
-			File file = new File(installConfig.getDirectory(), installConfig.getFilename());
+			File file = new File(installSpec.getDirectory(), installSpec.getFilename());
 			context.transferTo(file);
 
 			List<Command> commands = context.getCommands();
@@ -39,9 +39,9 @@ public class SimpleAppInstaller implements AppInstaller {
 
 	@Override public void uninstall(UninstallContext context) {
 		AppContext appContext = context.getAppContext();
-		InstallConfig installConfig = appContext.getInstallConfig();
+		InstallSpec installSpec = appContext.getInstallSpec();
 
-		File file = new File(installConfig.getDirectory(), installConfig.getFilename());
+		File file = new File(installSpec.getDirectory(), installSpec.getFilename());
 
 		log.info("[App:{}] file({}) deleting", appContext.getId(), file.getAbsolutePath());
 		FileUtils.deleteQuietly(file);
