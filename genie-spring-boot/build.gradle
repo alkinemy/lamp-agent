@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.3.0.RELEASE'
+        springBootVersion = '1.3.2.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -30,6 +30,7 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test")
 
     compile project(':genie-core')
+    compile project(':genie-metrics')
 
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-actuator")

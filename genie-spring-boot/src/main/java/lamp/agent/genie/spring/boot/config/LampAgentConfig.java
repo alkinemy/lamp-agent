@@ -5,6 +5,7 @@ import lamp.agent.genie.spring.boot.management.service.AppMonitorService;
 import lamp.agent.genie.spring.boot.register.AgentEventPublisher;
 import lamp.agent.genie.spring.boot.register.AgentRegistrationApplicationListener;
 import lamp.agent.genie.spring.boot.register.support.ApiAgentEventPublisher;
+import lamp.agent.genie.spring.boot.register.support.SigarPublicMetrics;
 import lamp.agent.genie.spring.boot.register.support.http.LampHttpRequestInterceptor;
 import lamp.agent.genie.spring.boot.register.service.AgentSecretKeyGenerator;
 import lamp.agent.genie.spring.boot.register.support.ApiAgentRegistrator;
@@ -40,6 +41,12 @@ public class LampAgentConfig {
 	@Bean
 	public LampContextImpl lampContext(ApplicationContext applicationContext, LampAgentProperties agentProperties) {
 		return new LampContextImpl(applicationContext, agentProperties);
+	}
+
+	@Bean
+	@ConditionalOnProperty(name = "lamp.agent.metrics-sigar-enabled", havingValue = "true")
+	public SigarPublicMetrics sigarPublicMetrics() {
+		return new SigarPublicMetrics();
 	}
 
 	@Bean

@@ -17,7 +17,7 @@ public class CpuMetrics extends AbstractSigarMetric {
 
 	private final CpuInfo info;
 
-	protected CpuMetrics(Sigar sigar) {
+	public CpuMetrics(Sigar sigar) {
 		super(sigar);
 		info = cpuInfo();
 	}
