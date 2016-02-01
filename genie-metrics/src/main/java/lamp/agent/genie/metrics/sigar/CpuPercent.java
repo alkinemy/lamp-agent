@@ -6,7 +6,7 @@ import org.hyperic.sigar.CpuPerc;
 
 @Getter
 @RequiredArgsConstructor
-public class CpuUsage {
+public class CpuPercent {
 
 	private final double user;
 	private final double sys;
@@ -15,8 +15,8 @@ public class CpuUsage {
 	private final double idle;
 	private final double irq;
 
-	public static CpuUsage from(CpuPerc cp) {
-		return new CpuUsage(
+	public static CpuPercent from(CpuPerc cp) {
+		return new CpuPercent(
 			cp.getUser(), cp.getSys(),
 			cp.getNice(), cp.getWait(),
 			cp.getIdle(), cp.getIrq());

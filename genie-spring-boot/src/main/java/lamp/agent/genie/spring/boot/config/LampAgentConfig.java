@@ -77,7 +77,6 @@ public class LampAgentConfig {
 	}
 
 	@ConditionalOnProperty(name = "lamp.server.type", havingValue = "rest")
-	@EnableAsync
 	@EnableConfigurationProperties({ LampServerProperties.class })
 	public static class LampServerConfig {
 
@@ -111,8 +110,8 @@ public class LampAgentConfig {
 		}
 
 		@Bean
-		public AgentRegistrationApplicationListener registrationApplicationListener(ApiAgentRegistrator lampClientApiRegistrator) {
-			return new AgentRegistrationApplicationListener(lampClientApiRegistrator);
+		public AgentRegistrationApplicationListener registrationApplicationListener(ApiAgentRegistrator lampClientApiRegistrator, AgentEventPublisher agentEventPublisher) {
+			return new AgentRegistrationApplicationListener(lampClientApiRegistrator, agentEventPublisher);
 		}
 
 	}

@@ -131,15 +131,20 @@ public class AppManagementService {
 			InstallSpec installSpec = smartAssembler.assemble(form, InstallSpec.class);
 			AppContext appContext = newAppContextInstance(appSpec, installSpec);
 			appInstallService.install(appContext, form.getInstallFile());
+
+			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_INSTALLED, id));
 		}
 
 		App app = newAppInstance(appSpec);
 		appRegistry.bind(app.getId(), app);
 
 		appConfigService.save(appSpec);
+
+		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_REGISTERED, id));
 	}
 
 	public synchronized void update(AppUpdateForm form) {
+		// FIXME 제대로 구현해야함
 		String id = form.getId();
 		App app = appRegistry.lookup(id);
 		AppSpec appSpec = app.getConfig();
@@ -148,10 +153,12 @@ public class AppManagementService {
 			Exceptions.throwsException(app.isRunning(), ErrorCode.APP_IS_RUNNING);
 
 			appInstallService.uninstall(app.getContext());
+			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_UNINSTALLED, id));
 
 			InstallSpec installSpec = smartAssembler.assemble(form, InstallSpec.class);
 			AppContext newAppContext = newAppContextInstance(appSpec, installSpec);
 			appInstallService.install(newAppContext, form.getInstallFile());
+			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_INSTALLED, id));
 		}
 
 		BeanUtils.copyProperties(form, appSpec, "id");
@@ -169,11 +176,13 @@ public class AppManagementService {
 				app.stop();
 			}
 			appInstallService.uninstall(newAppContextInstance(appSpec, installSpec));
+			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_UNINSTALLED, id));
 		}
 
 		appRegistry.unbind(app.getId());
 
 		appConfigService.delete(appSpec);
+		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_UNREGISTERED, id));
 	}
 
 	public synchronized void start(String id) {
