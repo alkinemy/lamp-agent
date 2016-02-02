@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
 @Service
@@ -24,7 +25,12 @@ public class AgentEventPublishService {
 	}
 
 	public void publish(AgentEvent event) {
-		agentEventPublisher.publish(event);
+		try {
+			agentEventPublisher.publish(event);
+		} catch (Throwable t) {
+			log.warn("AgentEvent Publish failed", t);
+		}
+
 	}
 
 }

@@ -63,7 +63,7 @@ public class SpringBootInstallCommand implements ExtendedCommand {
 		}
 		String script = launchScript;
 		if (StringUtils.isBlank(script)) {
-			ClassPathResource resource = new ClassPathResource("script/app.sh");
+			ClassPathResource resource = new ClassPathResource("script/default-spring-boot.sh");
 			try (InputStream inputStream = resource.getInputStream()) {
 				script = IOUtils.toString(inputStream, "UTF-8");
 			} catch (Exception e) {

@@ -5,6 +5,7 @@ import lamp.agent.genie.spring.boot.management.service.AppMonitorService;
 import lamp.agent.genie.spring.boot.register.AgentEventPublisher;
 import lamp.agent.genie.spring.boot.register.AgentRegistrationApplicationListener;
 import lamp.agent.genie.spring.boot.register.support.ApiAgentEventPublisher;
+import lamp.agent.genie.spring.boot.register.support.SigarPublicMetrics;
 import lamp.agent.genie.spring.boot.register.support.http.LampHttpRequestInterceptor;
 import lamp.agent.genie.spring.boot.register.service.AgentSecretKeyGenerator;
 import lamp.agent.genie.spring.boot.register.support.ApiAgentRegistrator;
@@ -44,6 +45,12 @@ public class LampAgentConfig {
 	}
 
 	@Bean
+	@ConditionalOnProperty(name = "lamp.agent.metrics-sigar-enabled", havingValue = "true")
+	public SigarPublicMetrics sigarPublicMetrics() {
+		return new SigarPublicMetrics();
+	}
+
+	@Bean
 	@ConditionalOnMissingBean
 	public AgentSecretKeyGenerator agentSecretKeyGenerator(LampAgentProperties agentProperties) {
 		return new AgentSecretKeyGenerator(agentProperties);
@@ -71,7 +78,6 @@ public class LampAgentConfig {
 	}
 
 	@ConditionalOnProperty(name = "lamp.server.type", havingValue = "rest")
-	@EnableAsync
 	@EnableConfigurationProperties({ LampServerProperties.class })
 	public static class LampServerConfig {
 
@@ -111,8 +117,8 @@ public class LampAgentConfig {
 		}
 
 		@Bean
-		public AgentRegistrationApplicationListener registrationApplicationListener(ApiAgentRegistrator lampClientApiRegistrator) {
-			return new AgentRegistrationApplicationListener(lampClientApiRegistrator);
+		public AgentRegistrationApplicationListener registrationApplicationListener(ApiAgentRegistrator lampClientApiRegistrator, AgentEventPublisher agentEventPublisher) {
+			return new AgentRegistrationApplicationListener(lampClientApiRegistrator, agentEventPublisher);
 		}
 
 	}

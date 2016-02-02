@@ -3,6 +3,8 @@ package lamp.agent.genie.core.runtime.shell;
 import lamp.agent.genie.core.external.sigar.SigarNativeLoader;
 import lamp.agent.genie.core.runtime.process.AppProcessState;
 import lamp.agent.genie.core.exception.ShellException;
+import lamp.agent.genie.utils.StringUtils;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.hyperic.jni.ArchNotSupportedException;
 import org.hyperic.sigar.ProcState;
@@ -20,12 +22,13 @@ public class SigarShell implements Shell {
 		}
 	}
 
+	@Getter
 	private Sigar sigar = new Sigar();
 
 	@Override
 	public AppProcessState getProcessState(String pid) {
 		try {
-			ProcState procState = sigar.getProcState(pid);
+			ProcState procState = sigar.getProcState(StringUtils.trim(pid));
 			if (procState.getState() == ProcState.SLEEP
 					|| procState.getState() == ProcState.RUN
 					|| procState.getState() == ProcState.STOP

@@ -17,7 +17,7 @@ public class CpuMetrics extends AbstractSigarMetric {
 
 	private final CpuInfo info;
 
-	protected CpuMetrics(Sigar sigar) {
+	public CpuMetrics(Sigar sigar) {
 		super(sigar);
 		info = cpuInfo();
 	}
@@ -36,8 +36,8 @@ public class CpuMetrics extends AbstractSigarMetric {
 		return info.getTotalSockets();
 	}
 
-	public List<CpuUsage> getCpuUsages() {
-		List<CpuUsage> result = new ArrayList<>();
+	public List<CpuPercent> getCpuUsages() {
+		List<CpuPercent> result = new ArrayList<>();
 		CpuPerc[] cpus = cpuPercList();
 		if (cpus == null) {
 			return result;
@@ -56,7 +56,7 @@ public class CpuMetrics extends AbstractSigarMetric {
 		}
 
 		for (CpuPerc cp : cpus) {
-			result.add(CpuUsage.from(cp));
+			result.add(CpuPercent.from(cp));
 		}
 		return result;
 	}
