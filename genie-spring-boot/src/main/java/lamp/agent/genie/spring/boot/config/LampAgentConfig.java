@@ -22,6 +22,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -87,7 +88,13 @@ public class LampAgentConfig {
 		}
 
 		protected RestTemplate createRestTemplate(LampServerProperties serverProperties, LampAgentProperties clientProperties) {
-			RestTemplate template = new RestTemplate();
+
+			HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+			clientHttpRequestFactory.setConnectTimeout(serverProperties.getConnectTimeout());
+			clientHttpRequestFactory.setConnectionRequestTimeout(serverProperties.getConnectionRequestTimeout());
+			clientHttpRequestFactory.setReadTimeout(serverProperties.getReadTimeout());
+
+			RestTemplate template = new RestTemplate(clientHttpRequestFactory);
 			template.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
 			List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();

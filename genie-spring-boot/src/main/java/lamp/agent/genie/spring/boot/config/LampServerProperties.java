@@ -14,4 +14,8 @@ public class LampServerProperties {
 	private String username;
 	private String password;
 
+	private int connectTimeout = 3 * 1000;
+	private int connectionRequestTimeout = 3 * 1000;
+	private int readTimeout = 3 * 1000;
+
 }
