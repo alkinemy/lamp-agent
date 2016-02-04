@@ -40,7 +40,7 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 		addSwapMetrics(result);
 		addCpuMetrics(result);
 		addResourceLimitMetrics(result);
-//		addFileSystemMetrics(result);
+		addFileSystemMetrics(result);
 		addDiskUsageMetrics(result);
 		addNetStatMetrics(result);
 		addNetInterfaceMetrics(result);
@@ -142,34 +142,38 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 		}
 	}
 
-//	protected void addFileSystemMetrics(Collection<Metric<?>> result) {
-//		try {
-//			FileSystem[] fileSystems = sigar.getFileSystemList();
-//
-//			for (FileSystem fileSystem : fileSystems) {
-//				String name = fileSystem.getDevName();
-//				FileSystemUsage fileSystemUsage = sigar.getFileSystemUsage(name);
-//
-//				result.add(new Metric<>("server.fileSystem." + name + ".total", fileSystemUsage.getTotal()));
-//				result.add(new Metric<>("server.fileSystem." + name + ".free", fileSystemUsage.getFree()));
-//				result.add(new Metric<>("server.fileSystem." + name + ".used", fileSystemUsage.getUsed()));
-//				result.add(new Metric<>("server.fileSystem." + name + ".avail", fileSystemUsage.getAvail()));
-//				result.add(new Metric<>("server.fileSystem." + name + ".files", fileSystemUsage.getFiles()));
-//				result.add(new Metric<>("server.fileSystem." + name + ".freeFiles", fileSystemUsage.getFreeFiles()));
-//				result.add(new Metric<>("server.fileSystem." + name + ".diskReads", fileSystemUsage.getDiskReads()));
-//				result.add(new Metric<>("server.fileSystem." + name + ".diskWrites", fileSystemUsage.getDiskWrites()));
-//				result.add(new Metric<>("server.fileSystem." + name + ".diskReadBytes", fileSystemUsage.getDiskReadBytes()));
-//				result.add(new Metric<>("server.fileSystem." + name + ".diskWriteBytes", fileSystemUsage.getDiskWriteBytes()));
-//				result.add(new Metric<>("server.fileSystem." + name + ".diskQueue", fileSystemUsage.getDiskQueue()));
-//				result.add(new Metric<>("server.fileSystem." + name + ".diskServiceTime", fileSystemUsage.getDiskServiceTime()));
-//				result.add(new Metric<>("server.fileSystem." + name + ".usePercent", fileSystemUsage.getUsePercent()));
-//			}
-//
-//
-//		} catch (SigarException e) {
-//			log.warn("addFileSystemMetrics Failed", e);
-//		}
-//	}
+	protected void addFileSystemMetrics(Collection<Metric<?>> result) {
+		try {
+			FileSystem[] fileSystems = sigar.getFileSystemList();
+
+			for (FileSystem fileSystem : fileSystems) {
+				if (fileSystem.getType() == FileSystem.TYPE_LOCAL_DISK
+						|| fileSystem.getType() == FileSystem.TYPE_NETWORK) {
+					String name = fileSystem.getDevName();
+					FileSystemUsage fileSystemUsage = sigar.getFileSystemUsage(name);
+					log.debug("fileSystemUsage = {}, {}", fileSystem.toMap(), fileSystemUsage);
+					result.add(new Metric<>("server.fileSystem." + name + ".total", fileSystemUsage.getTotal()));
+					result.add(new Metric<>("server.fileSystem." + name + ".free", fileSystemUsage.getFree()));
+					result.add(new Metric<>("server.fileSystem." + name + ".used", fileSystemUsage.getUsed()));
+					result.add(new Metric<>("server.fileSystem." + name + ".avail", fileSystemUsage.getAvail()));
+					result.add(new Metric<>("server.fileSystem." + name + ".files", fileSystemUsage.getFiles()));
+					result.add(new Metric<>("server.fileSystem." + name + ".freeFiles", fileSystemUsage.getFreeFiles()));
+					result.add(new Metric<>("server.fileSystem." + name + ".diskReads", fileSystemUsage.getDiskReads()));
+					result.add(new Metric<>("server.fileSystem." + name + ".diskWrites", fileSystemUsage.getDiskWrites()));
+					result.add(new Metric<>("server.fileSystem." + name + ".diskReadBytes", fileSystemUsage.getDiskReadBytes()));
+					result.add(new Metric<>("server.fileSystem." + name + ".diskWriteBytes", fileSystemUsage.getDiskWriteBytes()));
+					result.add(new Metric<>("server.fileSystem." + name + ".diskQueue", fileSystemUsage.getDiskQueue()));
+					result.add(new Metric<>("server.fileSystem." + name + ".diskServiceTime", fileSystemUsage.getDiskServiceTime()));
+					result.add(new Metric<>("server.fileSystem." + name + ".usePercent", fileSystemUsage.getUsePercent()));
+				}
+
+			}
+
+
+		} catch (SigarException e) {
+			log.warn("addFileSystemMetrics Failed", e);
+		}
+	}
 
 	protected void addDiskUsageMetrics(Collection<Metric<?>> result) {
 		try {
@@ -179,9 +183,8 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 				if ( fileSystem.getType() == FileSystem.TYPE_LOCAL_DISK
 					|| fileSystem.getType() == FileSystem.TYPE_NETWORK) {
 					String name = fileSystem.getDevName();
-					log.info("fileSystem = {}", fileSystem.toMap());
 					DiskUsage diskUsage = sigar.getDiskUsage(name);
-
+					log.debug("diskUsage = {}, {}", fileSystem.toMap(), diskUsage);
 					result.add(new Metric<>("server.disk." + name + ".reads", diskUsage.getReads()));
 					result.add(new Metric<>("server.disk." + name + ".writes", diskUsage.getWrites()));
 					result.add(new Metric<>("server.disk." + name + ".readBytes", diskUsage.getReadBytes()));
@@ -189,7 +192,6 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 					result.add(new Metric<>("server.disk." + name + ".queue", diskUsage.getQueue()));
 					result.add(new Metric<>("server.disk." + name + ".serviceTime", diskUsage.getServiceTime()));
 				}
-
 			}
 		} catch (SigarException e) {
 			log.warn("addDiskUsageMetrics Failed", e);
