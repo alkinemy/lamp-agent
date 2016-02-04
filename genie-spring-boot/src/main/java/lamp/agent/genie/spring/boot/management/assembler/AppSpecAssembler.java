@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 
 @Component
-public class AppConfigAssembler extends AbstractListAssembler<AppRegisterForm, AppSpec> {
+public class AppSpecAssembler extends AbstractListAssembler<AppRegisterForm, AppSpec> {
 
 	@Autowired
 	private LampContext lampContext;
@@ -32,11 +32,11 @@ public class AppConfigAssembler extends AbstractListAssembler<AppRegisterForm, A
 		}
 
 		if (StringUtils.isBlank(appConfig.getPidFile())) {
-			appConfig.setPidFile("${workDirectory}/${appId}.pid");
+			appConfig.setPidFile("${workDirectory}/${artifactId}.pid");
 		}
 
 		if (StringUtils.isBlank(appConfig.getLogFile())) {
-			appConfig.setLogFile("${appDirectory}/logs/${appId}.log");
+			appConfig.setLogFile("${appDirectory}/logs/${artifactId}.log");
 		}
 
 		return appConfig;

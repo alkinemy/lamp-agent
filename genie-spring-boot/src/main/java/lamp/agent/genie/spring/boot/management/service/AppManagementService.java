@@ -147,7 +147,7 @@ public class AppManagementService {
 		// FIXME 제대로 구현해야함
 		String id = form.getId();
 		App app = appRegistry.lookup(id);
-		AppSpec appSpec = app.getConfig();
+		AppSpec appSpec = app.getSpec();
 
 		if (form.getInstallFile() != null && !form.getInstallFile().isEmpty()) {
 			Exceptions.throwsException(app.isRunning(), ErrorCode.APP_IS_RUNNING);
@@ -168,7 +168,7 @@ public class AppManagementService {
 
 	public synchronized void deregister(String id, boolean forceStop) {
 		App app = appRegistry.lookup(id);
-		AppSpec appSpec = app.getConfig();
+		AppSpec appSpec = app.getSpec();
 		if (!appSpec.isPreInstalled()) {
 			InstallSpec installSpec = installConfigService.getInstallConfig(id);
 			Exceptions.throwsException(app.isRunning() && !forceStop, ErrorCode.APP_IS_RUNNING, id);

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class AppDtoAssembler extends AbstractListAssembler<App, AppDto> {
 
 	@Override protected AppDto doAssemble(App app) {
-		AppSpec appSpec = app.getConfig();
+		AppSpec appSpec = app.getSpec();
 		AppContext appContext = app.getContext();
 
 		AppDto appDto = new AppDto();
@@ -20,9 +20,9 @@ public class AppDtoAssembler extends AbstractListAssembler<App, AppDto> {
 		appDto.setName(appSpec.getName());
 		appDto.setDescription(appSpec.getDescription());
 
-		appDto.setAppId(appSpec.getAppId());
-		appDto.setAppName(appSpec.getAppName());
-		appDto.setAppVersion(appSpec.getAppVersion());
+		appDto.setGroupId(appSpec.getGroupId());
+		appDto.setArtifactId(appSpec.getArtifactId());
+		appDto.setVersion(appSpec.getVersion());
 
 		appDto.setStatus(app.getStatus());
 		appDto.setCorrectStatus(app.getCorrectStatus());

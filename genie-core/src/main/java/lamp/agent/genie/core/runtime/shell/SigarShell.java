@@ -1,6 +1,6 @@
 package lamp.agent.genie.core.runtime.shell;
 
-import lamp.agent.genie.core.external.sigar.SigarNativeLoader;
+import lamp.agent.genie.core.support.sigar.SigarNativeLoader;
 import lamp.agent.genie.core.runtime.process.AppProcessState;
 import lamp.agent.genie.core.exception.ShellException;
 import lamp.agent.genie.utils.StringUtils;

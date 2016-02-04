@@ -1,5 +1,7 @@
+
 *.pid
 /native
+/genie-core/native
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Java template

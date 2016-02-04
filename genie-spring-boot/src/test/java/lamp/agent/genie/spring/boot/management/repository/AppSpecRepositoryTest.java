@@ -24,7 +24,7 @@ public class AppSpecRepositoryTest {
 
 	@Mock LampContext lampContext;
 
-	String appId = "test-app";
+	String artifactId = "test-app";
 	File appDirectory;
 	File manifestFile;
 
@@ -33,7 +33,7 @@ public class AppSpecRepositoryTest {
 		appDirectory = new File(System.getProperty("java.io.tmpdir"), "lamp-test/" + System.currentTimeMillis() + "/apps");
 		manifestFile = new File(appDirectory, "manifest.json");
 
-		when(lampContext.getAppMetaInfoDirectory(appId)).thenReturn(appDirectory);
+		when(lampContext.getAppMetaInfoDirectory(artifactId)).thenReturn(appDirectory);
 	}
 
 	@After
@@ -59,14 +59,14 @@ public class AppSpecRepositoryTest {
 	public void testFindOne() throws Exception {
 		AppSpecImpl testAppManifest = saveAppManifest();
 
-		AppSpec appSpec = appSpecRepository.findOne(appId);
+		AppSpec appSpec = appSpecRepository.findOne(artifactId);
 		assertThat(appSpec.getId()).isEqualTo(testAppManifest.getId());
 	}
 
 
 	@Test
 	public void testFindOne_Null() throws Exception {
-		AppSpec appSpec = appSpecRepository.findOne(appId);
+		AppSpec appSpec = appSpecRepository.findOne(artifactId);
 		assertThat(appSpec).isNull();
 	}
 
@@ -82,7 +82,7 @@ public class AppSpecRepositoryTest {
 
 	private AppSpecImpl saveAppManifest() {
 		AppSpecImpl testAppManifest = new AppSpecImpl();
-		testAppManifest.setId(appId);
+		testAppManifest.setId(artifactId);
 		appSpecRepository.save(testAppManifest);
 		return testAppManifest;
 	}

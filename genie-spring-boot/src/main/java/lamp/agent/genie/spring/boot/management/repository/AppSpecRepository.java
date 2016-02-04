@@ -47,9 +47,9 @@ public class AppSpecRepository {
 		File[] dirs = directory.listFiles(MountPoint.DIRECTORY);
 		if (ArrayUtils.isNotEmpty(dirs)) {
 			for (File dir : dirs) {
-				String appId = dir.getName();
+				String artifactId = dir.getName();
 				try {
-					AppSpec appSpec = findOne(appId);
+					AppSpec appSpec = findOne(artifactId);
 					if (appSpec != null) {
 						appSpecList.add(appSpec);
 					}

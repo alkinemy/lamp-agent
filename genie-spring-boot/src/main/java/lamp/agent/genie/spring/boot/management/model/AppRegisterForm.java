@@ -23,12 +23,11 @@ public class AppRegisterForm {
 	@NotEmpty
 	private String name;
 
-	private String appGroupId;
+	private String groupId;
 	@NotEmpty
-	private String appId;
-	private String appName;
+	private String artifactId;
 	@NotEmpty
-	private String appVersion;
+	private String version;
 
 	@NotNull
 	private AppProcessType processType;

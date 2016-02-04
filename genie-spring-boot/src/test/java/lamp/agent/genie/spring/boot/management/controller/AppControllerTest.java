@@ -93,8 +93,8 @@ public class AppControllerTest {
 
 		parts.add("id", "test-1");
 		parts.add("name", "test");
-		parts.add("appId", "test-app");
-		parts.add("appVersion", "0.0.1-SNAPSHOT");
+		parts.add("artifactId", "test-app");
+		parts.add("version", "0.0.1-SNAPSHOT");
 		parts.add("processType", AppProcessType.DAEMON.name());
 		parts.add("appDirectory", "/Users/kangwoo/Applications/zookeeper-3.4.7");
 		parts.add("workDirectory", "${appDirectory}");
@@ -118,8 +118,8 @@ public class AppControllerTest {
 
 		parts.add("id", "test-2");
 		parts.add("name", StringUtils.utf8ToIso88591("테스트 2번 이다"));
-		parts.add("appId", "test-app");
-		parts.add("appVersion", "0.0.1-SNAPSHOT");
+		parts.add("artifactId", "test-app");
+		parts.add("version", "0.0.1-SNAPSHOT");
 		parts.add("processType", AppProcessType.DEFAULT.name());
 		parts.add("pidFile", "${workDirectory}/test-app.pid");
 		parts.add("startCommandLine", "java -jar ${filename} --server.port=19092");
@@ -141,17 +141,17 @@ public class AppControllerTest {
 
 		parts.add("id", "test-3");
 		parts.add("name", "test");
-		parts.add("appId", "test-app");
-		parts.add("appVersion", "0.0.1-SNAPSHOT");
+		parts.add("artifactId", "test-app");
+		parts.add("version", "0.0.1-SNAPSHOT");
 		parts.add("processType", AppProcessType.DAEMON.name());
-		parts.add("pidFile", "${workDirectory}/${appId}.pid");
-		parts.add("startCommandLine", "./${appId}.sh start");
+		parts.add("pidFile", "${workDirectory}/${artifactId}.pid");
+		parts.add("startCommandLine", "./${artifactId}.sh start");
 //		parts.add("commandShell", "/bin/bash -c");
-//		parts.add("startCommandLine", "nohup 'java -jar ${filename} --server.port=19093' 1 > nohup.out 2 > &1 &");
+//		parts.add("startCommandLine", "nohup java -jar ${filename} --server.port=19093 1>nohup.out 2>&1 &");
 		parts.add("stopCommandLine", "");
 		parts.add("preInstalled", false);
 		parts.add("installFile", new ClassPathResource("apps/test-app-0.0.1-SNAPSHOT.jar"));
-		parts.add("filename", "${appId}.jar");
+		parts.add("filename", "${artifactId}.jar");
 		parts.add("monitor", "true");
 
 		Map<String, Object> commandsHashMap = new LinkedHashMap<>();

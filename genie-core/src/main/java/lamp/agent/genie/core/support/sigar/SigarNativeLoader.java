@@ -1,4 +1,4 @@
-package lamp.agent.genie.core.external.sigar;
+package lamp.agent.genie.core.support.sigar;
 
 import lamp.agent.genie.core.exception.SigarException;
 import lamp.agent.genie.utils.FileUtils;

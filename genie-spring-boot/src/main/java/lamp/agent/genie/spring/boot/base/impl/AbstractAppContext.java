@@ -75,8 +75,8 @@ public abstract class AbstractAppContext implements AppContext {
 			Map<String, Object> parameters = new LinkedHashMap<>();
 			parameters.put("id", appSpec.getId());
 			parameters.put("name", appSpec.getName());
-			parameters.put("appId", appSpec.getAppId());
-			parameters.put("appVersion", appSpec.getAppVersion());
+			parameters.put("artifactId", appSpec.getArtifactId());
+			parameters.put("version", appSpec.getVersion());
 			parameters.put("processType", appSpec.getProcessType());
 			parameters.put("checkStatusInterval", appSpec.getCheckStatusInterval());
 			parameters.put("preInstalled", appSpec.isPreInstalled());

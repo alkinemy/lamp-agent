@@ -21,9 +21,8 @@ public class AppUpdateForm {
 	@NotEmpty
 	private String name;
 
-	private String appName;
 	@NotEmpty
-	private String appVersion;
+	private String version;
 
 	@NotNull
 	private AppProcessType processType;

@@ -21,7 +21,7 @@ public class SpringBootInstallCommand implements ExtendedCommand {
 
 	private static final String DEFAULT_JVM_OPTS = "-Xms64m -Xmx128m";
 	private static final String DEFAULT_SPRING_OPTS = "--spring.profiles.active=${activeProfiles}";
-//	private static final String DEFAULT_SPRING_OPTS = "--spring.profiles.active=${activeProfiles} --spring.config.name=${appId}";
+//	private static final String DEFAULT_SPRING_OPTS = "--spring.profiles.active=${activeProfiles} --spring.config.name=${artifactId}";
 
 	private ExpressionParser parser = new ExpressionParser();
 
@@ -59,7 +59,7 @@ public class SpringBootInstallCommand implements ExtendedCommand {
 		Map<String, Object> parameters = appContext.getParameters();
 		String scriptFilename = launchScriptFilename;
 		if (StringUtils.isBlank(scriptFilename)) {
-			scriptFilename = appSpec.getAppId() + ".sh"; // TODO OS Type?
+			scriptFilename = appSpec.getArtifactId() + ".sh"; // TODO OS Type?
 		}
 		String script = launchScript;
 		if (StringUtils.isBlank(script)) {

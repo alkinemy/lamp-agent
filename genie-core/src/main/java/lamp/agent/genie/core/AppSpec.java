@@ -11,10 +11,9 @@ public interface AppSpec {
 	String getName();
 	String getDescription();
 
-	String getAppGroupId();
-	String getAppId();
-	String getAppName();
-	String getAppVersion();
+	String getGroupId();
+	String getArtifactId();
+	String getVersion();
 
 	AppProcessType getProcessType();
 	long getCheckStatusInterval();

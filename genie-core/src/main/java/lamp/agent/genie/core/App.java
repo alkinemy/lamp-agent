@@ -8,9 +8,9 @@ public interface App {
 
 	String getId();
 
-	AppContext getContext();
+	AppSpec getSpec();
 
-	AppSpec getConfig();
+	AppContext getContext();
 
 	AppStatus getStatus();
 

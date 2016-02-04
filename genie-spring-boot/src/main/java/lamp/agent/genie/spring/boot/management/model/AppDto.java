@@ -15,9 +15,9 @@ public class AppDto {
 	private String name;
 	private String description;
 
-	private String appId;
-	private String appName;
-	private String appVersion;
+	private String groupId;
+	private String artifactId;
+	private String version;
 
 	private AppProcessType processType;
 	private String pid;

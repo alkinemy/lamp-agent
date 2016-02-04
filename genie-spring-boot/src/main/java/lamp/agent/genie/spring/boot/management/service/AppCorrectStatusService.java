@@ -21,5 +21,4 @@ public class AppCorrectStatusService {
 		return correctStatus != null ? correctStatus : AppStatus.NOT_RUNNING;
 	}
 
-
 }
