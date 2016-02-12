@@ -1,8 +1,6 @@
 package lamp.agent.genie.core;
 
 
-import lamp.agent.genie.core.App;
-
 import java.util.List;
 
 public interface AppRegistry {

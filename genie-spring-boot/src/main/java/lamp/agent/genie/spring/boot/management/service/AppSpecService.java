@@ -12,7 +12,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class AppConfigService {
+public class AppSpecService {
 
 	@Autowired
 	private AppSpecRepository appSpecRepository;

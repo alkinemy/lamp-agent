@@ -7,6 +7,7 @@ public enum AgentEventName {
 	AGENT_STARTED(AgentEventLevel.INFO, "Agent Start4ed")
 	, AGENT_STOPPED(AgentEventLevel.INFO, "Agent Stopped")
 	, APP_INSTALLED(AgentEventLevel.INFO, "App Installed")
+	, APP_UPDATED(AgentEventLevel.INFO, "App Updated")
 	, APP_UNINSTALLED(AgentEventLevel.INFO, "App Uninstalled")
 	, APP_REGISTERED(AgentEventLevel.INFO, "App Registered")
 	, APP_UNREGISTERED(AgentEventLevel.INFO, "App Unregistered")

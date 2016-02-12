@@ -100,12 +100,4 @@ public abstract class AbstractProcess implements AppProcess {
 		return null;
 	}
 
-	@Override public AppProcessState getStatus() {
-		String pid = getId();
-		if (StringUtils.isBlank(pid)) {
-			return AppProcessState.NOT_RUNNING;
-		}
-		return getContext().getShell().getProcessState(pid);
-	}
-
 }

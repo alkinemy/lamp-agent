@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class InstallConfigService {
+public class InstallSpecService {
 
 	@Autowired
 	private InstallSpecRepository installSpecRepository;

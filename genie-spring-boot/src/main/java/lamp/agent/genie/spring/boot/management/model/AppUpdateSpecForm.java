@@ -4,23 +4,24 @@ import lamp.agent.genie.core.runtime.process.AppProcessType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.commons.exec.ExecuteWatchdog;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 
+import static org.apache.commons.exec.ExecuteWatchdog.INFINITE_TIMEOUT;
+
 @Getter
 @Setter
 @ToString
-public class AppUpdateForm {
+public class AppUpdateSpecForm {
 
-	@NotEmpty
-	private String id;
 	@NotEmpty
 	private String name;
 
+	private String groupId;
+	@NotEmpty
+	private String artifactId;
 	@NotEmpty
 	private String version;
 
@@ -31,20 +32,21 @@ public class AppUpdateForm {
 	private String workDirectory;
 
 	@NotEmpty
-	private String pidFilePath;
+	private String pidFile;
+	private String logFile;
 
 	private long checkStatusInterval = 1000L;
 
-	@NotNull
+	private String commandShell;
+	@NotEmpty
 	private String startCommandLine;
-	private Long startTimeout = ExecuteWatchdog.INFINITE_TIMEOUT;
+	private Long startTimeout = INFINITE_TIMEOUT;
 	private String stopCommandLine;
-	private Long stopTimeout = ExecuteWatchdog.INFINITE_TIMEOUT;
+	private Long stopTimeout = INFINITE_TIMEOUT;
 
 	private boolean monitor;
 
 	private Map<String, Object> parameters;
 
-	private MultipartFile installFile;
 
 }

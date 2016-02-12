@@ -150,16 +150,15 @@ public abstract class AbstractAppContext implements AppContext {
 		AppProcessState processStatus = getProcessStatus();
 		if (AppProcessState.RUNNING.equals(processStatus)) {
 			return updateStatus(AppStatus.RUNNING);
-		} else {
+		} else if (AppProcessState.NOT_RUNNING.equals(processStatus)) {
 			return updateStatus(AppStatus.NOT_RUNNING);
+		} else {
+			return updateStatus(AppStatus.UNKNOWN);
 		}
 	}
 
 	public abstract AppProcess getProcess();
 
-	public AppProcessState getProcessStatus() {
-		AppProcess process = getProcess();
-		return process != null ? process.getStatus() : AppProcessState.NOT_RUNNING;
-	}
+	public abstract AppProcessState getProcessStatus();
 
 }

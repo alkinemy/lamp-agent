@@ -5,6 +5,8 @@ import lamp.agent.genie.core.AppStatus;
 import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
 import lamp.agent.genie.spring.boot.management.model.AppDto;
 import lamp.agent.genie.spring.boot.management.model.AppRegisterForm;
+import lamp.agent.genie.spring.boot.management.model.AppUpdateFileForm;
+import lamp.agent.genie.spring.boot.management.model.AppUpdateSpecForm;
 import lamp.agent.genie.spring.boot.management.service.AppManagementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,17 @@ public class AppController {
 	public void register(AppRegisterForm form) {
 		appManagementService.register(form);
 	}
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
+	public void updateSpec(@PathVariable("id") String id, AppUpdateSpecForm form) {
+		appManagementService.updateSpec(id, form);
+	}
+
+	@RequestMapping(value = "/{id}/file", method = RequestMethod.POST)
+	public void updateFile(@PathVariable("id") String id, AppUpdateFileForm form) {
+		appManagementService.updateFile(id, form);
+	}
+
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void deregister(@PathVariable("id") String id, @RequestParam(name = "forceStop", defaultValue = "false") Boolean forceStop) {

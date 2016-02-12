@@ -2,6 +2,7 @@ package lamp.agent.genie.core.runtime.process.exec.foreground;
 
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.exception.CommandExecuteException;
+import lamp.agent.genie.core.runtime.process.AppProcessState;
 import lamp.agent.genie.core.runtime.process.exec.AbstractProcess;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -74,5 +75,13 @@ public class DefaultProcess extends AbstractProcess {
 		}
 	}
 
+	@Override public AppProcessState getStatus() {
+		ExecuteWatchdog executeWatchdog = this.executeWatchdog;
+		if (executeWatchdog != null && !executeWatchdog.killedProcess()) {
+			return AppProcessState.RUNNING;
+		} else {
+			return AppProcessState.NOT_RUNNING;
+		}
+	}
 
 }

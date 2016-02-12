@@ -2,6 +2,7 @@ package lamp.agent.genie.core.runtime.process.exec.background;
 
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.exception.CommandExecuteException;
+import lamp.agent.genie.core.runtime.process.AppProcessState;
 import lamp.agent.genie.core.runtime.process.exec.AbstractProcess;
 import lamp.agent.genie.core.runtime.shell.Shell;
 import lamp.agent.genie.utils.StringUtils;
@@ -77,5 +78,12 @@ public class DaemonProcess extends AbstractProcess {
 		return watchdog;
 	}
 
+	@Override public AppProcessState getStatus() {
+		String pid = getId();
+		if (StringUtils.isBlank(pid)) {
+			return AppProcessState.UNKNOWN;
+		}
+		return getContext().getShell().getProcessState(pid);
+	}
 
 }

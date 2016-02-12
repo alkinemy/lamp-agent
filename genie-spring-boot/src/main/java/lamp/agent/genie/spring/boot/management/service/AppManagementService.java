@@ -11,7 +11,8 @@ import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lamp.agent.genie.spring.boot.base.impl.DaemonAppContext;
 import lamp.agent.genie.spring.boot.base.impl.DefaultAppContext;
-import lamp.agent.genie.spring.boot.management.model.AppUpdateForm;
+import lamp.agent.genie.spring.boot.management.model.AppUpdateFileForm;
+import lamp.agent.genie.spring.boot.management.model.AppUpdateSpecForm;
 import lamp.agent.genie.spring.boot.register.model.AgentEvent;
 import lamp.agent.genie.spring.boot.register.model.AgentEventName;
 import lombok.extern.slf4j.Slf4j;
@@ -39,10 +40,10 @@ public class AppManagementService {
 	private SmartAssembler smartAssembler;
 
 	@Autowired
-	private AppConfigService appConfigService;
+	private AppSpecService appSpecService;
 
 	@Autowired
-	private InstallConfigService installConfigService;
+	private InstallSpecService installSpecService;
 
 	@Autowired
 	private AppInstallService appInstallService;
@@ -58,7 +59,7 @@ public class AppManagementService {
 
 	@PostConstruct
 	public void init() {
-		List<AppSpec> appSpecs = appConfigService.getAppManifests();
+		List<AppSpec> appSpecs = appSpecService.getAppManifests();
 		for (AppSpec appSpec : appSpecs) {
 			try {
 				App app = newAppInstance(appSpec);
@@ -105,7 +106,7 @@ public class AppManagementService {
 	protected AppContext newAppContextInstance(AppSpec appSpec) {
 		InstallSpec installSpec = null;
 		if (!appSpec.isPreInstalled()) {
-			installSpec = installConfigService.getInstallConfig(appSpec.getId());
+			installSpec = installSpecService.getInstallConfig(appSpec.getId());
 		}
 		return newAppContextInstance(appSpec, installSpec);
 	}
@@ -138,39 +139,46 @@ public class AppManagementService {
 		App app = newAppInstance(appSpec);
 		appRegistry.bind(app.getId(), app);
 
-		appConfigService.save(appSpec);
+		appSpecService.save(appSpec);
 
 		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_REGISTERED, id));
 	}
 
-	public synchronized void update(AppUpdateForm form) {
-		// FIXME 제대로 구현해야함
-		String id = form.getId();
+	public synchronized void updateFile(String id, AppUpdateFileForm form) {
+		App app = appRegistry.lookup(id);
+
+		boolean isRunning = app.isRunning();
+		Exceptions.throwsException(isRunning && !form.isForceStop(), ErrorCode.APP_IS_RUNNING);
+
+		if (isRunning) {
+			app.stop();
+			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_STOPPED, id));
+		}
+
+		AppContext appContext = app.getContext();
+
+		appInstallService.update(appContext, form.getInstallFile());
+		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_UPDATED, id));
+
+		if (isRunning) {
+			app.start();
+		}
+	}
+
+	public synchronized void updateSpec(String id, AppUpdateSpecForm form) {
 		App app = appRegistry.lookup(id);
 		AppSpec appSpec = app.getSpec();
 
-		if (form.getInstallFile() != null && !form.getInstallFile().isEmpty()) {
-			Exceptions.throwsException(app.isRunning(), ErrorCode.APP_IS_RUNNING);
+		BeanUtils.copyProperties(form, appSpec);
 
-			appInstallService.uninstall(app.getContext());
-			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_UNINSTALLED, id));
-
-			InstallSpec installSpec = smartAssembler.assemble(form, InstallSpec.class);
-			AppContext newAppContext = newAppContextInstance(appSpec, installSpec);
-			appInstallService.install(newAppContext, form.getInstallFile());
-			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_INSTALLED, id));
-		}
-
-		BeanUtils.copyProperties(form, appSpec, "id");
-
-		appConfigService.save(appSpec);
+		appSpecService.save(appSpec);
 	}
 
 	public synchronized void deregister(String id, boolean forceStop) {
 		App app = appRegistry.lookup(id);
 		AppSpec appSpec = app.getSpec();
 		if (!appSpec.isPreInstalled()) {
-			InstallSpec installSpec = installConfigService.getInstallConfig(id);
+			InstallSpec installSpec = installSpecService.getInstallConfig(id);
 			Exceptions.throwsException(app.isRunning() && !forceStop, ErrorCode.APP_IS_RUNNING, id);
 			if (app.isRunning() && forceStop) {
 				app.stop();
@@ -181,7 +189,7 @@ public class AppManagementService {
 
 		appRegistry.unbind(app.getId());
 
-		appConfigService.delete(appSpec);
+		appSpecService.delete(appSpec);
 		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_UNREGISTERED, id));
 	}
 

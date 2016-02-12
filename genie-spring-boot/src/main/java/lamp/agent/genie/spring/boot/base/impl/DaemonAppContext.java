@@ -4,6 +4,7 @@ import lamp.agent.genie.core.AppSpec;
 import lamp.agent.genie.core.LampContext;
 import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.core.runtime.process.AppProcess;
+import lamp.agent.genie.core.runtime.process.AppProcessState;
 import lamp.agent.genie.core.runtime.process.exec.background.DaemonProcess;
 
 public class DaemonAppContext extends AbstractAppContext {
@@ -32,6 +33,10 @@ public class DaemonAppContext extends AbstractAppContext {
 		return process;
 	}
 
-
+	@Override
+	public AppProcessState getProcessStatus() {
+		AppProcess process = getProcess();
+		return process != null ? process.getStatus() : AppProcessState.UNKNOWN;
+	}
 
 }

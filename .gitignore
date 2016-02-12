@@ -1,7 +1,8 @@
 
 *.pid
 /native
-/genie-core/native
+/*/native
+
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Java template
@@ -21,6 +22,7 @@ hs_err_pid*
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio
 
 *.iml
+/genie-spring-boot/src/main/resources/config/application-default.properties
 
 ## Directory-based project format:
 .idea/

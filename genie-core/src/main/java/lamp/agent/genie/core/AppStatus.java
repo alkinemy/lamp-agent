@@ -1,5 +1,5 @@
 package lamp.agent.genie.core;
 
 public enum AppStatus {
-	STARTING, RUNNING, STOPPING, NOT_RUNNING
+	UNKNOWN, STARTING, RUNNING, STOPPING, NOT_RUNNING
 }

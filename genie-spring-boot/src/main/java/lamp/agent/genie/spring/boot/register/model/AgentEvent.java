@@ -29,7 +29,11 @@ public class AgentEvent {
 
 	private String message;
 
-	public static AgentEvent of(AgentEventName eventName, String artifactId) {
-		return of(INSTANCE_ID, EVENT_SEQUENCE.incrementAndGet(),  eventName.name(), eventName.getEventLevel(), new Date(), artifactId, null);
+	public static AgentEvent of(AgentEventName eventName, String appId) {
+		return of(eventName, appId, null);
+	}
+
+	public static AgentEvent of(AgentEventName eventName, String appId, String message) {
+		return of(INSTANCE_ID, EVENT_SEQUENCE.incrementAndGet(),  eventName.name(), eventName.getEventLevel(), new Date(), appId, message);
 	}
 }

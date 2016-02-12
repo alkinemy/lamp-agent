@@ -5,6 +5,7 @@ import lamp.agent.genie.core.runtime.process.AppProcessType;
 import lamp.agent.genie.spring.boot.LampAgent;
 import lamp.agent.genie.spring.boot.management.model.AppDto;
 import lamp.agent.genie.utils.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +38,7 @@ import java.util.Map;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
+@Slf4j
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(value = LampAgent.class)
@@ -165,9 +167,10 @@ public class AppControllerTest {
 			commandsHashMap.put("SpringBootInstallCommand", commandParameters);
 		}
 		ObjectMapper objectMapper = new ObjectMapper();
-		parts.add("commands", objectMapper.writeValueAsString(commandsHashMap));
-
-		URI location = template.postForLocation(getBaseUrl() + "/api/app", parts);
+		String commands = objectMapper.writeValueAsString(commandsHashMap);
+		parts.add("commands", commands);
+		log.info("commands = {}", commands);
+//		URI location = template.postForLocation(getBaseUrl() + "/api/app", parts);
 
 //		assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
 	}

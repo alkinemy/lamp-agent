@@ -74,6 +74,10 @@ public class AppInstallService {
 		installSpecRepository.save(installSpec);
 	}
 
+	public void update(AppContext appContext, MultipartFile multipartFile) {
+		install(appContext, multipartFile);
+	}
+
 	public void uninstall(AppContext appContext) {
 		appInstaller.uninstall(SimpleUninstallContext.of(appContext));
 
