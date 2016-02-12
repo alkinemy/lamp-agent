@@ -2,22 +2,20 @@ package lamp.agent.genie.spring.boot.management.service;
 
 import lamp.agent.genie.core.*;
 import lamp.agent.genie.core.exception.UnsupportedProcessTypeException;
+import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.core.runtime.process.AppProcessType;
 import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
-import lamp.agent.genie.spring.boot.base.impl.AppImpl;
-import lamp.agent.genie.core.AppSpec;
-import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
+import lamp.agent.genie.spring.boot.base.impl.AppImpl;
 import lamp.agent.genie.spring.boot.base.impl.DaemonAppContext;
 import lamp.agent.genie.spring.boot.base.impl.DefaultAppContext;
+import lamp.agent.genie.spring.boot.management.model.AppRegisterForm;
 import lamp.agent.genie.spring.boot.management.model.AppUpdateFileForm;
 import lamp.agent.genie.spring.boot.management.model.AppUpdateSpecForm;
 import lamp.agent.genie.spring.boot.register.model.AgentEvent;
 import lamp.agent.genie.spring.boot.register.model.AgentEventName;
 import lombok.extern.slf4j.Slf4j;
-import lamp.agent.genie.spring.boot.management.model.AppRegisterForm;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -75,7 +73,7 @@ public class AppManagementService {
 		for (App app : apps) {
 			try {
 				if (AppStatus.RUNNING.equals(app.getCorrectStatus())
-						&& AppStatus.NOT_RUNNING.equals(app.getStatus())) {
+					&& AppStatus.NOT_RUNNING.equals(app.getStatus())) {
 					log.info("[App:{}] staring", app.getId());
 					app.start();
 					log.info("[App:{}] started", app.getId());
@@ -229,11 +227,11 @@ public class AppManagementService {
 	}
 
 	//
-//	public File getSystemLogFile(String agentId) {
-//		App base = appRegistry.lookup(agentId);
-//		File file = base.getContext().getSystemLogFile();
-//		Exceptions.throwsException(file == null || !file.canRead(), ErrorCode.AGENT_SYSTEM_LOG_FILE_NOT_FOUND);
-//		return file;
-//	}
+	//	public File getSystemLogFile(String agentId) {
+	//		App base = appRegistry.lookup(agentId);
+	//		File file = base.getContext().getSystemLogFile();
+	//		Exceptions.throwsException(file == null || !file.canRead(), ErrorCode.AGENT_SYSTEM_LOG_FILE_NOT_FOUND);
+	//		return file;
+	//	}
 
 }

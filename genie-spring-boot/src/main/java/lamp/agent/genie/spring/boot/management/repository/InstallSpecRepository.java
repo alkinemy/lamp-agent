@@ -1,9 +1,9 @@
 package lamp.agent.genie.spring.boot.management.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.core.LampContext;
 import lamp.agent.genie.core.install.InstallSpec;
+import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +35,7 @@ public class InstallSpecRepository {
 			throw Exceptions.newException(ErrorCode.APP_CONFIG_SAVE_FAILED, e);
 		}
 	}
+
 	public InstallSpec findOne(String id) {
 		File directory = lampContext.getAppMetaInfoDirectory(id);
 		File file = new File(directory, SPEC_FILE);

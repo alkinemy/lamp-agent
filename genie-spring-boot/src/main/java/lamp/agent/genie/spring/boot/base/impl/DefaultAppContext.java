@@ -9,13 +9,11 @@ import lamp.agent.genie.core.runtime.process.exec.foreground.DefaultProcess;
 
 public class DefaultAppContext extends AbstractAppContext {
 
-
 	private DefaultProcess process;
 
 	public DefaultAppContext(LampContext lampContext, AppSpec appSpec, InstallSpec installSpec) {
 		super(lampContext, appSpec, installSpec);
 	}
-
 
 	@Override
 	public void createProcess() {

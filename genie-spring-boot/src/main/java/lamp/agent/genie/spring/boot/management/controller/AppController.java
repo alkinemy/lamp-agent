@@ -47,7 +47,6 @@ public class AppController {
 		appManagementService.updateFile(id, form);
 	}
 
-
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void deregister(@PathVariable("id") String id, @RequestParam(name = "forceStop", defaultValue = "false") Boolean forceStop) {
 		appManagementService.deregister(id, forceStop);
@@ -66,7 +65,6 @@ public class AppController {
 		appManagementService.stop(id);
 		log.info("[App] '{}' Stopped", id);
 	}
-
 
 	@RequestMapping(value = "/{id}/status", method = RequestMethod.GET)
 	public AppStatus status(@PathVariable("id") String id) {

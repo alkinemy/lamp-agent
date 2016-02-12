@@ -11,7 +11,6 @@ public class AppCorrectStatusService {
 	@Autowired
 	private AppCorrectStatusRepository appCorrectStatusRepository;
 
-
 	public void updateCorrectStatus(String id, AppStatus correctStatus) {
 		appCorrectStatusRepository.save(id, correctStatus);
 	}

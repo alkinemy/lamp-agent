@@ -1,8 +1,8 @@
 package lamp.agent.genie.spring.boot.base.impl;
 
+import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.AppSpec;
 import lamp.agent.genie.core.AppStatus;
-import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.LampContext;
 import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.core.runtime.process.AppProcess;
@@ -42,7 +42,6 @@ public abstract class AbstractAppContext implements AppContext {
 
 	private AppStatus appStatus = AppStatus.NOT_RUNNING;
 	private long lastCheckTimeMillis = 1000;
-
 
 	public AbstractAppContext(LampContext lampContext, AppSpec appSpec, InstallSpec installSpec) {
 		this.lampContext = lampContext;
@@ -98,7 +97,7 @@ public abstract class AbstractAppContext implements AppContext {
 			}
 
 			if (lampContext instanceof EnvironmentCapable) {
-				Environment environment = ((EnvironmentCapable)lampContext).getEnvironment();
+				Environment environment = ((EnvironmentCapable) lampContext).getEnvironment();
 				parameters.put("activeProfiles", environment.getActiveProfiles());
 				parameters.put("env", environment);
 			}

@@ -20,7 +20,7 @@ public class BasicAuthHttpRequestInterceptor implements ClientHttpRequestInterce
 
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
-			throws IOException {
+		throws IOException {
 		request.getHeaders().add("Authorization", encodedAuth);
 		return execution.execute(request, body);
 	}

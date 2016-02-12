@@ -18,6 +18,4 @@ public class InstallConfigAssembler extends AbstractListAssembler<AppRegisterFor
 		return installSpec;
 	}
 
-
-
 }

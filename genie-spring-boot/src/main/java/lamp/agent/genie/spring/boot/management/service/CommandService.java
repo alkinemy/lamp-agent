@@ -1,6 +1,5 @@
 package lamp.agent.genie.spring.boot.management.service;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lamp.agent.genie.core.exception.CommandException;
 import lamp.agent.genie.core.exception.UnknownCommandException;
@@ -57,7 +56,7 @@ public class CommandService {
 				constructor = commandClass.getConstructor(parameterType);
 			}
 			return constructor.newInstance(value);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new CommandException("Command creation failed (" + key + ")", e);
 		}
 	}

@@ -2,10 +2,8 @@ package lamp.agent.genie.spring.boot.base.exception;
 
 public enum ErrorCode {
 	INTERNAL("에러가 발생하였습니다."),
-	APP_NOT_FOUND("애플리케이션이 존재하지 않습니다.")
-	, APP_ALWAYS_EXIST("애플리케이션이 이미 존재합니다.")
-	, APP_DEPLOY_FAILED("애플리케이션을 디플로이 하는 중 문제가 발생하였습니다.")
-	, INVALID_MOUNT_POINT_NAME("잘못된 마운트 포인트 이름입니다."),
+	APP_NOT_FOUND("애플리케이션이 존재하지 않습니다."), APP_ALWAYS_EXIST("애플리케이션이 이미 존재합니다."), APP_DEPLOY_FAILED(
+		"애플리케이션을 디플로이 하는 중 문제가 발생하였습니다."), INVALID_MOUNT_POINT_NAME("잘못된 마운트 포인트 이름입니다."),
 	INVALID_MOUNT_POINT_PARENT("잘못된 마운트 포인트 부모입니다."),
 	FILE_DOWNLOAD_FAILED("파일을 다운로드 하는 중 에러가 발생하였습니다."),
 	APP_IS_ALREADY_DEPLOYED("애플리케이션이 이미 설치되어 있습니다."),
@@ -29,8 +27,7 @@ public enum ErrorCode {
 	AGENT_UPDATER_START_FAILED("에이전트 업데이터를 실행하는 중 에러가 발생하였습니다."),
 	AGENT_PID_FILE_READ_FAILED("에이전트 PID 정보를 가져오는 중 에러가 발생하였습니다."),
 	SERVICE_PROPERTIES_WRITE_FAILED("서비스 프로퍼티즈 파일을 생성하는 중 에러가 발생하였습니다."),
-	AGENT_SYSTEM_LOG_FILE_NOT_FOUND("에이전트 시스템 로그 파일을 찾을 수 없습니다.")
-	, SECRET_KEY_GENERATION_FAILED("비밀키 생성을 실패하였습니다."),
+	AGENT_SYSTEM_LOG_FILE_NOT_FOUND("에이전트 시스템 로그 파일을 찾을 수 없습니다."), SECRET_KEY_GENERATION_FAILED("비밀키 생성을 실패하였습니다."),
 	APP_CONFIG_PARSE_FAILED("앱 설정 정보를 처리할 수 없습니다.");
 
 	private String defaultMessage;

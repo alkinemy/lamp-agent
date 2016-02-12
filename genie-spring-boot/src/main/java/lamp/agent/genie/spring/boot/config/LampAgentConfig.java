@@ -32,7 +32,6 @@ import java.util.List;
 @EnableConfigurationProperties({ LampAgentProperties.class })
 public class LampAgentConfig {
 
-
 	@Bean
 	public LampContextImpl lampContext(ApplicationContext applicationContext, LampAgentProperties agentProperties) {
 		return new LampContextImpl(applicationContext, agentProperties);
@@ -49,7 +48,6 @@ public class LampAgentConfig {
 	public AgentSecretKeyGenerator agentSecretKeyGenerator(LampAgentProperties agentProperties) {
 		return new AgentSecretKeyGenerator(agentProperties);
 	}
-
 
 	@Bean
 	public SmartAssembler smartAssembler() {
@@ -111,12 +109,11 @@ public class LampAgentConfig {
 		}
 
 		@Bean
-		public AgentRegistrationApplicationListener registrationApplicationListener(ApiAgentRegistrator lampClientApiRegistrator, AgentEventPublisher agentEventPublisher) {
+		public AgentRegistrationApplicationListener registrationApplicationListener(ApiAgentRegistrator lampClientApiRegistrator,
+			AgentEventPublisher agentEventPublisher) {
 			return new AgentRegistrationApplicationListener(lampClientApiRegistrator, agentEventPublisher);
 		}
 
 	}
-
-
 
 }

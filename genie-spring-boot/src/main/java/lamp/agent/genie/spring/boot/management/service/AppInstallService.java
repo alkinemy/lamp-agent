@@ -1,6 +1,5 @@
 package lamp.agent.genie.spring.boot.management.service;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.install.AppInstaller;

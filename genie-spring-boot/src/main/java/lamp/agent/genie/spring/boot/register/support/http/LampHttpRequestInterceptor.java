@@ -27,7 +27,7 @@ public class LampHttpRequestInterceptor implements ClientHttpRequestInterceptor 
 
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
-			throws IOException {
+		throws IOException {
 		HttpHeaders headers = request.getHeaders();
 		headers.set("User-Agent", userAgent);
 		headers.setContentType(MediaType.APPLICATION_JSON);

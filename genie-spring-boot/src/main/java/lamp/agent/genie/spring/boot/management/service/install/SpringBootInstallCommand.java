@@ -1,7 +1,7 @@
 package lamp.agent.genie.spring.boot.management.service.install;
 
-import lamp.agent.genie.core.AppSpec;
 import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.core.AppSpec;
 import lamp.agent.genie.core.exception.CommandExecuteException;
 import lamp.agent.genie.core.install.command.FileCreateCommand;
 import lamp.agent.genie.core.install.command.FileSetExecutableCommand;
@@ -21,7 +21,7 @@ public class SpringBootInstallCommand implements ExtendedCommand {
 
 	private static final String DEFAULT_JVM_OPTS = "-Xms64m -Xmx128m";
 	private static final String DEFAULT_SPRING_OPTS = "--spring.profiles.active=${activeProfiles}";
-//	private static final String DEFAULT_SPRING_OPTS = "--spring.profiles.active=${activeProfiles} --spring.config.name=${artifactId}";
+	//	private static final String DEFAULT_SPRING_OPTS = "--spring.profiles.active=${activeProfiles} --spring.config.name=${artifactId}";
 
 	private ExpressionParser parser = new ExpressionParser();
 
@@ -52,7 +52,6 @@ public class SpringBootInstallCommand implements ExtendedCommand {
 		this.jvmOpts = (String) parameters.get("jvmOpts");
 		this.springOpts = (String) parameters.get("springOpts");
 	}
-
 
 	@Override public void execute(AppContext appContext) {
 		AppSpec appSpec = appContext.getParsedAppSpec();

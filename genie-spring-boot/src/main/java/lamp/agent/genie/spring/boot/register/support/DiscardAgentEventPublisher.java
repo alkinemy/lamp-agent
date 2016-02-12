@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.Async;
 @Slf4j
 public class DiscardAgentEventPublisher implements AgentEventPublisher {
 
-
 	public DiscardAgentEventPublisher() {
 	}
 

@@ -1,6 +1,5 @@
 package lamp.agent.genie.spring.boot.register.support.jwt;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -14,10 +13,16 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-
 public class JwtBuilder {
 
 	private ObjectMapper objectMapper = new ObjectMapper();
+
+	private static String getQueryStringHash(String canonicalUrl) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		md.update(canonicalUrl.getBytes("UTF-8"));
+		byte[] digest = md.digest();
+		return new String(Hex.encode(digest));
+	}
 
 	public String generateJWTToken(String canonicalUrl,
 		String issuer, String sharedSecret) {
@@ -30,7 +35,6 @@ public class JwtBuilder {
 			payload.setIssuedAtTime(System.currentTimeMillis() / 1000L);
 			payload.setExpirationTime(payload.getIssuedAtTime() + 180L);
 			payload.setQueryStringHash(getQueryStringHash(canonicalUrl));
-
 
 			return generateJWTToken(header, payload, sharedSecret);
 		} catch (JwtException e) {
@@ -72,21 +76,12 @@ public class JwtBuilder {
 		throw new JwtException("Unsupported alogirthm : (" + header.getType() + ", " + header.getAlgorithm() + ")");
 	}
 
-
 	protected byte[] signHmac256(String signingInput, String sharedSecret)
 		throws NoSuchAlgorithmException, InvalidKeyException {
 		SecretKey key = new SecretKeySpec(sharedSecret.getBytes(), "HmacSHA256");
 		Mac mac = Mac.getInstance("HmacSHA256");
 		mac.init(key);
 		return mac.doFinal(signingInput.getBytes());
-	}
-
-
-	private static String getQueryStringHash(String canonicalUrl) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-		MessageDigest md = MessageDigest.getInstance("SHA-256");
-		md.update(canonicalUrl.getBytes("UTF-8"));
-		byte[] digest = md.digest();
-		return new String(Hex.encode(digest));
 	}
 
 }

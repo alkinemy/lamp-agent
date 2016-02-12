@@ -2,8 +2,8 @@ package lamp.agent.genie.spring.boot.register.service;
 
 import lamp.agent.genie.spring.boot.base.LampClientConstants;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
-import lamp.agent.genie.spring.boot.config.LampAgentProperties;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
+import lamp.agent.genie.spring.boot.config.LampAgentProperties;
 import lamp.agent.genie.utils.FileUtils;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,6 @@ public class AgentSecretKeyGenerator {
 			lampClientProperties.setSecretKey(key);
 		}
 	}
-
 
 	protected String randomSecretKey() {
 		SecureRandom secureRandom;

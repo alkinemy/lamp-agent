@@ -17,7 +17,6 @@ public class DaemonAppContext extends AbstractAppContext {
 		this.process = new DaemonProcess(this);
 	}
 
-
 	@Override
 	public void createProcess() {
 		process.start();

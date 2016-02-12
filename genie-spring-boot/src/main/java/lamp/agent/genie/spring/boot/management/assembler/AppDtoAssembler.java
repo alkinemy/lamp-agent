@@ -1,8 +1,8 @@
 package lamp.agent.genie.spring.boot.management.assembler;
 
 import lamp.agent.genie.core.App;
-import lamp.agent.genie.core.AppSpec;
 import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.core.AppSpec;
 import lamp.agent.genie.core.runtime.process.AppProcess;
 import lamp.agent.genie.spring.boot.base.assembler.AbstractListAssembler;
 import lamp.agent.genie.spring.boot.management.model.AppDto;

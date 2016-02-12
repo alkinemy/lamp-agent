@@ -1,11 +1,10 @@
 package lamp.agent.genie.spring.boot.register.support;
 
-
 import lamp.agent.genie.spring.boot.config.LampAgentProperties;
 import lamp.agent.genie.spring.boot.config.LampServerProperties;
+import lamp.agent.genie.spring.boot.register.AgentRegistrator;
 import lamp.agent.genie.spring.boot.register.model.AgentRegisterForm;
 import lamp.agent.genie.spring.boot.register.model.AgentRegisterResult;
-import lamp.agent.genie.spring.boot.register.AgentRegistrator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.client.RestTemplate;
@@ -21,8 +20,8 @@ public class ApiAgentRegistrator implements AgentRegistrator {
 	private final RestTemplate restTemplate;
 
 	public ApiAgentRegistrator(
-			LampServerProperties lampServerProperties, LampAgentProperties lampClientProperties,
-			RestTemplate restTemplate) {
+		LampServerProperties lampServerProperties, LampAgentProperties lampClientProperties,
+		RestTemplate restTemplate) {
 		this.lampServerProperties = lampServerProperties;
 		this.lampClientProperties = lampClientProperties;
 

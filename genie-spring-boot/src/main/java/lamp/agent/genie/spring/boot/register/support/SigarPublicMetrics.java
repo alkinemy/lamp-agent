@@ -21,11 +21,10 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 
 	private Sigar sigar;
 
-
 	@PostConstruct
 	public void init() {
 		if (lampContext.getShell() instanceof SigarShell) {
-			sigar = ((SigarShell)lampContext.getShell()).getSigar();
+			sigar = ((SigarShell) lampContext.getShell()).getSigar();
 		}
 	}
 
@@ -48,18 +47,18 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 		return result;
 	}
 
-//	protected void addCpuPercMetrics(Collection<Metric<?>> result) {
-//		List<CpuUsage> cpuUsageList = cpuMetrics.getCpuUsages();
-//		for (int i = 0; i < cpuUsageList.size(); i++) {
-//			CpuUsage cpuUsage = cpuUsageList.get(i);
-//			result.add(new Metric<Double>("server.cpu" + i + ".user", cpuUsage.getUser()));
-//			result.add(new Metric<Double>("server.cpu" + i + ".sys", cpuUsage.getSys()));
-//			result.add(new Metric<Double>("server.cpu" + i + ".nice", cpuUsage.getNice()));
-//			result.add(new Metric<Double>("server.cpu" + i + ".waiting", cpuUsage.getWaiting()));
-//			result.add(new Metric<Double>("server.cpu" + i + ".idle", cpuUsage.getIdle()));
-//			result.add(new Metric<Double>("server.cpu" + i + ".irq", cpuUsage.getIrq()));
-//		}
-//	}
+	//	protected void addCpuPercMetrics(Collection<Metric<?>> result) {
+	//		List<CpuUsage> cpuUsageList = cpuMetrics.getCpuUsages();
+	//		for (int i = 0; i < cpuUsageList.size(); i++) {
+	//			CpuUsage cpuUsage = cpuUsageList.get(i);
+	//			result.add(new Metric<Double>("server.cpu" + i + ".user", cpuUsage.getUser()));
+	//			result.add(new Metric<Double>("server.cpu" + i + ".sys", cpuUsage.getSys()));
+	//			result.add(new Metric<Double>("server.cpu" + i + ".nice", cpuUsage.getNice()));
+	//			result.add(new Metric<Double>("server.cpu" + i + ".waiting", cpuUsage.getWaiting()));
+	//			result.add(new Metric<Double>("server.cpu" + i + ".idle", cpuUsage.getIdle()));
+	//			result.add(new Metric<Double>("server.cpu" + i + ".irq", cpuUsage.getIrq()));
+	//		}
+	//	}
 
 	protected void addMemMetrics(Collection<Metric<?>> result) {
 		try {
@@ -92,7 +91,6 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 		}
 	}
 
-
 	protected void addCpuMetrics(Collection<Metric<?>> result) {
 		try {
 			CpuPerc cpuPerc = sigar.getCpuPerc();
@@ -103,33 +101,32 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 			result.add(new Metric<>("server.cpu.idle", cpuPerc.getIdle() * 100));
 			result.add(new Metric<>("server.cpu.wait", cpuPerc.getWait() * 100));
 			result.add(new Metric<>("server.cpu.irq", cpuPerc.getIrq() * 100));
-//			result.add(new Metric<>("server.cpu.softIrq", cpuPerc.getSoftIrq()));
-//			result.add(new Metric<>("server.cpu.stolen", cpuPerc.getStolen()));
-//			result.add(new Metric<>("server.cpu.combined", cpuPerc.getCombined()));
+			//			result.add(new Metric<>("server.cpu.softIrq", cpuPerc.getSoftIrq()));
+			//			result.add(new Metric<>("server.cpu.stolen", cpuPerc.getStolen()));
+			//			result.add(new Metric<>("server.cpu.combined", cpuPerc.getCombined()));
 		} catch (SigarException e) {
 			log.warn("addMemMetrics Failed", e);
 		}
 	}
 
-
 	protected void addResourceLimitMetrics(Collection<Metric<?>> result) {
 		try {
 			ResourceLimit resourceLimit = sigar.getResourceLimit();
 
-//			result.add(new Metric<>("server.resource.cpuCur", resourceLimit.getCpuCur()));
-//			result.add(new Metric<>("server.resource.cpuMax", resourceLimit.getCpuMax()));
-//			result.add(new Metric<>("server.resource.fileSizeCur", resourceLimit.getFileSizeCur()));
-//			result.add(new Metric<>("server.resource.fileSizeMax", resourceLimit.getFileSizeMax()));
-//			result.add(new Metric<>("server.resource.pipeSizeMax", resourceLimit.getPipeSizeMax()));
-//			result.add(new Metric<>("server.resource.pipeSizeCur", resourceLimit.getPipeSizeCur()));
-//			result.add(new Metric<>("server.resource.dataCur", resourceLimit.getDataCur()));
-//			result.add(new Metric<>("server.resource.dataMax", resourceLimit.getDataMax()));
-//			result.add(new Metric<>("server.resource.stackCur", resourceLimit.getStackCur()));
-//			result.add(new Metric<>("server.resource.stackMax", resourceLimit.getStackMax()));
-//			result.add(new Metric<>("server.resource.coreCur", resourceLimit.getCoreCur()));
-//			result.add(new Metric<>("server.resource.coreMax", resourceLimit.getCoreMax()));
-//			result.add(new Metric<>("server.resource.memoryCur", resourceLimit.getMemoryCur()));
-//			result.add(new Metric<>("server.resource.memoryMax", resourceLimit.getMemoryMax()));
+			//			result.add(new Metric<>("server.resource.cpuCur", resourceLimit.getCpuCur()));
+			//			result.add(new Metric<>("server.resource.cpuMax", resourceLimit.getCpuMax()));
+			//			result.add(new Metric<>("server.resource.fileSizeCur", resourceLimit.getFileSizeCur()));
+			//			result.add(new Metric<>("server.resource.fileSizeMax", resourceLimit.getFileSizeMax()));
+			//			result.add(new Metric<>("server.resource.pipeSizeMax", resourceLimit.getPipeSizeMax()));
+			//			result.add(new Metric<>("server.resource.pipeSizeCur", resourceLimit.getPipeSizeCur()));
+			//			result.add(new Metric<>("server.resource.dataCur", resourceLimit.getDataCur()));
+			//			result.add(new Metric<>("server.resource.dataMax", resourceLimit.getDataMax()));
+			//			result.add(new Metric<>("server.resource.stackCur", resourceLimit.getStackCur()));
+			//			result.add(new Metric<>("server.resource.stackMax", resourceLimit.getStackMax()));
+			//			result.add(new Metric<>("server.resource.coreCur", resourceLimit.getCoreCur()));
+			//			result.add(new Metric<>("server.resource.coreMax", resourceLimit.getCoreMax()));
+			//			result.add(new Metric<>("server.resource.memoryCur", resourceLimit.getMemoryCur()));
+			//			result.add(new Metric<>("server.resource.memoryMax", resourceLimit.getMemoryMax()));
 			result.add(new Metric<>("server.resource.processesCur", resourceLimit.getProcessesCur()));
 			result.add(new Metric<>("server.resource.processesMax", resourceLimit.getProcessesMax()));
 			result.add(new Metric<>("server.resource.openFilesCur", resourceLimit.getOpenFilesCur()));
@@ -148,7 +145,7 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 
 			for (FileSystem fileSystem : fileSystems) {
 				if (fileSystem.getType() == FileSystem.TYPE_LOCAL_DISK
-						|| fileSystem.getType() == FileSystem.TYPE_NETWORK) {
+					|| fileSystem.getType() == FileSystem.TYPE_NETWORK) {
 					String name = fileSystem.getDevName();
 					FileSystemUsage fileSystemUsage = sigar.getFileSystemUsage(name);
 					log.debug("fileSystemUsage = {}, {}", fileSystem.toMap(), fileSystemUsage);
@@ -169,7 +166,6 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 
 			}
 
-
 		} catch (SigarException e) {
 			log.warn("addFileSystemMetrics Failed", e);
 		}
@@ -180,7 +176,7 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 			FileSystem[] fileSystems = sigar.getFileSystemList();
 
 			for (FileSystem fileSystem : fileSystems) {
-				if ( fileSystem.getType() == FileSystem.TYPE_LOCAL_DISK
+				if (fileSystem.getType() == FileSystem.TYPE_LOCAL_DISK
 					|| fileSystem.getType() == FileSystem.TYPE_NETWORK) {
 					String name = fileSystem.getDevName();
 					DiskUsage diskUsage = sigar.getDiskUsage(name);
@@ -233,7 +229,6 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 				result.add(new Metric<>("server.netInterface." + name + ".speed", netInterfaceStat.getSpeed()));
 
 			}
-
 
 		} catch (SigarException e) {
 			log.warn("addFileSystemMetrics Failed", e);

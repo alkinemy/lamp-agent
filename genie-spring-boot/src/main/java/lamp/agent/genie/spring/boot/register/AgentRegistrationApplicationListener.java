@@ -18,7 +18,7 @@ public class AgentRegistrationApplicationListener implements ApplicationListener
 	private final AgentEventPublisher agentEventPublisher;
 
 	public AgentRegistrationApplicationListener(AgentRegistrator lampClientRegistrator
-			, AgentEventPublisher agentEventPublisher) {
+		, AgentEventPublisher agentEventPublisher) {
 		this.lampClientRegistrator = lampClientRegistrator;
 		this.agentEventPublisher = agentEventPublisher;
 	}

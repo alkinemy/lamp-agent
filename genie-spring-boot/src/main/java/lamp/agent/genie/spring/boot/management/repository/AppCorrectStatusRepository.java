@@ -36,7 +36,6 @@ public class AppCorrectStatusRepository {
 		}
 	}
 
-
 	public AppStatus findOne(String id) {
 		File directory = lampContext.getAppMetaInfoDirectory(id);
 		File file = new File(directory, STATUS_JSON);

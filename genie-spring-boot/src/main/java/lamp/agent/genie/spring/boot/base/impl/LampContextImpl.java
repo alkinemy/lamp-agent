@@ -1,10 +1,10 @@
 package lamp.agent.genie.spring.boot.base.impl;
 
-import lamp.agent.genie.spring.boot.config.LampAgentProperties;
 import lamp.agent.genie.core.LampContext;
 import lamp.agent.genie.core.MountPoint;
 import lamp.agent.genie.core.runtime.shell.Shell;
 import lamp.agent.genie.core.runtime.shell.SigarShell;
+import lamp.agent.genie.spring.boot.config.LampAgentProperties;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -61,6 +61,5 @@ public class LampContextImpl implements LampContext, EnvironmentCapable {
 	@Override public Shell getShell() {
 		return shell;
 	}
-
 
 }

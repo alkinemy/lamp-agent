@@ -37,8 +37,8 @@ public class AppMonitorService {
 		for (App app : apps) {
 			log.debug("[App:{}] monitor={}, status={}, correctStatus={}", app.getId(), app.isMonitor(), app.getStatus(), app.getCorrectStatus());
 			if (app.isMonitor()
-					&& AppStatus.NOT_RUNNING.equals(app.getStatus())
-					&& AppStatus.RUNNING.equals(app.getCorrectStatus())) {
+				&& AppStatus.NOT_RUNNING.equals(app.getStatus())
+				&& AppStatus.RUNNING.equals(app.getCorrectStatus())) {
 
 				AppMonitor appMonitor = appMonitorMap.get(app.getId());
 				if (appMonitor == null) {

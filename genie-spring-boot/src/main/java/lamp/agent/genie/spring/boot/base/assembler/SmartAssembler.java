@@ -68,7 +68,6 @@ public class SmartAssembler implements ApplicationContextAware {
 		}
 	}
 
-
 	protected Pair<Class, Class> key(Class from, Class to) {
 		return new ImmutablePair(from, to);
 	}
@@ -94,8 +93,6 @@ public class SmartAssembler implements ApplicationContextAware {
 			return defaultAssembler.assemble(from, toClass);
 		}
 	}
-
-
 
 	public <F, T> List<T> assemble(List<F> fromList, Class<T> toClass) {
 		if (fromList == null) {
@@ -125,21 +122,20 @@ public class SmartAssembler implements ApplicationContextAware {
 		}
 	}
 
-//	public <F, T> Page<T> assemble(Pageable pageable, Page<F> fromList, Class<T> toClass) {
-//		if (fromList == null) {
-//			return null;
-//		}
-//		List<T> content = assemble(fromList.getContent(), toClass);
-//		return new PageImpl<>(content, pageable, fromList.getTotalElements());
-//	}
-//
-//	public <F, T> Page<T> assemble(Pageable pageable, Page<F> fromList, Class<F> fromClass, Class<T> toClass) {
-//		if (fromList == null) {
-//			return null;
-//		}
-//		List<T> content = assemble(fromList.getContent(), fromClass, toClass);
-//		return new PageImpl<>(content, pageable, fromList.getTotalElements());
-//	}
-
+	//	public <F, T> Page<T> assemble(Pageable pageable, Page<F> fromList, Class<T> toClass) {
+	//		if (fromList == null) {
+	//			return null;
+	//		}
+	//		List<T> content = assemble(fromList.getContent(), toClass);
+	//		return new PageImpl<>(content, pageable, fromList.getTotalElements());
+	//	}
+	//
+	//	public <F, T> Page<T> assemble(Pageable pageable, Page<F> fromList, Class<F> fromClass, Class<T> toClass) {
+	//		if (fromList == null) {
+	//			return null;
+	//		}
+	//		List<T> content = assemble(fromList.getContent(), fromClass, toClass);
+	//		return new PageImpl<>(content, pageable, fromList.getTotalElements());
+	//	}
 
 }

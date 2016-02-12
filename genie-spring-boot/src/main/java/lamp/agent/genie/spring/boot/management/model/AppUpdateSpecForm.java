@@ -48,5 +48,4 @@ public class AppUpdateSpecForm {
 
 	private Map<String, Object> parameters;
 
-
 }
