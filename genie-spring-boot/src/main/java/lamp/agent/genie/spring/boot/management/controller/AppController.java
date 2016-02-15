@@ -32,6 +32,12 @@ public class AppController {
 		return smartAssembler.assemble(apps, App.class, AppDto.class);
 	}
 
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public AppDto get(@PathVariable("id") String id) {
+		App app = appManagementService.getApp(id);
+		return smartAssembler.assemble(app, App.class, AppDto.class);
+	}
+
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public void register(AppRegisterForm form) {
 		appManagementService.register(form);
