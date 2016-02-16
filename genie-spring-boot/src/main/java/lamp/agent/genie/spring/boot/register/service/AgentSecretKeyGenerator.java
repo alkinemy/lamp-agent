@@ -1,6 +1,6 @@
 package lamp.agent.genie.spring.boot.register.service;
 
-import lamp.agent.genie.spring.boot.base.LampClientConstants;
+import lamp.agent.genie.spring.boot.base.LampAgentConstants;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lamp.agent.genie.spring.boot.config.LampAgentProperties;
@@ -30,7 +30,7 @@ public class AgentSecretKeyGenerator {
 			} else {
 				key = randomSecretKey();
 				try {
-					FileUtils.writeStringToFile(secretKeyFile, key, LampClientConstants.DEFAULT_CHARSET);
+					FileUtils.writeStringToFile(secretKeyFile, key, LampAgentConstants.DEFAULT_CHARSET);
 				} catch (IOException e) {
 					log.warn("Can't write to the secretKey file (" + secretKeyFile.getAbsolutePath() + ")", e);
 				}

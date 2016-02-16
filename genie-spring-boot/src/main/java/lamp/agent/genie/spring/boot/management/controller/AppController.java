@@ -3,14 +3,13 @@ package lamp.agent.genie.spring.boot.management.controller;
 import lamp.agent.genie.core.App;
 import lamp.agent.genie.core.AppStatus;
 import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
-import lamp.agent.genie.spring.boot.management.model.AppDto;
-import lamp.agent.genie.spring.boot.management.model.AppRegisterForm;
-import lamp.agent.genie.spring.boot.management.model.AppUpdateFileForm;
-import lamp.agent.genie.spring.boot.management.model.AppUpdateSpecForm;
+import lamp.agent.genie.spring.boot.management.model.*;
 import lamp.agent.genie.spring.boot.management.service.AppManagementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,7 +31,7 @@ public class AppController {
 		return smartAssembler.assemble(apps, App.class, AppDto.class);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id:.+}", method = RequestMethod.GET)
 	public AppDto get(@PathVariable("id") String id) {
 		App app = appManagementService.getApp(id);
 		return smartAssembler.assemble(app, App.class, AppDto.class);
@@ -43,7 +42,7 @@ public class AppController {
 		appManagementService.register(form);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{id:.+}", method = RequestMethod.POST)
 	public void updateSpec(@PathVariable("id") String id, AppUpdateSpecForm form) {
 		appManagementService.updateSpec(id, form);
 	}
@@ -77,16 +76,26 @@ public class AppController {
 		return appManagementService.status(id);
 	}
 
-	@RequestMapping(value = "/{id}/logfile", method = RequestMethod.GET, produces = "text/plain")
-	public Resource logfile(@PathVariable("id") String id) {
-		Resource resource = appManagementService.getLogFileResource(id);
+	@RequestMapping(value = "/{id}/log", method = RequestMethod.GET)
+	public List<LogFile> logFiles(@PathVariable("id") String id) {
+		return appManagementService.getLogFiles(id);
+	}
+
+	@RequestMapping(value = "/{id}/log/{filename:.+}", method = RequestMethod.GET)
+	public Resource logFiles(@PathVariable("id") String id, @PathVariable("filename") String filename) {
+		return appManagementService.getLogFileResource(id, filename);
+	}
+
+	@RequestMapping(value = "/{id}/stdOutFile", method = RequestMethod.GET)
+	public Resource stdOutFile(@PathVariable("id") String id) {
+		Resource resource = appManagementService.getStdOutFileResource(id);
 		return resource;
 	}
 
-	@RequestMapping(value = "/{id}/systemLogfile", method = RequestMethod.GET, produces = "text/plain")
+	@RequestMapping(value = "/{id}/stdErrFile", method = RequestMethod.GET)
 	@ResponseBody
-	public Resource systemLogfile(@PathVariable("id") String id) {
-		Resource resource = appManagementService.getSystemLogFileResource(id);
+	public Resource stdErrFile(@PathVariable("id") String id) {
+		Resource resource = appManagementService.getStdErrFileResource(id);
 		return resource;
 	}
 

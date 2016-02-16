@@ -10,6 +10,7 @@ import lamp.agent.genie.core.runtime.process.AppProcessState;
 import lamp.agent.genie.core.runtime.shell.Shell;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
+import lamp.agent.genie.utils.StringUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
@@ -35,8 +36,6 @@ public abstract class AbstractAppContext implements AppContext {
 	private final AppSpec appSpec;
 	@Getter
 	private final InstallSpec installSpec;
-	@Getter
-	private File systemLogFile;
 
 	private ExpressionParser parser = new SpelExpressionParser();
 
@@ -47,12 +46,26 @@ public abstract class AbstractAppContext implements AppContext {
 		this.lampContext = lampContext;
 		this.appSpec = appSpec;
 		this.installSpec = installSpec;
-
-		this.systemLogFile = new File(lampContext.getLogDirectory(), appSpec.getId() + ".log");
 	}
 
 	public AppSpec getAppSpec() {
 		return appSpec;
+	}
+
+	public File getStdOutFile() {
+		String name = appSpec.getStdOutFile();
+		if (StringUtils.isNotBlank(name)) {
+			return new File(name);
+		}
+		return null;
+	}
+
+	public File getStdErrFile() {
+		String name = appSpec.getStdErrFile();
+		if (StringUtils.isNotBlank(name)) {
+			return new File(name);
+		}
+		return null;
 	}
 
 	public AppSpec getParsedAppSpec() {
@@ -81,9 +94,10 @@ public abstract class AbstractAppContext implements AppContext {
 			parameters.put("preInstalled", appSpec.isPreInstalled());
 			parameters.put("appDirectory", appSpec.getAppDirectory());
 			parameters.put("workDirectory", appSpec.getWorkDirectory());
+			parameters.put("logDirectory", appSpec.getLogDirectory());
 			parameters.put("pidFile", appSpec.getPidFile());
-			parameters.put("logFile", appSpec.getLogFile());
-			parameters.put("systemLogFile", systemLogFile.getAbsolutePath());
+			parameters.put("stdOutFile", appSpec.getStdOutFile());
+			parameters.put("stdErrFile", appSpec.getStdErrFile());
 
 			parameters.put("commandShell", appSpec.getCommandShell());
 			parameters.put("startCommandLine", appSpec.getStartCommandLine());
@@ -140,24 +154,27 @@ public abstract class AbstractAppContext implements AppContext {
 	}
 
 	@Override public AppStatus updateStatus(AppStatus status) {
+		this.lastCheckTimeMillis = System.currentTimeMillis();
 		this.appStatus = status;
 		return this.appStatus;
 	}
 
 	@Override public AppStatus checkAndUpdateStatus() {
-		lastCheckTimeMillis = System.currentTimeMillis();
-		AppProcessState processStatus = getProcessStatus();
-		if (AppProcessState.RUNNING.equals(processStatus)) {
-			return updateStatus(AppStatus.RUNNING);
-		} else if (AppProcessState.NOT_RUNNING.equals(processStatus)) {
-			return updateStatus(AppStatus.NOT_RUNNING);
-		} else {
-			return updateStatus(AppStatus.UNKNOWN);
+		AppProcess process = getProcess();
+		if (process != null) {
+			AppProcessState processStatus = process.getStatus();
+			if (AppProcessState.RUNNING.equals(processStatus)) {
+				return updateStatus(AppStatus.RUNNING);
+			} else if (AppProcessState.NOT_RUNNING.equals(processStatus)) {
+				return updateStatus(AppStatus.NOT_RUNNING);
+			} else {
+				return updateStatus(AppStatus.UNKNOWN);
+			}
 		}
+		return appStatus;
 	}
 
-	public abstract AppProcess getProcess();
 
-	public abstract AppProcessState getProcessStatus();
+	public abstract AppProcess getProcess();
 
 }

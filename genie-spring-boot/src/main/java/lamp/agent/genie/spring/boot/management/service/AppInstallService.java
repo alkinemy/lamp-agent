@@ -1,6 +1,5 @@
 package lamp.agent.genie.spring.boot.management.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.install.AppInstaller;
 import lamp.agent.genie.core.install.InstallSpec;
@@ -24,8 +23,6 @@ import java.util.Map;
 @Slf4j
 @Service
 public class AppInstallService {
-
-	private ObjectMapper objectMapper = new ObjectMapper();
 
 	private AppInstaller appInstaller;
 

@@ -1,16 +1,19 @@
 package lamp.agent.genie.core.runtime.process.exec.foreground;
 
 import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.core.LampCoreConstants;
 import lamp.agent.genie.core.exception.CommandExecuteException;
+import lamp.agent.genie.core.exception.PidFileException;
 import lamp.agent.genie.core.runtime.process.AppProcessState;
 import lamp.agent.genie.core.runtime.process.exec.AbstractProcess;
+import lamp.agent.genie.core.support.vm.JavaVirtualMachineTools;
+import lamp.agent.genie.utils.FileUtils;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.*;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
+import java.util.Map;
 
 @Slf4j
 public class DefaultProcess extends AbstractProcess {
@@ -59,12 +62,14 @@ public class DefaultProcess extends AbstractProcess {
 			DaemonExecutor executor = new DaemonExecutor();
 			executor.setExitValues(EXIT_CODES);
 			executor.setWorkingDirectory(getWorkDirectory());
-			File systemLogFile = getSystemLogFile();
+			File stdOutFile = getStdOutFile();
+			File stdErrFile = getStdErrFile();
+			// FIXME Rolling 기능같은게 필요하다.
 			PumpStreamHandler streamHandler;
-			if (systemLogFile != null) {
-				streamHandler = new PumpStreamHandler(new BufferedOutputStream(new FileOutputStream(systemLogFile)));
+			if (stdOutFile != null && stdOutFile.equals(stdErrFile)) {
+				streamHandler = new PumpStreamHandler(getOutputStream(stdOutFile));
 			} else {
-				streamHandler = new PumpStreamHandler();
+				streamHandler = new PumpStreamHandler(getOutputStream(stdOutFile), getOutputStream(stdErrFile));
 			}
 			executor.setStreamHandler(streamHandler);
 			executor.setWatchdog(watchdog);
@@ -75,7 +80,31 @@ public class DefaultProcess extends AbstractProcess {
 		}
 	}
 
-	@Override public AppProcessState getStatus() {
+	protected OutputStream getOutputStream(File file) throws FileNotFoundException {
+		if (file == null) {
+			return null;
+		}
+		return new BufferedOutputStream(new FileOutputStream(file));
+	}
+
+	@Override
+	public String getId() {
+		String id = super.getId();
+		if (id == null) {
+			Map<String, Object> parameters = getContext().getAppSpec().getParameters();
+			if (parameters != null) {
+				Object displayNameObject = parameters.get(LampCoreConstants.JVM_DISPLAY_NAME);
+				if (displayNameObject != null) {
+					String displayName = String.valueOf(displayNameObject);
+					return JavaVirtualMachineTools.getPidByDisplayName(displayName);
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public AppProcessState getStatus() {
 		ExecuteWatchdog executeWatchdog = this.executeWatchdog;
 		if (executeWatchdog != null && !executeWatchdog.killedProcess()) {
 			return AppProcessState.RUNNING;

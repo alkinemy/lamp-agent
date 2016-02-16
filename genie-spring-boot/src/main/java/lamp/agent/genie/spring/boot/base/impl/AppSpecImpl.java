@@ -29,9 +29,11 @@ public class AppSpecImpl implements AppSpec {
 
 	private String appDirectory;
 	private String workDirectory;
+	private String logDirectory;
 
 	private String pidFile;
-	private String logFile;
+	private String stdOutFile;
+	private String stdErrFile;
 
 	private long checkStatusInterval;
 

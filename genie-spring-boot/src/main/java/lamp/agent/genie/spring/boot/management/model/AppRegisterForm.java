@@ -32,11 +32,14 @@ public class AppRegisterForm {
 	private AppProcessType processType;
 
 	private String appDirectory;
+	@NotEmpty
 	private String workDirectory;
+	private String logDirectory;
 
 	@NotEmpty
 	private String pidFile;
-	private String logFile;
+	private String stdOutFile;
+	private String stdErrorFile;
 
 	private long checkStatusInterval = 1000L;
 
@@ -49,8 +52,6 @@ public class AppRegisterForm {
 
 	private boolean monitor;
 
-	private Map<String, Object> parameters;
-
 	// Install
 	private boolean preInstalled;
 	private String filename;
@@ -58,4 +59,7 @@ public class AppRegisterForm {
 
 	private String commands;
 
+
+	private String parametersType;
+	private String parameters;
 }

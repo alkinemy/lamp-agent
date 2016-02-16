@@ -32,6 +32,7 @@ dependencies {
     compile project(':genie-core')
     compile project(':genie-metrics')
 
+    compile("org.springframework.boot:spring-boot-starter-data-rest")
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-configuration-processor")

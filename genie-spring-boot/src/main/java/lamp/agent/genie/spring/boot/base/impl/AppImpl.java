@@ -6,6 +6,7 @@ import lamp.agent.genie.core.AppSpec;
 import lamp.agent.genie.core.AppStatus;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
+import lamp.agent.genie.utils.StringUtils;
 import lombok.Getter;
 
 import java.io.File;
@@ -54,9 +55,14 @@ public class AppImpl implements App {
 		return context.getAppSpec().isMonitor();
 	}
 
-	@Override public File getLogFile() {
-		String logFile = context.getParsedAppSpec().getLogFile();
-		return logFile != null ? new File(logFile) : null;
+	@Override public File getStdOutFile() {
+		String logFile = context.getParsedAppSpec().getStdOutFile();
+		return StringUtils.isNotBlank(logFile) ? new File(logFile) : null;
+	}
+
+	@Override public File getStdErrFile() {
+		String logFile = context.getParsedAppSpec().getStdErrFile();
+		return StringUtils.isNotBlank(logFile) ? new File(logFile) : null;
 	}
 
 	@Override

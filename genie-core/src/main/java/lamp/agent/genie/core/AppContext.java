@@ -19,7 +19,9 @@ public interface AppContext {
 
 	Shell getShell();
 
-	File getSystemLogFile();
+	File getStdOutFile();
+
+	File getStdErrFile();
 
 	AppProcess getProcess();
 
@@ -33,7 +35,7 @@ public interface AppContext {
 
 	void terminateProcess();
 
-	Map<String,Object> getParameters();
+	Map<String, Object> getParameters();
 
 
 }

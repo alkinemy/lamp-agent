@@ -1,9 +1,13 @@
+import javax.tools.ToolProvider
+
 jar {
     baseName = 'genie-core'
     version =  '0.0.1-SNAPSHOT'
 }
 
 dependencies {
+
+    compile files(((URLClassLoader) ToolProvider.getSystemToolClassLoader()).getURLs())
 
     providedCompile('org.slf4j:slf4j-api:1.7.12')
 

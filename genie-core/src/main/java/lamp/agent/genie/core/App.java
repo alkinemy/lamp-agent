@@ -24,7 +24,9 @@ public interface App {
 
 	boolean isMonitor();
 
-	File getLogFile();
+	File getStdOutFile();
+
+	File getStdErrFile();
 
 	Date getStartTime();
 

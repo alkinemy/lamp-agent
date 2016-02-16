@@ -13,18 +13,26 @@ import lamp.agent.genie.spring.boot.base.impl.DefaultAppContext;
 import lamp.agent.genie.spring.boot.management.model.AppRegisterForm;
 import lamp.agent.genie.spring.boot.management.model.AppUpdateFileForm;
 import lamp.agent.genie.spring.boot.management.model.AppUpdateSpecForm;
+import lamp.agent.genie.spring.boot.management.model.LogFile;
 import lamp.agent.genie.spring.boot.register.model.AgentEvent;
 import lamp.agent.genie.spring.boot.register.model.AgentEventName;
+import lamp.agent.genie.utils.FilenameUtils;
+import lamp.agent.genie.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -175,12 +183,18 @@ public class AppManagementService {
 	public synchronized void deregister(String id, boolean forceStop) {
 		App app = appRegistry.lookup(id);
 		AppSpec appSpec = app.getSpec();
+		AppProcessType processType = appSpec.getProcessType();
+
+		Exceptions.throwsException(AppProcessType.DEFAULT.equals(processType) && app.isRunning() && !forceStop, ErrorCode.APP_IS_RUNNING, id);
+
+		if (app.isRunning() && forceStop) {
+			stop(id);
+		}
+
 		if (!appSpec.isPreInstalled()) {
+			Exceptions.throwsException(app.isRunning(), ErrorCode.APP_IS_RUNNING, id);
+
 			InstallSpec installSpec = installSpecService.getInstallConfig(id);
-			Exceptions.throwsException(app.isRunning() && !forceStop, ErrorCode.APP_IS_RUNNING, id);
-			if (app.isRunning() && forceStop) {
-				app.stop();
-			}
 			appInstallService.uninstall(newAppContextInstance(appSpec, installSpec));
 			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_UNINSTALLED, id));
 		}
@@ -214,24 +228,60 @@ public class AppManagementService {
 		return app.getStatus();
 	}
 
-	public Resource getLogFileResource(String id) {
+	public List<LogFile> getLogFiles(String id) {
 		App app = appRegistry.lookup(id);
-		File logFile = app.getLogFile();
-		return logFile != null ? new FileSystemResource(logFile) : null;
+		String logDirectory = app.getContext().getParsedAppSpec().getLogDirectory();
+		if (StringUtils.isNotBlank(logDirectory)) {
+			List<LogFile> logFiles = new ArrayList<>();
+			File dir = new File(logDirectory);
+			File[] files = dir.listFiles();
+			if (files != null) {
+				for (File file : files) {
+					LogFile logFile = new LogFile();
+					logFile.setName(file.getName());
+					logFile.setSize(file.length());
+					logFile.setLastModified(new Date(file.lastModified()));
+
+					logFiles.add(logFile);
+				}
+			}
+			return logFiles;
+		}
+		return Collections.emptyList();
 	}
 
-	public Resource getSystemLogFileResource(String id) {
+	public Resource getLogFileResource(String id, String filename) {
 		App app = appRegistry.lookup(id);
-		File logFile = app.getContext().getSystemLogFile();
-		return logFile != null ? new FileSystemResource(logFile) : null;
+		String logDirectory = app.getContext().getParsedAppSpec().getLogDirectory();
+		if (StringUtils.isNotBlank(logDirectory)) {
+			filename = FilenameUtils.getName(filename);
+			File file = new File(logDirectory, filename);
+			if (file.exists()) {
+				return new FileSystemResource(file);
+			}
+		}
+		return null;
 	}
 
-	//
-	//	public File getSystemLogFile(String agentId) {
-	//		App base = appRegistry.lookup(agentId);
-	//		File file = base.getContext().getSystemLogFile();
-	//		Exceptions.throwsException(file == null || !file.canRead(), ErrorCode.AGENT_SYSTEM_LOG_FILE_NOT_FOUND);
-	//		return file;
-	//	}
+	public Resource getStdOutFileResource(String id) {
+		App app = appRegistry.lookup(id);
+		File file = app.getStdOutFile();
+		if (file.exists()) {
+			return new FileSystemResource(file);
+		}
+		return null;
+	}
+
+	public Resource getStdErrFileResource(String id) {
+		App app = appRegistry.lookup(id);
+		File file = app.getContext().getStdErrFile();
+		if (file.exists()) {
+			return new FileSystemResource(file);
+		}
+		return null;
+	}
+
+
+
 
 }

@@ -61,14 +61,7 @@ public class DaemonProcess extends AbstractProcess {
 			DefaultExecutor executor = new DefaultExecutor();
 			log.info("[App:{}] workDirectory = {}", getContext().getId(), getWorkDirectory().getAbsolutePath());
 			executor.setWorkingDirectory(getWorkDirectory());
-			File systemLogFile = getSystemLogFile();
-			PumpStreamHandler streamHandler;
-			if (systemLogFile != null) {
-				log.info("[App:{}] systemLogFile = {}", getContext().getId(), systemLogFile.getAbsolutePath());
-				streamHandler = new PumpStreamHandler(new BufferedOutputStream(new FileOutputStream(systemLogFile)));
-			} else {
-				streamHandler = new PumpStreamHandler();
-			}
+			PumpStreamHandler streamHandler = new PumpStreamHandler();
 			executor.setStreamHandler(streamHandler);
 			executor.setWatchdog(watchdog);
 			executor.execute(cmdLine, new DaemonProcessResultHandler(getContext(), command));

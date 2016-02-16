@@ -23,9 +23,11 @@ public abstract class AbstractProcess implements AppProcess {
 	@Getter
 	private File pidFile;
 	@Getter
-	private File workDirectory;
+	private File stdOutFile;
 	@Getter
-	private File systemLogFile;
+	private File stdErrFile;
+	@Getter
+	private File workDirectory;
 	@Getter
 	private String startCommandLine;
 	@Getter
@@ -47,7 +49,8 @@ public abstract class AbstractProcess implements AppProcess {
 		AppSpec appSpec = context.getAppSpec();
 		AppSpec parsedAppSpec = context.getParsedAppSpec();
 
-		this.systemLogFile = context.getSystemLogFile();
+		this.stdOutFile = context.getStdOutFile();
+		this.stdErrFile = context.getStdErrFile();
 
 		this.workDirectory = new File(parsedAppSpec.getWorkDirectory());
 		this.pidFile = new File(parsedAppSpec.getPidFile());

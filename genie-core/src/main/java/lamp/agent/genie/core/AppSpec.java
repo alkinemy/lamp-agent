@@ -21,9 +21,11 @@ public interface AppSpec {
 
 	String getAppDirectory();
 	String getWorkDirectory();
+	String getLogDirectory();
 
 	String getPidFile();
-	String getLogFile();
+	String getStdOutFile();
+	String getStdErrFile();
 
 	String getCommandShell();
 
