@@ -3,7 +3,7 @@ package lamp.agent.genie.spring.boot.management.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lamp.agent.genie.core.exception.CommandException;
 import lamp.agent.genie.core.exception.UnknownCommandException;
-import lamp.agent.genie.core.install.command.Command;
+import lamp.agent.genie.core.command.Command;
 import lamp.agent.genie.spring.boot.management.service.install.ExtendedCommand;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;

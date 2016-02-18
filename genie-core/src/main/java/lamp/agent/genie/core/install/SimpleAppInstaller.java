@@ -3,7 +3,7 @@ package lamp.agent.genie.core.install;
 
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.exception.InstallException;
-import lamp.agent.genie.core.install.command.Command;
+import lamp.agent.genie.core.command.Command;
 import lamp.agent.genie.utils.CollectionUtils;
 import lamp.agent.genie.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;

@@ -5,7 +5,7 @@ import lamp.agent.genie.core.install.AppInstaller;
 import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.core.install.SimpleAppInstaller;
 import lamp.agent.genie.core.install.SimpleUninstallContext;
-import lamp.agent.genie.core.install.command.Command;
+import lamp.agent.genie.core.command.Command;
 import lamp.agent.genie.spring.boot.base.impl.MultipartFileInstallContext;
 import lamp.agent.genie.spring.boot.management.repository.InstallSpecRepository;
 import lamp.agent.genie.spring.boot.management.support.ExpressionParser;

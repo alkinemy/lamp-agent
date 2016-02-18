@@ -1,6 +1,4 @@
-package lamp.agent.genie.core.install;
-
-import lamp.agent.genie.core.install.command.Command;
+package lamp.agent.genie.core.command;
 
 import java.util.Map;
 

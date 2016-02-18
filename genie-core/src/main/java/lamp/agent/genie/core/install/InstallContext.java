@@ -1,7 +1,7 @@
 package lamp.agent.genie.core.install;
 
 import lamp.agent.genie.core.AppContext;
-import lamp.agent.genie.core.install.command.Command;
+import lamp.agent.genie.core.command.Command;
 
 import java.io.File;
 import java.io.IOException;

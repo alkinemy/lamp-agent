@@ -1,4 +1,4 @@
-package lamp.agent.genie.core.install.command;
+package lamp.agent.genie.core.command;
 
 import lamp.agent.genie.core.AppContext;
 import lombok.Getter;

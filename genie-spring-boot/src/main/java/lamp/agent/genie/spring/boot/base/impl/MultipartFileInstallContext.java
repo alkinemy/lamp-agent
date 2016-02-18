@@ -2,7 +2,7 @@ package lamp.agent.genie.spring.boot.base.impl;
 
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.install.InstallContext;
-import lamp.agent.genie.core.install.command.Command;
+import lamp.agent.genie.core.command.Command;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
