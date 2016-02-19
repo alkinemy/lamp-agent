@@ -1,4 +1,4 @@
-package lamp.agent.genie.core.command;
+package lamp.agent.genie.core.script;
 
 import java.util.Map;
 
@@ -17,15 +17,15 @@ public class CommandBuilder {
 		return this;
 	}
 
-	public Command build() {
+	public ScriptCommand build() {
 		String commandClassname = commandName;
 		if (commandClassname.indexOf('.') == -1) {
-			commandClassname = Command.class.getPackage().getName() + commandClassname;
+			commandClassname = ScriptCommand.class.getPackage().getName() + commandClassname;
 		}
 
 		try {
-			Class<Command> commandClass = (Class<Command>) Class.forName(commandClassname);
-			Command command = commandClass.newInstance();
+			Class<ScriptCommand> commandClass = (Class<ScriptCommand>) Class.forName(commandClassname);
+			ScriptCommand command = commandClass.newInstance();
 
 
 			return command;

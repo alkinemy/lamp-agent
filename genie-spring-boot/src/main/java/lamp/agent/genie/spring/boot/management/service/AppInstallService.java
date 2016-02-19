@@ -5,7 +5,7 @@ import lamp.agent.genie.core.install.AppInstaller;
 import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.core.install.SimpleAppInstaller;
 import lamp.agent.genie.core.install.SimpleUninstallContext;
-import lamp.agent.genie.core.command.Command;
+import lamp.agent.genie.core.script.ScriptCommand;
 import lamp.agent.genie.spring.boot.base.impl.MultipartFileInstallContext;
 import lamp.agent.genie.spring.boot.management.repository.InstallSpecRepository;
 import lamp.agent.genie.spring.boot.management.support.ExpressionParser;
@@ -32,7 +32,7 @@ public class AppInstallService {
 	private InstallSpecRepository installSpecRepository;
 
 	@Autowired
-	private CommandService commandService;
+	private ScriptCommandService scriptCommandService;
 
 	@PostConstruct
 	public void setUp() {
@@ -43,11 +43,7 @@ public class AppInstallService {
 	public void install(AppContext appContext, MultipartFile multipartFile) {
 		Map<String, Object> parameters = appContext.getParameters();
 		InstallSpec installSpec = appContext.getInstallSpec();
-		String directory = installSpec.getDirectory();
-		if (StringUtils.isBlank(directory)) {
-			directory = appContext.getParsedAppSpec().getAppDirectory();
-		}
-		directory = expressionParser.getValue(directory, parameters);
+		String directory = appContext.getParsedAppSpec().getAppDirectory();
 		File installDirectory = new File(directory);
 		if (!installDirectory.exists()) {
 			installDirectory.mkdirs();
@@ -61,9 +57,11 @@ public class AppInstallService {
 		filename = expressionParser.getValue(filename, parameters);
 		installSpec.setFilename(filename);
 
-		List<Command> commands = commandService.createCommands(installSpec.getCommands());
+		List<ScriptCommand> commands = scriptCommandService.parse(installSpec.getCommands());
 
-		MultipartFileInstallContext context = MultipartFileInstallContext.of(appContext, multipartFile, commands);
+		File installLogFile = new File(appContext.getAppMetaInfoDirectory(), "install-" + System.currentTimeMillis() + ".log");
+
+		MultipartFileInstallContext context = MultipartFileInstallContext.of(appContext, multipartFile, commands, installLogFile);
 
 		appInstaller.install(context);
 

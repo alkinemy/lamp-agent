@@ -1,7 +1,7 @@
 package lamp.agent.genie.core.install;
 
 import lamp.agent.genie.core.AppContext;
-import lamp.agent.genie.core.command.Command;
+import lamp.agent.genie.core.script.ScriptCommand;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,5 +13,8 @@ public interface InstallContext {
 
 	void transferTo(File dest) throws IOException;
 
-	List<Command> getCommands();
+	List<ScriptCommand> getCommands();
+
+	File getInstallLogFile();
+
 }

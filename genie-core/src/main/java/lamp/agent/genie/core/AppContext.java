@@ -9,6 +9,10 @@ import java.util.Map;
 
 public interface AppContext {
 
+	LampContext getLampContext();
+
+	File getAppMetaInfoDirectory();
+
 	AppSpec getAppSpec();
 
 	AppSpec getParsedAppSpec();
@@ -36,6 +40,8 @@ public interface AppContext {
 	void terminateProcess();
 
 	Map<String, Object> getParameters();
+
+	String getValue(String value, Map<String, Object> parameters);
 
 
 }

@@ -2,9 +2,8 @@ package lamp.agent.genie.spring.boot.management.service.install;
 
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.AppSpec;
-import lamp.agent.genie.core.exception.CommandExecuteException;
-import lamp.agent.genie.core.command.FileCreateCommand;
-import lamp.agent.genie.core.command.FileSetExecutableCommand;
+import lamp.agent.genie.core.script.CommandExecutionContext;
+import lamp.agent.genie.core.script.exception.CommandExecuteException;
 import lamp.agent.genie.spring.boot.management.support.ExpressionParser;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.Getter;
@@ -17,7 +16,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 @Slf4j
-public class SpringBootInstallCommand implements ExtendedCommand {
+public class SpringBootInstallCommand implements ExtendedScriptCommand {
 
 	private static final String DEFAULT_JVM_OPTS = "-Xms64m -Xmx128m";
 	private static final String DEFAULT_SPRING_OPTS = "--spring.profiles.active=${activeProfiles}";
@@ -53,9 +52,9 @@ public class SpringBootInstallCommand implements ExtendedCommand {
 		this.springOpts = (String) parameters.get("springOpts");
 	}
 
-	@Override public void execute(AppContext appContext) {
-		AppSpec appSpec = appContext.getParsedAppSpec();
-		Map<String, Object> parameters = appContext.getParameters();
+	@Override public void execute(CommandExecutionContext context) {
+		AppSpec appSpec = context.getAppContext().getParsedAppSpec();
+		Map<String, Object> parameters = context.getAppContext().getParameters();
 		String scriptFilename = launchScriptFilename;
 		if (StringUtils.isBlank(scriptFilename)) {
 			scriptFilename = appSpec.getArtifactId() + ".sh"; // TODO OS Type?
@@ -66,7 +65,7 @@ public class SpringBootInstallCommand implements ExtendedCommand {
 			try (InputStream inputStream = resource.getInputStream()) {
 				script = IOUtils.toString(inputStream, "UTF-8");
 			} catch (Exception e) {
-				throw new CommandExecuteException("SpringBootInstallCommand", e);
+				throw new CommandExecuteException(e, "SpringBootInstallCommand");
 			}
 		}
 
@@ -79,8 +78,8 @@ public class SpringBootInstallCommand implements ExtendedCommand {
 		log.debug("parameters = {}", parameters);
 		script = getValue(script, parameters);
 
-		new FileCreateCommand(scriptFile, script).execute(appContext);
-		new FileSetExecutableCommand(scriptFile).execute(appContext);
+//		new ScriptFileCreateCommand(scriptFile, script).execute(appContext);
+//		new FileSetExecutableCommand(scriptFile).execute(appContext);
 	}
 
 	protected String getValue(String value, Map<String, Object> parameters) {

@@ -2,7 +2,7 @@ package lamp.agent.genie.spring.boot.base.impl;
 
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.install.InstallContext;
-import lamp.agent.genie.core.command.Command;
+import lamp.agent.genie.core.script.ScriptCommand;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,10 @@ public class MultipartFileInstallContext implements InstallContext {
 	private MultipartFile multipartFile;
 
 	@Getter @NonNull
-	private List<Command> commands;
+	private List<ScriptCommand> commands;
+
+	@Getter @NonNull
+	private File installLogFile;
 
 	@Override public void transferTo(File dest) throws IOException {
 		multipartFile.transferTo(dest);

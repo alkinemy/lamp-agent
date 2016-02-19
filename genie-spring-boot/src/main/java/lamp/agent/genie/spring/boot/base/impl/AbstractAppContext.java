@@ -48,8 +48,8 @@ public abstract class AbstractAppContext implements AppContext {
 		this.installSpec = installSpec;
 	}
 
-	public AppSpec getAppSpec() {
-		return appSpec;
+	public File getAppMetaInfoDirectory() {
+		return getLampContext().getAppMetaInfoDirectory(getAppSpec().getId());
 	}
 
 	public File getStdOutFile() {
@@ -96,6 +96,7 @@ public abstract class AbstractAppContext implements AppContext {
 			parameters.put("workDirectory", appSpec.getWorkDirectory());
 			parameters.put("logDirectory", appSpec.getLogDirectory());
 			parameters.put("pidFile", appSpec.getPidFile());
+			parameters.put("ptql", appSpec.getPtql());
 			parameters.put("stdOutFile", appSpec.getStdOutFile());
 			parameters.put("stdErrFile", appSpec.getStdErrFile());
 
@@ -135,6 +136,13 @@ public abstract class AbstractAppContext implements AppContext {
 		} catch (Exception e) {
 			throw Exceptions.newException(ErrorCode.APP_CONFIG_PARSE_FAILED, e);
 		}
+	}
+
+	public String getValue(String value, Map<String, Object> parameters) {
+		Expression expression = parser.parseExpression(value, new TemplateParserContext("${", "}"));
+		StandardEvaluationContext context = new StandardEvaluationContext(parameters);
+		context.addPropertyAccessor(new MapAccessor());
+		return expression.getValue(context, value.getClass());
 	}
 
 	public String getId() {

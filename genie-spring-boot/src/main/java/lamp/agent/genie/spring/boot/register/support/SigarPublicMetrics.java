@@ -148,7 +148,7 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 					|| fileSystem.getType() == FileSystem.TYPE_NETWORK) {
 					String name = fileSystem.getDevName();
 					FileSystemUsage fileSystemUsage = sigar.getFileSystemUsage(name);
-					log.debug("fileSystemUsage = {}, {}", fileSystem.toMap(), fileSystemUsage);
+//					log.debug("fileSystemUsage = {}, {}", fileSystem.toMap(), fileSystemUsage);
 					result.add(new Metric<>("server.fileSystem." + name + ".total", fileSystemUsage.getTotal()));
 					result.add(new Metric<>("server.fileSystem." + name + ".free", fileSystemUsage.getFree()));
 					result.add(new Metric<>("server.fileSystem." + name + ".used", fileSystemUsage.getUsed()));
@@ -180,7 +180,7 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 					|| fileSystem.getType() == FileSystem.TYPE_NETWORK) {
 					String name = fileSystem.getDevName();
 					DiskUsage diskUsage = sigar.getDiskUsage(name);
-					log.debug("diskUsage = {}, {}", fileSystem.toMap(), diskUsage);
+//					log.debug("diskUsage = {}, {}", fileSystem.toMap(), diskUsage);
 					result.add(new Metric<>("server.disk." + name + ".reads", diskUsage.getReads()));
 					result.add(new Metric<>("server.disk." + name + ".writes", diskUsage.getWrites()));
 					result.add(new Metric<>("server.disk." + name + ".readBytes", diskUsage.getReadBytes()));

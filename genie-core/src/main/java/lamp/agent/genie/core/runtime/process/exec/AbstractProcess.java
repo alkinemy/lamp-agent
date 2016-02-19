@@ -4,7 +4,8 @@ import lamp.agent.genie.core.AppSpec;
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.exception.PidFileException;
 import lamp.agent.genie.core.runtime.process.AppProcess;
-import lamp.agent.genie.core.runtime.process.AppProcessState;
+import lamp.agent.genie.core.runtime.process.AppProcessTime;
+import lamp.agent.genie.utils.CommandLineUtils;
 import lamp.agent.genie.utils.FileUtils;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.Getter;
@@ -23,6 +24,8 @@ public abstract class AbstractProcess implements AppProcess {
 	@Getter
 	private File pidFile;
 	@Getter
+	private String ptql;
+	@Getter
 	private File stdOutFile;
 	@Getter
 	private File stdErrFile;
@@ -37,6 +40,8 @@ public abstract class AbstractProcess implements AppProcess {
 	@Getter
 	private long stopTimeout;
 
+	private String pidFromPtql;
+	private long procssFromPtqlTime;
 	private long lastModified;
 
 	public AbstractProcess(AppContext context) {
@@ -54,6 +59,7 @@ public abstract class AbstractProcess implements AppProcess {
 
 		this.workDirectory = new File(parsedAppSpec.getWorkDirectory());
 		this.pidFile = new File(parsedAppSpec.getPidFile());
+		this.ptql = parsedAppSpec.getPtql();
 
 		this.startCommandLine = parsedAppSpec.getStartCommandLine();
 		this.startTimeout = parsedAppSpec.getStartTimeout();
@@ -72,25 +78,41 @@ public abstract class AbstractProcess implements AppProcess {
 	}
 
 	protected CommandLine parseCommandLine(String command) {
-		String commandShell = getContext().getParsedAppSpec().getCommandShell();
-		if (StringUtils.isNotBlank(commandShell)) {
-			String[] commandShellArray = StringUtils.split(commandShell, " ");
-			CommandLine commandLine = new CommandLine(commandShellArray[0]);
-			if (commandShellArray.length > 1) {
-				for (int i = 1; i < commandShellArray.length; i++) {
-					commandLine.addArgument(commandShellArray[i], false);
-				}
-			}
-			commandLine.addArgument(command, false);
-
-			return commandLine;
-		} else {
-			return CommandLine.parse(command);
-		}
+		return CommandLineUtils.parse(getContext().getParsedAppSpec(), command);
 	}
 
 	@Override
 	public String getId() {
+		String id = getPidFromFile();
+
+		if (StringUtils.isBlank(id) && StringUtils.isNotBlank(getPtql())) {
+			log.debug("[App:{}] ptql = {}", context.getId(), getPtql());
+			boolean findPid = true;
+			if (StringUtils.isNotBlank(this.pidFromPtql)) {
+				AppProcessTime processTime = context.getShell().getProcessTime(pidFromPtql);
+				if (processTime != null && processTime.getTotal() >= procssFromPtqlTime) {
+					findPid = false;
+					id = this.pidFromPtql;
+					this.procssFromPtqlTime = processTime.getTotal();
+				}
+			}
+
+			if (findPid) {
+				Long pid = context.getShell().getProcessId(getPtql());
+				id = (pid != null ? String.valueOf(pid) : null);
+				if (StringUtils.isNotBlank(id)) {
+					AppProcessTime processTime = context.getShell().getProcessTime(id);
+					if (processTime != null) {
+						this.pidFromPtql = id;
+						this.procssFromPtqlTime = processTime.getTotal();
+					}
+				}
+			}
+		}
+		return id;
+	}
+
+	protected String getPidFromFile() {
 		File pidFile = getPidFile();
 		log.debug("[App:{}] pidFile = {}", context.getId(), pidFile != null ? pidFile.getAbsolutePath() : null);
 		if (pidFile != null && pidFile.exists()) {
@@ -102,5 +124,4 @@ public abstract class AbstractProcess implements AppProcess {
 		}
 		return null;
 	}
-
 }

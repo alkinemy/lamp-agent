@@ -2,12 +2,10 @@ package lamp.agent.genie.core.runtime.process.exec.foreground;
 
 import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.LampCoreConstants;
-import lamp.agent.genie.core.exception.CommandExecuteException;
-import lamp.agent.genie.core.exception.PidFileException;
+import lamp.agent.genie.core.script.exception.CommandExecuteException;
 import lamp.agent.genie.core.runtime.process.AppProcessState;
 import lamp.agent.genie.core.runtime.process.exec.AbstractProcess;
 import lamp.agent.genie.core.support.vm.JavaVirtualMachineTools;
-import lamp.agent.genie.utils.FileUtils;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.*;
@@ -76,7 +74,7 @@ public class DefaultProcess extends AbstractProcess {
 			executor.execute(cmdLine, executeResultHandler);
 			return watchdog;
 		} catch (Exception e) {
-			throw new CommandExecuteException(command, e);
+			throw new CommandExecuteException(e, command);
 		}
 	}
 

@@ -36,8 +36,8 @@ public class AppRegisterForm {
 	private String workDirectory;
 	private String logDirectory;
 
-	@NotEmpty
 	private String pidFile;
+	private String ptql;
 	private String stdOutFile;
 	private String stdErrorFile;
 
