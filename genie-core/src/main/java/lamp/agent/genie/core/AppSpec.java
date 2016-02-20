@@ -24,6 +24,7 @@ public interface AppSpec {
 	String getLogDirectory();
 
 	String getPidFile();
+	String getPtql();
 	String getStdOutFile();
 	String getStdErrFile();
 

@@ -10,6 +10,8 @@ dependencies {
     compile files(((URLClassLoader) ToolProvider.getSystemToolClassLoader()).getURLs())
 
     providedCompile('org.slf4j:slf4j-api:1.7.12')
+    providedCompile('com.fasterxml.jackson.core:jackson-core:2.6.5')
+    providedCompile('com.fasterxml.jackson.core:jackson-databind:2.6.5')
 
     compile('com.google.code.findbugs:jsr305:3.0.0')
     compile("org.apache.commons:commons-exec:1.3")

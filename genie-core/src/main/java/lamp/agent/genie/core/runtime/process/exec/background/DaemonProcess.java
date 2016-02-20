@@ -1,7 +1,7 @@
 package lamp.agent.genie.core.runtime.process.exec.background;
 
 import lamp.agent.genie.core.AppContext;
-import lamp.agent.genie.core.exception.CommandExecuteException;
+import lamp.agent.genie.core.script.exception.CommandExecuteException;
 import lamp.agent.genie.core.runtime.process.AppProcessState;
 import lamp.agent.genie.core.runtime.process.exec.AbstractProcess;
 import lamp.agent.genie.core.runtime.shell.Shell;
@@ -11,10 +11,6 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
-
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 
 @Slf4j
 public class DaemonProcess extends AbstractProcess {
@@ -66,7 +62,7 @@ public class DaemonProcess extends AbstractProcess {
 			executor.setWatchdog(watchdog);
 			executor.execute(cmdLine, new DaemonProcessResultHandler(getContext(), command));
 		} catch (Exception e) {
-			throw new CommandExecuteException(command, e);
+			throw new CommandExecuteException(e, command);
 		}
 		return watchdog;
 	}
@@ -74,7 +70,7 @@ public class DaemonProcess extends AbstractProcess {
 	@Override public AppProcessState getStatus() {
 		String pid = getId();
 		if (StringUtils.isBlank(pid)) {
-			return AppProcessState.UNKNOWN;
+			return AppProcessState.NOT_RUNNING;
 		}
 		return getContext().getShell().getProcessState(pid);
 	}

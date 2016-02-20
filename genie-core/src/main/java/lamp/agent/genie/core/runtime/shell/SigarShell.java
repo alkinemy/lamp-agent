@@ -1,5 +1,6 @@
 package lamp.agent.genie.core.runtime.shell;
 
+import lamp.agent.genie.core.runtime.process.AppProcessTime;
 import lamp.agent.genie.core.support.sigar.SigarNativeLoader;
 import lamp.agent.genie.core.runtime.process.AppProcessState;
 import lamp.agent.genie.core.exception.ShellException;
@@ -8,9 +9,16 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.hyperic.jni.ArchNotSupportedException;
 import org.hyperic.sigar.ProcState;
+import org.hyperic.sigar.ProcTime;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
+import org.hyperic.sigar.ptql.ProcessFinder;
 
+/**
+ * https://support.hyperic.com/display/SIGAR/PTQL
+ * ps "State.Name.eq=java,Args.*.eq=lamp.agent.TestApp"
+ *
+ */
 @Slf4j
 public class SigarShell implements Shell {
 
@@ -23,7 +31,14 @@ public class SigarShell implements Shell {
 	}
 
 	@Getter
-	private Sigar sigar = new Sigar();
+	private final Sigar sigar;
+	@Getter
+	private final ProcessFinder processFinder;
+
+	public SigarShell() {
+		sigar = new Sigar();
+		processFinder = new ProcessFinder(sigar);
+	}
 
 	@Override
 	public AppProcessState getProcessState(String pid) {
@@ -40,6 +55,34 @@ public class SigarShell implements Shell {
 			throw new ShellException("Unable to get process status : " + pid, e);
 		}
 		return AppProcessState.NOT_RUNNING;
+	}
+
+	@Override
+	public Long getProcessId(String ptql) {
+		try {
+			long[] pids = processFinder.find(ptql);
+			if (pids.length == 1) {
+				return pids[0];
+			}
+		} catch (SigarException e) {
+			throw new ShellException("Unable to find single process  : " + ptql, e);
+		}
+		return null;
+	}
+
+
+
+	@Override
+	public AppProcessTime getProcessTime(String pid) {
+		ProcTime procTime = null;
+		try {
+			procTime = sigar.getProcTime(pid);
+			return new AppProcessTime(procTime.getStartTime(), procTime.getUser(), procTime.getSys(), procTime.getTotal());
+		} catch (SigarException e) {
+			// 무시
+		}
+		return null;
+
 	}
 
 	@Override

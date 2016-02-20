@@ -2,13 +2,18 @@ package lamp.agent.genie.core.install;
 
 
 import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.core.exception.AppException;
 import lamp.agent.genie.core.exception.InstallException;
-import lamp.agent.genie.core.command.Command;
+import lamp.agent.genie.core.script.CommandExecutionContext;
+import lamp.agent.genie.core.script.ScriptCommand;
+import lamp.agent.genie.core.script.SimpleCommandExecutionContext;
 import lamp.agent.genie.utils.CollectionUtils;
 import lamp.agent.genie.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
 @Slf4j
@@ -18,20 +23,23 @@ public class SimpleAppInstaller implements AppInstaller {
 	}
 
 	@Override public void install(InstallContext context) {
-		try {
-			AppContext appContext = context.getAppContext();
+		AppContext appContext = context.getAppContext();
+		try (CommandExecutionContext commandExecutionContext
+				= new SimpleCommandExecutionContext(appContext, new BufferedOutputStream(new FileOutputStream(context.getInstallLogFile())))) {
 			InstallSpec installSpec = appContext.getInstallSpec();
 
 			File file = new File(installSpec.getDirectory(), installSpec.getFilename());
 			context.transferTo(file);
 
-			List<Command> commands = context.getCommands();
+			List<ScriptCommand> commands = context.getCommands();
 
 			if (CollectionUtils.isNotEmpty(commands)) {
-				for (Command command : commands) {
-					command.execute(appContext);
+				for (ScriptCommand command : commands) {
+					command.execute(commandExecutionContext);
 				}
 			}
+		} catch (AppException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new InstallException("Install failed", e);
 		}

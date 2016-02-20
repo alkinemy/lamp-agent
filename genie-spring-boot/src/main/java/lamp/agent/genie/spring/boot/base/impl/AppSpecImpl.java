@@ -32,6 +32,7 @@ public class AppSpecImpl implements AppSpec {
 	private String logDirectory;
 
 	private String pidFile;
+	private String ptql;
 	private String stdOutFile;
 	private String stdErrFile;
 
