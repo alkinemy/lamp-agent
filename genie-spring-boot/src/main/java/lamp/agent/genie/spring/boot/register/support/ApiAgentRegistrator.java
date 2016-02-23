@@ -51,7 +51,8 @@ public class ApiAgentRegistrator implements AgentRegistrator {
 		BeanUtils.copyProperties(lampClientProperties, agentRegisterForm, AgentRegisterForm.class);
 		agentRegisterForm.setId(lampClientProperties.getId());
 		agentRegisterForm.setName(lampClientProperties.getName());
-		agentRegisterForm.setType(lampClientProperties.getType());
+		agentRegisterForm.setGroupId(lampClientProperties.getGroupId());
+		agentRegisterForm.setArtifactId(lampClientProperties.getArtifactId());
 		agentRegisterForm.setVersion(lampClientProperties.getVersion());
 		agentRegisterForm.setSecretKey(lampClientProperties.getSecretKey());
 		agentRegisterForm.setAppDirectory(lampClientProperties.getMountPointPath());

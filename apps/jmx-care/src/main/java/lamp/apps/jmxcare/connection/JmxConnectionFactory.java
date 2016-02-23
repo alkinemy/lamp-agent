@@ -43,7 +43,6 @@ public class JmxConnectionFactory {
 				if (serviceUrl == null) {
 					String agent = Paths.get(vm.getSystemProperties().getProperty("java.home"), "lib", "management-agent.jar").toString();
 					vm.loadAgent(agent);
-
 					serviceUrl = ConnectorAddressLink.importFrom(pid);
 				}
 

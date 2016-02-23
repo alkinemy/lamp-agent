@@ -10,6 +10,7 @@ import lamp.agent.genie.core.runtime.process.AppProcessState;
 import lamp.agent.genie.core.runtime.shell.Shell;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
+import lamp.agent.genie.utils.FilenameUtils;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -121,16 +122,24 @@ public abstract class AbstractAppContext implements AppContext {
 				parameters.putAll(appSpec.getParameters());
 			}
 
+			String filename = (String) parameters.get("filename");
+			if (StringUtils.isNotBlank(filename)) {
+				filename = getValue(filename, parameters);
+				parameters.put("filename", filename);
+				parameters.put("fileBaseName", FilenameUtils.getBaseName(filename));
+				parameters.put("fileExtension", FilenameUtils.getExtension(filename));
+			}
+
 			for (Map.Entry<String, Object> entry : parameters.entrySet()) {
 				Object value = entry.getValue();
 				if (value instanceof String) {
-					Expression expression = parser.parseExpression((String) value, new TemplateParserContext("${", "}"));
-					StandardEvaluationContext context = new StandardEvaluationContext(parameters);
-					context.addPropertyAccessor(new MapAccessor());
-					log.info("{} = {}", entry.getKey(), value);
-					parameters.put(entry.getKey(), expression.getValue(context, value.getClass()));
+
+					String expValue = getValue((String) value, parameters);
+					log.info("{} = {}", entry.getKey(), expValue);
+					parameters.put(entry.getKey(), expValue);
 				}
 			}
+
 
 			return parameters;
 		} catch (Exception e) {

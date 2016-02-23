@@ -8,8 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 @Slf4j
 @Getter
@@ -34,7 +33,18 @@ public class ScriptFileCreateCommand extends ScriptFileCommand {
 			if (!file.getParentFile().exists()) {
 				file.getParentFile().mkdirs();
 			}
-			FileUtils.writeStringToFile(file, content, charset);
+			String lineSeparator = System.getProperty("line.separator");
+			try (BufferedReader reader = new BufferedReader(new StringReader(getContent()));
+					BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+				String line;
+				for (int i = 0; (line = reader.readLine()) != null; i++) {
+					if (i > 0) {
+						writer.write(lineSeparator);
+					}
+					writer.write(line);
+				}
+				writer.flush();
+			}
 			log.info("File Created : {}", file.getAbsolutePath());
 
 			if (executable) {

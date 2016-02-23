@@ -2,9 +2,11 @@ package lamp.agent.genie.core.runtime.process.exec;
 
 import lamp.agent.genie.core.AppSpec;
 import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.core.LampCoreConstants;
 import lamp.agent.genie.core.exception.PidFileException;
 import lamp.agent.genie.core.runtime.process.AppProcess;
 import lamp.agent.genie.core.runtime.process.AppProcessTime;
+import lamp.agent.genie.core.support.vm.JavaVirtualMachineTools;
 import lamp.agent.genie.utils.CommandLineUtils;
 import lamp.agent.genie.utils.FileUtils;
 import lamp.agent.genie.utils.StringUtils;
@@ -14,6 +16,7 @@ import org.apache.commons.exec.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -106,6 +109,15 @@ public abstract class AbstractProcess implements AppProcess {
 						this.pidFromPtql = id;
 						this.procssFromPtqlTime = processTime.getTotal();
 					}
+				}
+			}
+		} else {
+			Map<String, Object> parameters = getContext().getAppSpec().getParameters();
+			if (parameters != null) {
+				Object displayNameObject = parameters.get(LampCoreConstants.JVM_DISPLAY_NAME);
+				if (displayNameObject != null) {
+					String displayName = String.valueOf(displayNameObject);
+					return JavaVirtualMachineTools.getPidByDisplayName(displayName);
 				}
 			}
 		}

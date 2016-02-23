@@ -22,7 +22,8 @@ import java.net.UnknownHostException;
 @ConfigurationProperties(prefix = "lamp.agent", ignoreUnknownFields = false)
 public class LampAgentProperties implements ApplicationListener<ApplicationEvent> {
 
-	private String type;
+	private String groupId;
+	private String artifactId;
 	private String version;
 
 	private String id;

@@ -212,26 +212,29 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 			String[] names = sigar.getNetInterfaceList();
 
 			for (String name : names) {
-				NetInterfaceStat netInterfaceStat = sigar.getNetInterfaceStat(name);
+				try {
+					NetInterfaceStat netInterfaceStat = sigar.getNetInterfaceStat(name);
 
-				result.add(new Metric<>("server.netInterface." + name + ".rxBytes", netInterfaceStat.getRxBytes()));
-				result.add(new Metric<>("server.netInterface." + name + ".rxPackets", netInterfaceStat.getRxPackets()));
-				result.add(new Metric<>("server.netInterface." + name + ".rxErrors", netInterfaceStat.getRxErrors()));
-				result.add(new Metric<>("server.netInterface." + name + ".rxDropped", netInterfaceStat.getRxDropped()));
-				result.add(new Metric<>("server.netInterface." + name + ".rxOverruns", netInterfaceStat.getRxOverruns()));
-				result.add(new Metric<>("server.netInterface." + name + ".txBytes", netInterfaceStat.getTxBytes()));
-				result.add(new Metric<>("server.netInterface." + name + ".txPackets", netInterfaceStat.getTxPackets()));
-				result.add(new Metric<>("server.netInterface." + name + ".txErrors", netInterfaceStat.getTxErrors()));
-				result.add(new Metric<>("server.netInterface." + name + ".txDropped", netInterfaceStat.getTxDropped()));
-				result.add(new Metric<>("server.netInterface." + name + ".txOverruns", netInterfaceStat.getTxOverruns()));
-				result.add(new Metric<>("server.netInterface." + name + ".txCollisions", netInterfaceStat.getTxCollisions()));
-				result.add(new Metric<>("server.netInterface." + name + ".txCarrier", netInterfaceStat.getTxCarrier()));
-				result.add(new Metric<>("server.netInterface." + name + ".speed", netInterfaceStat.getSpeed()));
-
+					result.add(new Metric<>("server.netInterface." + name + ".rxBytes", netInterfaceStat.getRxBytes()));
+					result.add(new Metric<>("server.netInterface." + name + ".rxPackets", netInterfaceStat.getRxPackets()));
+					result.add(new Metric<>("server.netInterface." + name + ".rxErrors", netInterfaceStat.getRxErrors()));
+					result.add(new Metric<>("server.netInterface." + name + ".rxDropped", netInterfaceStat.getRxDropped()));
+					result.add(new Metric<>("server.netInterface." + name + ".rxOverruns", netInterfaceStat.getRxOverruns()));
+					result.add(new Metric<>("server.netInterface." + name + ".txBytes", netInterfaceStat.getTxBytes()));
+					result.add(new Metric<>("server.netInterface." + name + ".txPackets", netInterfaceStat.getTxPackets()));
+					result.add(new Metric<>("server.netInterface." + name + ".txErrors", netInterfaceStat.getTxErrors()));
+					result.add(new Metric<>("server.netInterface." + name + ".txDropped", netInterfaceStat.getTxDropped()));
+					result.add(new Metric<>("server.netInterface." + name + ".txOverruns", netInterfaceStat.getTxOverruns()));
+					result.add(new Metric<>("server.netInterface." + name + ".txCollisions", netInterfaceStat.getTxCollisions()));
+					result.add(new Metric<>("server.netInterface." + name + ".txCarrier", netInterfaceStat.getTxCarrier()));
+					result.add(new Metric<>("server.netInterface." + name + ".speed", netInterfaceStat.getSpeed()));
+				} catch (SigarException e) {
+					log.info("addNetInterfaceMetrics Failed ({}) {}" , name, e.getMessage());
+				}
 			}
 
 		} catch (SigarException e) {
-			log.warn("addFileSystemMetrics Failed", e);
+			log.warn("addNetInterfaceMetrics Failed", e);
 		}
 	}
 }

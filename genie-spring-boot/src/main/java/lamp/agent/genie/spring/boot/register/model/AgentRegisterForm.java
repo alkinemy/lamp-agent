@@ -14,7 +14,8 @@ public class AgentRegisterForm {
 	private String id;
 	private String name;
 
-	private String type;
+	private String groupId;
+	private String artifactId;
 	private String version;
 
 	private String protocol;

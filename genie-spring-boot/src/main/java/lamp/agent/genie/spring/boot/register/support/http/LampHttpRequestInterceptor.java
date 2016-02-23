@@ -22,7 +22,7 @@ public class LampHttpRequestInterceptor implements ClientHttpRequestInterceptor 
 
 	public LampHttpRequestInterceptor(LampAgentProperties clientProperties) {
 		this.clientProperties = clientProperties;
-		this.userAgent = clientProperties.getType() + "/" + clientProperties.getVersion();
+		this.userAgent = clientProperties.getGroupId() + "/" + clientProperties.getArtifactId() + "/" + clientProperties.getVersion();
 	}
 
 	@Override
