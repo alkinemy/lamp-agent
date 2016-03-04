@@ -9,6 +9,7 @@ import lamp.agent.genie.spring.boot.register.AgentRegistrator;
 import lamp.agent.genie.spring.boot.register.service.AgentSecretKeyGenerator;
 import lamp.agent.genie.spring.boot.register.support.ApiAgentEventPublisher;
 import lamp.agent.genie.spring.boot.register.support.ApiAgentRegistrator;
+import lamp.agent.genie.spring.boot.register.support.DiskSpacePublicMetrics;
 import lamp.agent.genie.spring.boot.register.support.SigarPublicMetrics;
 import lamp.agent.genie.spring.boot.register.support.http.BasicAuthHttpRequestInterceptor;
 import lamp.agent.genie.spring.boot.register.support.http.LampHttpRequestInterceptor;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@EnableConfigurationProperties({ LampAgentProperties.class })
+@EnableConfigurationProperties({ LampAgentProperties.class, MetricsDiskSpaceProperties.class })
 public class LampAgentConfig {
 
 	@Bean
@@ -41,6 +42,12 @@ public class LampAgentConfig {
 	@ConditionalOnProperty(name = "lamp.agent.metrics-sigar-enabled", havingValue = "true")
 	public SigarPublicMetrics sigarPublicMetrics() {
 		return new SigarPublicMetrics();
+	}
+
+	@Bean
+	@ConditionalOnProperty(name = "metrics.diskSpace.enabled", havingValue = "true")
+	public DiskSpacePublicMetrics diskSpaceMetrics() {
+		return new DiskSpacePublicMetrics();
 	}
 
 	@Bean
