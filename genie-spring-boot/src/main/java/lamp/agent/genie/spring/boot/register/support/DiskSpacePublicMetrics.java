@@ -17,7 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 @Slf4j
-public class DiskSpacePublicMetrics implements PublicMetrics, Ordered {
+public class DiskspacePublicMetrics implements PublicMetrics, Ordered {
 
 	@Autowired
 	private MetricsDiskSpaceProperties metricsDiskSpaceProperties;
@@ -66,9 +66,9 @@ public class DiskSpacePublicMetrics implements PublicMetrics, Ordered {
 	protected void addDiskSpace(Collection<Metric<?>> result) {
 		for (Disk disk : disks) {
 			File path = disk.getPath();
-			result.add(new Metric<>(name("server.diskSpace", disk.getName(), "total"), path.getTotalSpace()));
-			result.add(new Metric<>(name("server.diskSpace", disk.getName(), "free"), path.getFreeSpace()));
-			result.add(new Metric<>(name("server.diskSpace", disk.getName(), "usable"), path.getUsableSpace()));
+			result.add(new Metric<>(name("server.diskspace", disk.getName(), "total"), path.getTotalSpace()));
+			result.add(new Metric<>(name("server.diskspace", disk.getName(), "free"), path.getFreeSpace()));
+			result.add(new Metric<>(name("server.diskspace", disk.getName(), "usable"), path.getUsableSpace()));
 		}
 	}
 

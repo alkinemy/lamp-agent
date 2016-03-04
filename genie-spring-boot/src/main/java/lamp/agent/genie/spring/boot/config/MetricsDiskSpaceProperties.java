@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "metrics.diskSpace")
+@ConfigurationProperties(prefix = "metrics.diskspace")
 public class MetricsDiskSpaceProperties {
 
 	private String name;

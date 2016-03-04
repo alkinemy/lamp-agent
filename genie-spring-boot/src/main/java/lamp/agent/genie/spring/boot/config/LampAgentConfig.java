@@ -9,7 +9,7 @@ import lamp.agent.genie.spring.boot.register.AgentRegistrator;
 import lamp.agent.genie.spring.boot.register.service.AgentSecretKeyGenerator;
 import lamp.agent.genie.spring.boot.register.support.ApiAgentEventPublisher;
 import lamp.agent.genie.spring.boot.register.support.ApiAgentRegistrator;
-import lamp.agent.genie.spring.boot.register.support.DiskSpacePublicMetrics;
+import lamp.agent.genie.spring.boot.register.support.DiskspacePublicMetrics;
 import lamp.agent.genie.spring.boot.register.support.SigarPublicMetrics;
 import lamp.agent.genie.spring.boot.register.support.http.BasicAuthHttpRequestInterceptor;
 import lamp.agent.genie.spring.boot.register.support.http.LampHttpRequestInterceptor;
@@ -45,9 +45,9 @@ public class LampAgentConfig {
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "metrics.diskSpace.enabled", havingValue = "true")
-	public DiskSpacePublicMetrics diskSpaceMetrics() {
-		return new DiskSpacePublicMetrics();
+	@ConditionalOnProperty(name = "metrics.diskspace.enabled", havingValue = "true")
+	public DiskspacePublicMetrics diskspaceMetrics() {
+		return new DiskspacePublicMetrics();
 	}
 
 	@Bean
