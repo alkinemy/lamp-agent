@@ -52,7 +52,11 @@ public class SigarShell implements Shell {
 				return AppProcessState.RUNNING;
 			}
 		} catch (SigarException e) {
-			throw new ShellException("Unable to get process status : " + pid, e);
+			if (e.getMessage().indexOf("No such process") > -1) {
+				return AppProcessState.NOT_RUNNING;
+			} else {
+				throw new ShellException("Unable to get process status : " + pid, e);
+			}
 		}
 		return AppProcessState.NOT_RUNNING;
 	}
