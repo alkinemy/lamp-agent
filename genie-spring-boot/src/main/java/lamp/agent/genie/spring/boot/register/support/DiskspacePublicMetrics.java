@@ -17,7 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 @Slf4j
-public class DiskspacePublicMetrics implements PublicMetrics, Ordered {
+public class DiskSpacePublicMetrics implements PublicMetrics, Ordered {
 
 	@Autowired
 	private MetricsDiskSpaceProperties metricsDiskSpaceProperties;

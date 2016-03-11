@@ -29,7 +29,6 @@ jar {
 dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test")
 
-    compile project(':genie-core')
     compile project(':genie-metrics')
 
     compile("org.springframework.boot:spring-boot-starter-data-rest")

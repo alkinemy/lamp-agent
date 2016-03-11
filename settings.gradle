@@ -4,6 +4,4 @@ include 'genie-core'
 include 'genie-spring-boot'
 include 'genie-metrics'
 include 'test-app'
-include 'apps:jmx-care'
-findProject(':apps:jmx-care')?.name = 'jmx-care'
 
