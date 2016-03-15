@@ -1,6 +1,8 @@
 package lamp.agent.genie.spring.boot.config;
 
+import com.amazonaws.util.EC2MetadataUtils;
 import lamp.agent.genie.core.MountPoint;
+import lamp.agent.genie.utils.BooleanUtils;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +23,8 @@ import java.net.UnknownHostException;
 @Setter
 @ConfigurationProperties(prefix = "lamp.agent", ignoreUnknownFields = false)
 public class LampAgentProperties implements ApplicationListener<ApplicationEvent> {
+
+	private Boolean ec2 = Boolean.FALSE;
 
 	private String groupId;
 	private String artifactId;
@@ -54,9 +58,15 @@ public class LampAgentProperties implements ApplicationListener<ApplicationEvent
 
 	@PostConstruct
 	public void init() throws UnknownHostException {
-		InetAddress inetAddress = InetAddress.getLocalHost();
-		hostname = inetAddress.getHostName();
-		address = inetAddress.getHostAddress();
+		if (BooleanUtils.isTrue(ec2)) {
+			hostname = EC2MetadataUtils.getLocalHostName();
+			address = EC2MetadataUtils.getPrivateIpAddress();
+		} else {
+			InetAddress inetAddress = InetAddress.getLocalHost();
+			hostname = inetAddress.getHostName();
+			address = inetAddress.getHostAddress();
+		}
+
 		if (StringUtils.isBlank(version)) {
 			version = LampAgentProperties.class.getPackage().getImplementationVersion();
 		}
