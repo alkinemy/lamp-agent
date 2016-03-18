@@ -41,9 +41,11 @@ public class LampAgentProperties implements ApplicationListener<ApplicationEvent
 	private String hostname;
 	private String address;
 
-	private String healthPath;
-	private String metricsPath;
-	private Boolean metricsSigarEnabled;
+	private String healthType = "SpringBoot";
+	private String healthPath = "/health";
+	private String metricsType = "SpringBoot";
+	private String metricsPath = "/metrics";
+	private Boolean metricsSigarEnabled = Boolean.FALSE;
 
 	private boolean monitor;
 	private long monitorPeriod;
