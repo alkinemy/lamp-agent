@@ -1,14 +1,14 @@
 package lamp.agent.genie.core.script;
 
-import lamp.agent.genie.core.AppContext;
 import lamp.agent.genie.core.LampCoreConstants;
 import lamp.agent.genie.core.script.exception.CommandExecuteException;
-import lamp.agent.genie.utils.FileUtils;
+import lamp.agent.genie.utils.ExpressionParser;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
+import java.util.Map;
 
 @Slf4j
 @Getter
@@ -27,6 +27,8 @@ public class ScriptFileCreateCommand extends ScriptFileCommand {
 	@Override
 	public void execute(CommandExecutionContext context) {
 		log.info("File Create (0) : {}", filename);
+		ExpressionParser expressionParser = context.getExpressionParser();
+		Map<String, Object> parameters = context.getAppContext().getParameters();
 		try {
 			File file = getFile(context.getAppContext(), filename);
 
@@ -41,7 +43,8 @@ public class ScriptFileCreateCommand extends ScriptFileCommand {
 					if (i > 0) {
 						writer.write(lineSeparator);
 					}
-					writer.write(line);
+					String parsedLine = expressionParser.getValue(line, parameters);
+					writer.write(parsedLine);
 				}
 				writer.flush();
 			}

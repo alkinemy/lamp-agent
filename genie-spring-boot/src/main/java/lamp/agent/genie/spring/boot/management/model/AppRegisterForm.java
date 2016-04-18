@@ -8,7 +8,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
-import java.util.Map;
 
 import static org.apache.commons.exec.ExecuteWatchdog.INFINITE_TIMEOUT;
 

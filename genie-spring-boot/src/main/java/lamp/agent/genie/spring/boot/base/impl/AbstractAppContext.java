@@ -108,6 +108,9 @@ public abstract class AbstractAppContext implements AppContext {
 			parameters.put("stopTimeout", appSpec.getStopTimeout());
 			parameters.put("monitor", appSpec.isMonitor());
 
+			parameters.put("hostname", lampContext.getHostname());
+			parameters.put("address", lampContext.getAddress());
+
 			if (installSpec != null) {
 				parameters.put("filename", installSpec.getFilename());
 			}
