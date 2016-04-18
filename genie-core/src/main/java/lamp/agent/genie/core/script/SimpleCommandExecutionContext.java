@@ -1,6 +1,7 @@
 package lamp.agent.genie.core.script;
 
 import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.utils.ExpressionParser;
 import lamp.agent.genie.utils.IOUtils;
 import lombok.Getter;
 import lombok.NonNull;
@@ -17,14 +18,17 @@ public class SimpleCommandExecutionContext implements CommandExecutionContext {
 	private final OutputStream outputStream;
 	private final OutputStream errorStream;
 
-	public SimpleCommandExecutionContext(AppContext appContext, OutputStream outputStream) {
-		this(appContext, outputStream, outputStream);
+	private final ExpressionParser expressionParser;
+
+	public SimpleCommandExecutionContext(AppContext appContext, OutputStream outputStream, ExpressionParser expressionParser) {
+		this(appContext, outputStream, outputStream, expressionParser);
 	}
 
-	public SimpleCommandExecutionContext(AppContext appContext, OutputStream outputStream, OutputStream errorStream) {
+	public SimpleCommandExecutionContext(AppContext appContext, OutputStream outputStream, OutputStream errorStream, ExpressionParser expressionParser) {
 		this.appContext = appContext;
 		this.outputStream = outputStream;
 		this.errorStream = errorStream;
+		this.expressionParser = expressionParser;
 	}
 
 	public OutputStream getOutputStream() {
@@ -33,6 +37,10 @@ public class SimpleCommandExecutionContext implements CommandExecutionContext {
 
 	public OutputStream getErrorStream() {
 		return errorStream;
+	}
+
+	public ExpressionParser getExpressionParser() {
+		return expressionParser;
 	}
 
 	@Override public void close() throws IOException {

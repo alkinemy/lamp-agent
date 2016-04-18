@@ -25,7 +25,7 @@ public class SimpleAppInstaller implements AppInstaller {
 	@Override public void install(InstallContext context) {
 		AppContext appContext = context.getAppContext();
 		try (CommandExecutionContext commandExecutionContext
-				= new SimpleCommandExecutionContext(appContext, new BufferedOutputStream(new FileOutputStream(context.getInstallLogFile())))) {
+				= new SimpleCommandExecutionContext(appContext, new BufferedOutputStream(new FileOutputStream(context.getInstallLogFile())), context.getExpressionParser())) {
 			InstallSpec installSpec = appContext.getInstallSpec();
 
 			File file = new File(installSpec.getDirectory(), installSpec.getFilename());
