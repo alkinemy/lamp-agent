@@ -8,8 +8,6 @@ import lamp.agent.genie.spring.boot.management.service.AppManagementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,12 +41,12 @@ public class AppController {
 	}
 
 	@RequestMapping(value = "/{id:.+}", method = RequestMethod.POST)
-	public void updateSpec(@PathVariable("id") String id, AppUpdateSpecForm form) {
-		appManagementService.updateSpec(id, form);
+	public void update(@PathVariable("id") String id, AppUpdateForm form) {
+		appManagementService.update(id, form);
 	}
 
 	@RequestMapping(value = "/{id}/file", method = RequestMethod.POST)
-	public void updateFile(@PathVariable("id") String id, AppUpdateFileForm form) {
+	public void updateFile(@PathVariable("id") String id, AppFileUpdateForm form) {
 		appManagementService.updateFile(id, form);
 	}
 

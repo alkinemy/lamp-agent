@@ -58,7 +58,7 @@ public class AppRegisterForm {
 
 	private String commands;
 
-
 	private String parametersType;
 	private String parameters;
+
 }

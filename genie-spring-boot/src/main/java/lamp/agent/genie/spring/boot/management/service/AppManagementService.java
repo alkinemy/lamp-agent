@@ -8,12 +8,10 @@ import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lamp.agent.genie.spring.boot.base.impl.AppImpl;
+import lamp.agent.genie.spring.boot.base.impl.AppSpecImpl;
 import lamp.agent.genie.spring.boot.base.impl.DaemonAppContext;
 import lamp.agent.genie.spring.boot.base.impl.DefaultAppContext;
-import lamp.agent.genie.spring.boot.management.model.AppRegisterForm;
-import lamp.agent.genie.spring.boot.management.model.AppUpdateFileForm;
-import lamp.agent.genie.spring.boot.management.model.AppUpdateSpecForm;
-import lamp.agent.genie.spring.boot.management.model.LogFile;
+import lamp.agent.genie.spring.boot.management.model.*;
 import lamp.agent.genie.spring.boot.register.model.AgentEvent;
 import lamp.agent.genie.spring.boot.register.model.AgentEventName;
 import lamp.agent.genie.utils.FilenameUtils;
@@ -23,8 +21,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -150,7 +146,15 @@ public class AppManagementService {
 		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_REGISTERED, id));
 	}
 
-	public synchronized void updateFile(String id, AppUpdateFileForm form) {
+	public synchronized void update(String id, AppUpdateForm form) {
+		form.setId(id);
+
+		deregister(id, form.isForceStop());
+
+		register(form);
+	}
+
+	public synchronized void updateFile(String id, AppFileUpdateForm form) {
 		App app = appRegistry.lookup(id);
 
 		boolean isRunning = app.isRunning();
@@ -163,8 +167,13 @@ public class AppManagementService {
 
 		AppContext appContext = app.getContext();
 
+
 		appInstallService.update(appContext, form.getInstallFile());
-		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_UPDATED, id));
+		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_FILE_UPDATED, id));
+
+		AppSpecImpl appSpec = (AppSpecImpl) app.getSpec();
+		appSpec.setVersion(form.getVersion());
+		appSpecService.save(appSpec);
 
 		if (isRunning) {
 			app.start();

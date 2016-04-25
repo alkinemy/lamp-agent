@@ -24,8 +24,13 @@ public class SimpleAppInstaller implements AppInstaller {
 
 	@Override public void install(InstallContext context) {
 		AppContext appContext = context.getAppContext();
+
+		File installLogFile = context.getInstallLogFile();
+		if (!installLogFile.getParentFile().exists()) {
+			installLogFile.getParentFile().mkdirs();
+		}
 		try (CommandExecutionContext commandExecutionContext
-				= new SimpleCommandExecutionContext(appContext, new BufferedOutputStream(new FileOutputStream(context.getInstallLogFile())), context.getExpressionParser())) {
+				= new SimpleCommandExecutionContext(appContext, new BufferedOutputStream(new FileOutputStream(installLogFile)), context.getExpressionParser())) {
 			InstallSpec installSpec = appContext.getInstallSpec();
 
 			File file = new File(installSpec.getDirectory(), installSpec.getFilename());

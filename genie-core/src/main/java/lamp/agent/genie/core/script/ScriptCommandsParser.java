@@ -43,9 +43,9 @@ public class ScriptCommandsParser {
 							scriptCommand = new ScriptFileCreateCommand();
 							((ScriptFileCreateCommand) scriptCommand).setFilename((String) (command.get("filename")));
 							((ScriptFileCreateCommand) scriptCommand).setContent((String) command.get("content"));
-							//							((ScriptFileCreateCommand)scriptCommand).setRead(BooleanUtils.toBoolean(command.get("read")));
-							//							((ScriptFileCreateCommand)scriptCommand).setWrite(BooleanUtils.toBoolean(command.get("write")));
-							((ScriptFileCreateCommand) scriptCommand).setExecutable(BooleanUtils.toBoolean(String.valueOf(command.get("execute"))));
+							//							((ScriptFileCreateCommand)scriptCommand).setRead(BooleanUtils.toBoolean(command.get("readable")));
+							//							((ScriptFileCreateCommand)scriptCommand).setWrite(BooleanUtils.toBoolean(command.get("writable")));
+							((ScriptFileCreateCommand) scriptCommand).setExecutable(BooleanUtils.toBoolean(String.valueOf(command.get("executable"))));
 							break;
 						case FILE_REMOVE:
 							scriptCommand = new ScriptFileRemoveCommand();

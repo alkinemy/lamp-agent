@@ -8,8 +8,9 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
 @ToString
-public class AppUpdateFileForm {
+public class AppFileUpdateForm {
 
+	private String version;
 	private MultipartFile installFile;
 	private String commands;
 
