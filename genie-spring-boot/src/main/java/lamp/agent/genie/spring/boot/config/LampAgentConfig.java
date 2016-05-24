@@ -3,6 +3,7 @@ package lamp.agent.genie.spring.boot.config;
 import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
 import lamp.agent.genie.spring.boot.base.impl.LampContextImpl;
 import lamp.agent.genie.spring.boot.management.service.AppMonitorService;
+import lamp.agent.genie.spring.boot.management.service.DockerClientService;
 import lamp.agent.genie.spring.boot.register.AgentEventPublisher;
 import lamp.agent.genie.spring.boot.register.AgentRegistrationApplicationListener;
 import lamp.agent.genie.spring.boot.register.AgentRegistrator;
@@ -119,6 +120,18 @@ public class LampAgentConfig {
 		public AgentRegistrationApplicationListener registrationApplicationListener(ApiAgentRegistrator lampClientApiRegistrator,
 			AgentEventPublisher agentEventPublisher) {
 			return new AgentRegistrationApplicationListener(lampClientApiRegistrator, agentEventPublisher);
+		}
+
+	}
+
+	@ConditionalOnProperty(name = "docker.client.enabled", havingValue = "true")
+	@EnableConfigurationProperties({ DockerClientProperties.class })
+	public static class DockerClientConfig {
+
+		@Bean
+		@ConditionalOnMissingBean
+		public DockerClientService DockerClientService(DockerClientProperties dockerClientProperties) {
+			return new DockerClientService(dockerClientProperties);
 		}
 
 	}

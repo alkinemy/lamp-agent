@@ -1,3 +1,4 @@
+/genie-spring-boot/src/main/resources/config/application-test.properties
 
 *.pid
 /native
