@@ -3,15 +3,10 @@ package lamp.agent.genie.spring.boot.management.controller;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Statistics;
-import lamp.agent.genie.core.App;
-import lamp.agent.genie.core.AppStatus;
-import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
 import lamp.agent.genie.spring.boot.management.model.*;
-import lamp.agent.genie.spring.boot.management.service.AppManagementService;
 import lamp.agent.genie.spring.boot.management.service.DockerClientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api/container")
 public class ContainerController {
 
-	@Autowired
+	@Autowired(required = false)
 	private DockerClientService dockerClientService;
 
 
@@ -38,7 +33,7 @@ public class ContainerController {
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	@ResponseBody
-	public InspectContainerResponse runContainer(@RequestBody DockerContainerRunForm form) {
+	public InspectContainerResponse runContainer(@RequestBody DockerApp form) {
 		log.error("form = {}", form);
 		return dockerClientService.runContainer(form);
 	}

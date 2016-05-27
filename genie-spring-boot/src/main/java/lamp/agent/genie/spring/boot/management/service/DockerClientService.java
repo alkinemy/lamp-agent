@@ -4,16 +4,17 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.exception.DockerClientException;
 import com.github.dockerjava.api.model.Container;
-import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Statistics;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.async.ResultCallbackTemplate;
+import com.github.dockerjava.core.command.PullImageResultCallback;
 import com.github.dockerjava.jaxrs.DockerCmdExecFactoryImpl;
-import com.google.common.collect.Lists;
 import lamp.agent.genie.spring.boot.config.DockerClientProperties;
-import lamp.agent.genie.spring.boot.management.model.DockerContainerRunForm;
+import lamp.agent.genie.spring.boot.management.model.DockerApp;
+import lamp.agent.genie.spring.boot.management.model.DockerContainer;
+import lamp.agent.genie.spring.boot.management.model.PortMapping;
 import lamp.agent.genie.utils.CollectionUtils;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
+
 
 @Slf4j
 public class DockerClientService {
@@ -69,30 +70,33 @@ public class DockerClientService {
 		return dockerClient.inspectContainerCmd(containerId).exec();
 	}
 
-	public InspectContainerResponse runContainer(DockerContainerRunForm dockerContainerRunForm) {
+	public InspectContainerResponse runContainer(DockerApp dockerApp) {
 //		String image, String
 //	} tag, String containerName, String[] containerCmd) {
-		// 1. Pull Image
-		PullImageCmd pullImageCmd = dockerClient.pullImageCmd(dockerContainerRunForm.getImageName());
-		// 2. CreateContainer
-		CreateContainerCmd createContainerCmd = dockerClient.createContainerCmd(dockerContainerRunForm.getImageName());
 
-		if (StringUtils.isNotEmpty(dockerContainerRunForm.getNetworkMode())) {
-			createContainerCmd.withNetworkMode(dockerContainerRunForm.getNetworkMode());
+		DockerContainer container = dockerApp.getContainer();
+		// 1. Pull Image
+		PullImageCmd pullImageCmd = dockerClient.pullImageCmd(container.getImage());
+		pullImageCmd.exec(new PullImageResultCallback()).awaitSuccess();
+
+		// 2. CreateContainer
+		CreateContainerCmd createContainerCmd = dockerClient.createContainerCmd(container.getImage());
+
+		if (StringUtils.isNotEmpty(container.getNetwork())) {
+			createContainerCmd.withNetworkMode(container.getNetwork());
 		}
 
-		dockerContainerRunForm.setPorts(Lists.newArrayList("8080:8080"));
-		if (CollectionUtils.isNotEmpty(dockerContainerRunForm.getPorts())) {
-			for (String port : dockerContainerRunForm.getPorts()) {
-				PortBinding portBinding = PortBinding.parse(port);
+		if (CollectionUtils.isNotEmpty(container.getPortMappings())) {
+			for (PortMapping port : container.getPortMappings()) {
+				PortBinding portBinding = PortBinding.parse(port.getContainerPort() + ":" + port.getHostPort());
 				createContainerCmd.withExposedPorts(portBinding.getExposedPort());
 				createContainerCmd.withPortBindings(portBinding);
 			}
 		}
+		CreateContainerResponse containerResponse = createContainerCmd.exec();
+		String containerId  = containerResponse.getId();
 
-		CreateContainerResponse container = createContainerCmd.exec();
-		String containerId  = container.getId();
-
+		// 3. StartContainer
 		dockerClient.startContainerCmd(containerId).exec();
 
 		return dockerClient.inspectContainerCmd(containerId).exec();
