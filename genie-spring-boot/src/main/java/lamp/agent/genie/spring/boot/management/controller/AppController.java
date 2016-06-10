@@ -36,14 +36,14 @@ public class AppController {
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	public void register(AppRegisterForm form) {
+	public void register(AppDeployForm form) {
 		appManagementService.register(form);
 	}
 
-	@RequestMapping(value = "/{id:.+}", method = RequestMethod.POST)
-	public void update(@PathVariable("id") String id, AppUpdateForm form) {
-		appManagementService.update(id, form);
-	}
+//	@RequestMapping(value = "/{id:.+}", method = RequestMethod.POST)
+//	public void update(@PathVariable("id") String id, AppUpdateForm form) {
+//		appManagementService.update(id, form);
+//	}
 
 	@RequestMapping(value = "/{id}/file", method = RequestMethod.POST)
 	public void updateFile(@PathVariable("id") String id, AppFileUpdateForm form) {

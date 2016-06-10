@@ -15,6 +15,7 @@ import lamp.agent.genie.spring.boot.management.model.*;
 import lamp.agent.genie.spring.boot.register.model.AgentEvent;
 import lamp.agent.genie.spring.boot.register.model.AgentEventName;
 import lamp.agent.genie.utils.FilenameUtils;
+import lamp.agent.genie.utils.JsonUtils;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -125,15 +126,18 @@ public class AppManagementService {
 		return appRegistry.lookup(id);
 	}
 
-	public synchronized void register(AppRegisterForm form) {
+	public synchronized void register(AppDeployForm form) {
 		String id = form.getId();
 		Exceptions.throwsException(appRegistry.exists(id), ErrorCode.APP_ALWAYS_EXIST);
 
-		AppSpec appSpec = smartAssembler.assemble(form, AppSpec.class);
-		if (!appSpec.isPreInstalled()) {
-			InstallSpec installSpec = smartAssembler.assemble(form, InstallSpec.class);
+		AppContainer appContainer = JsonUtils.parse(form.getAppContainer(), AppContainer.class);
+
+		AppSpec appSpec = smartAssembler.assemble(appContainer, AppSpec.class);
+		if (appContainer instanceof SimpleAppContainer
+			&& !appSpec.isPreInstalled()) {
+			InstallSpec installSpec = newInstallSpec((SimpleAppContainer) appContainer);
 			AppContext appContext = newAppContextInstance(appSpec, installSpec);
-			appInstallService.install(appContext, form.getInstallFile());
+			appInstallService.install(appContext, form.getResource());
 
 			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_INSTALLED, id));
 		}
@@ -146,13 +150,23 @@ public class AppManagementService {
 		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_REGISTERED, id));
 	}
 
-	public synchronized void update(String id, AppUpdateForm form) {
-		form.setId(id);
+	protected InstallSpec newInstallSpec(SimpleAppContainer appContainer) {
+		InstallSpec installSpec = new InstallSpec();
+		installSpec.setId(appContainer.getId());
+		installSpec.setDirectory(null);
+		installSpec.setFilename(appContainer.getInstallFilename());
+		installSpec.setCommands(appContainer.getCommands());
 
-		deregister(id, form.isForceStop());
-
-		register(form);
+		return installSpec;
 	}
+
+//	public synchronized void update(String id, AppUpdateForm form) {
+//		form.setId(id);
+//
+//		deregister(id, form.isForceStop());
+//
+//		register(form);
+//	}
 
 	public synchronized void updateFile(String id, AppFileUpdateForm form) {
 		App app = appRegistry.lookup(id);

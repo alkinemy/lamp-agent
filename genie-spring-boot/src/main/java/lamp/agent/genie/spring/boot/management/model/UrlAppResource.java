@@ -7,8 +7,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class AppUpdateForm extends SimpleAppContainer {
+public class UrlAppResource implements AppResource {
 
-	private boolean forceStop;
+	private String resourceUrl;
 
 }
