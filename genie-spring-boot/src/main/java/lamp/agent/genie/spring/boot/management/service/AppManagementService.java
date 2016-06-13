@@ -7,10 +7,10 @@ import lamp.agent.genie.core.runtime.process.AppProcessType;
 import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
-import lamp.agent.genie.spring.boot.base.impl.AppImpl;
-import lamp.agent.genie.spring.boot.base.impl.AppSpecImpl;
-import lamp.agent.genie.spring.boot.base.impl.DaemonAppContext;
-import lamp.agent.genie.spring.boot.base.impl.DefaultAppContext;
+import lamp.agent.genie.spring.boot.base.impl.AppInstanceImpl;
+import lamp.agent.genie.spring.boot.base.impl.AppInstanceSpecImpl;
+import lamp.agent.genie.spring.boot.base.impl.DaemonAppInstanceContext;
+import lamp.agent.genie.spring.boot.base.impl.DefaultAppInstanceContext;
 import lamp.agent.genie.spring.boot.management.model.*;
 import lamp.agent.genie.spring.boot.register.model.AgentEvent;
 import lamp.agent.genie.spring.boot.register.model.AgentEventName;
@@ -62,67 +62,67 @@ public class AppManagementService {
 
 	@PostConstruct
 	public void init() {
-		List<AppSpec> appSpecs = appSpecService.getAppManifests();
-		for (AppSpec appSpec : appSpecs) {
+		List<AppInstanceSpec> appInstanceSpecs = appSpecService.getAppManifests();
+		for (AppInstanceSpec appInstanceSpec : appInstanceSpecs) {
 			try {
-				App app = newAppInstance(appSpec);
-				appRegistry.bind(app.getId(), app);
-				log.info("[App:{}] registered", app.getId());
+				AppInstance appInstance = newAppInstance(appInstanceSpec);
+				appRegistry.bind(appInstance.getId(), appInstance);
+				log.info("[App:{}] registered", appInstance.getId());
 			} catch (Exception e) {
-				log.warn("[App: " + appSpec.getId() + "] Registration fail error", e);
+				log.warn("[App: " + appInstanceSpec.getId() + "] Registration fail error", e);
 			}
 		}
 
 		// AUTO START
-		List<App> apps = appRegistry.list();
-		for (App app : apps) {
+		List<AppInstance> appInstances = appRegistry.list();
+		for (AppInstance appInstance : appInstances) {
 			try {
-				if (AppStatus.RUNNING.equals(app.getCorrectStatus())
-					&& AppStatus.NOT_RUNNING.equals(app.getStatus())) {
-					log.info("[App:{}] staring", app.getId());
-					app.start();
-					log.info("[App:{}] started", app.getId());
+				if (AppInstanceStatus.RUNNING.equals(appInstance.getCorrectStatus())
+					&& AppInstanceStatus.STOPPED.equals(appInstance.getStatus())) {
+					log.info("[App:{}] staring", appInstance.getId());
+					appInstance.start();
+					log.info("[App:{}] started", appInstance.getId());
 				}
 			} catch (Exception e) {
-				log.warn("[App:" + app.getId() + "] Start failed", e);
+				log.warn("[App:" + appInstance.getId() + "] Start failed", e);
 			}
 		}
 
 	}
 
-	protected App newAppInstance(AppSpec appSpec) {
-		AppContext appContext = newAppContextInstance(appSpec);
-		return new AppImpl(appContext, appCorrectStatusService.getCorrectStatus(appSpec.getId()));
+	protected AppInstance newAppInstance(AppInstanceSpec appInstanceSpec) {
+		AppInstanceContext appInstanceContext = newAppContextInstance(appInstanceSpec);
+		return new AppInstanceImpl(appInstanceContext, appCorrectStatusService.getCorrectStatus(appInstanceSpec.getId()));
 	}
 
-	protected AppContext newAppContextInstance(AppSpec appSpec, InstallSpec installSpec) {
-		AppProcessType appProcessType = appSpec.getProcessType();
+	protected AppInstanceContext newAppContextInstance(AppInstanceSpec appInstanceSpec, InstallSpec installSpec) {
+		AppProcessType appProcessType = appInstanceSpec.getProcessType();
 		if (AppProcessType.DAEMON.equals(appProcessType)) {
-			return new DaemonAppContext(lampContext, appSpec, installSpec);
+			return new DaemonAppInstanceContext(lampContext, appInstanceSpec, installSpec);
 		} else if (AppProcessType.DEFAULT.equals(appProcessType)) {
-			return new DefaultAppContext(lampContext, appSpec, installSpec);
+			return new DefaultAppInstanceContext(lampContext, appInstanceSpec, installSpec);
 		} else {
 			throw new UnsupportedProcessTypeException(appProcessType);
 		}
 	}
 
-	protected AppContext newAppContextInstance(AppSpec appSpec) {
+	protected AppInstanceContext newAppContextInstance(AppInstanceSpec appInstanceSpec) {
 		InstallSpec installSpec = null;
-		if (!appSpec.isPreInstalled()) {
-			installSpec = installSpecService.getInstallConfig(appSpec.getId());
+		if (!appInstanceSpec.isPreInstalled()) {
+			installSpec = installSpecService.getInstallConfig(appInstanceSpec.getId());
 		}
-		return newAppContextInstance(appSpec, installSpec);
+		return newAppContextInstance(appInstanceSpec, installSpec);
 	}
 
 	@PreDestroy
 	public void close() {
 	}
 
-	public synchronized List<App> getApps() {
+	public synchronized List<AppInstance> getApps() {
 		return appRegistry.list();
 	}
 
-	public synchronized App getApp(String id) {
+	public synchronized AppInstance getApp(String id) {
 		return appRegistry.lookup(id);
 	}
 
@@ -132,20 +132,20 @@ public class AppManagementService {
 
 		AppContainer appContainer = JsonUtils.parse(form.getAppContainer(), AppContainer.class);
 
-		AppSpec appSpec = smartAssembler.assemble(appContainer, AppSpec.class);
+		AppInstanceSpec appInstanceSpec = smartAssembler.assemble(appContainer, AppInstanceSpec.class);
 		if (appContainer instanceof SimpleAppContainer
-			&& !appSpec.isPreInstalled()) {
+			&& !appInstanceSpec.isPreInstalled()) {
 			InstallSpec installSpec = newInstallSpec((SimpleAppContainer) appContainer);
-			AppContext appContext = newAppContextInstance(appSpec, installSpec);
-			appInstallService.install(appContext, form.getResource());
+			AppInstanceContext appInstanceContext = newAppContextInstance(appInstanceSpec, installSpec);
+			appInstallService.install(appInstanceContext, form.getResource());
 
 			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_INSTALLED, id));
 		}
 
-		App app = newAppInstance(appSpec);
-		appRegistry.bind(app.getId(), app);
+		AppInstance appInstance = newAppInstance(appInstanceSpec);
+		appRegistry.bind(appInstance.getId(), appInstance);
 
-		appSpecService.save(appSpec);
+		appSpecService.save(appInstanceSpec);
 
 		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_REGISTERED, id));
 	}
@@ -155,7 +155,7 @@ public class AppManagementService {
 		installSpec.setId(appContainer.getId());
 		installSpec.setDirectory(null);
 		installSpec.setFilename(appContainer.getInstallFilename());
-		installSpec.setCommands(appContainer.getCommands());
+		installSpec.setScriptCommands(appContainer.getScriptCommands());
 
 		return installSpec;
 	}
@@ -169,91 +169,91 @@ public class AppManagementService {
 //	}
 
 	public synchronized void updateFile(String id, AppFileUpdateForm form) {
-		App app = appRegistry.lookup(id);
+		AppInstance appInstance = appRegistry.lookup(id);
 
-		boolean isRunning = app.isRunning();
+		boolean isRunning = appInstance.isRunning();
 		Exceptions.throwsException(isRunning && !form.isForceStop(), ErrorCode.APP_IS_RUNNING);
 
 		if (isRunning) {
-			app.stop();
+			appInstance.stop();
 			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_STOPPED, id));
 		}
 
-		AppContext appContext = app.getContext();
+		AppInstanceContext appInstanceContext = appInstance.getContext();
 
 
-		appInstallService.update(appContext, form.getInstallFile());
+		appInstallService.update(appInstanceContext, form.getInstallFile());
 		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_FILE_UPDATED, id));
 
-		AppSpecImpl appSpec = (AppSpecImpl) app.getSpec();
+		AppInstanceSpecImpl appSpec = (AppInstanceSpecImpl) appInstance.getSpec();
 		appSpec.setVersion(form.getVersion());
 		appSpecService.save(appSpec);
 
 		if (isRunning) {
-			app.start();
+			appInstance.start();
 		}
 	}
 
 	public synchronized void updateSpec(String id, AppUpdateSpecForm form) {
-		App app = appRegistry.lookup(id);
-		AppSpec appSpec = app.getSpec();
+		AppInstance appInstance = appRegistry.lookup(id);
+		AppInstanceSpec appInstanceSpec = appInstance.getSpec();
 
-		BeanUtils.copyProperties(form, appSpec);
+		BeanUtils.copyProperties(form, appInstanceSpec);
 
-		appSpecService.save(appSpec);
+		appSpecService.save(appInstanceSpec);
 	}
 
 	public synchronized void deregister(String id, boolean forceStop) {
-		App app = appRegistry.lookup(id);
-		AppSpec appSpec = app.getSpec();
-		AppProcessType processType = appSpec.getProcessType();
+		AppInstance appInstance = appRegistry.lookup(id);
+		AppInstanceSpec appInstanceSpec = appInstance.getSpec();
+		AppProcessType processType = appInstanceSpec.getProcessType();
 
-		Exceptions.throwsException(AppProcessType.DEFAULT.equals(processType) && app.isRunning() && !forceStop, ErrorCode.APP_IS_RUNNING, id);
+		Exceptions.throwsException(AppProcessType.DEFAULT.equals(processType) && appInstance.isRunning() && !forceStop, ErrorCode.APP_IS_RUNNING, id);
 
-		if (app.isRunning() && forceStop) {
+		if (appInstance.isRunning() && forceStop) {
 			stop(id);
 		}
 
-		if (!appSpec.isPreInstalled()) {
-			Exceptions.throwsException(app.isRunning(), ErrorCode.APP_IS_RUNNING, id);
+		if (!appInstanceSpec.isPreInstalled()) {
+			Exceptions.throwsException(appInstance.isRunning(), ErrorCode.APP_IS_RUNNING, id);
 
 			InstallSpec installSpec = installSpecService.getInstallConfig(id);
-			appInstallService.uninstall(newAppContextInstance(appSpec, installSpec));
+			appInstallService.uninstall(newAppContextInstance(appInstanceSpec, installSpec));
 			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_UNINSTALLED, id));
 		}
 
-		appRegistry.unbind(app.getId());
+		appRegistry.unbind(appInstance.getId());
 
-		appSpecService.delete(appSpec);
+		appSpecService.delete(appInstanceSpec);
 		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_UNREGISTERED, id));
 	}
 
 	public synchronized void start(String id) {
-		App app = appRegistry.lookup(id);
-		app.start();
+		AppInstance appInstance = appRegistry.lookup(id);
+		appInstance.start();
 
-		appCorrectStatusService.updateCorrectStatus(app.getId(), AppStatus.RUNNING);
+		appCorrectStatusService.updateCorrectStatus(appInstance.getId(), AppInstanceStatus.RUNNING);
 
 		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_STARTED, id));
 	}
 
 	public synchronized void stop(String id) {
-		appCorrectStatusService.updateCorrectStatus(id, AppStatus.NOT_RUNNING);
+		appCorrectStatusService.updateCorrectStatus(id, AppInstanceStatus.STOPPED);
 
-		App app = appRegistry.lookup(id);
-		app.stop();
+		AppInstance appInstance = appRegistry.lookup(id);
+		appInstance.stop();
 
 		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_STOPPED, id));
 	}
 
-	public synchronized AppStatus status(String id) {
-		App app = appRegistry.lookup(id);
-		return app.getStatus();
+	public synchronized AppInstanceStatus status(String id) {
+		AppInstance appInstance = appRegistry.lookup(id);
+		return appInstance.getStatus();
 	}
 
 	public List<LogFile> getLogFiles(String id) {
-		App app = appRegistry.lookup(id);
-		String logDirectory = app.getContext().getParsedAppSpec().getLogDirectory();
+		AppInstance appInstance = appRegistry.lookup(id);
+		String logDirectory = appInstance.getContext().getParsedAppInstanceSpec().getLogDirectory();
 		if (StringUtils.isNotBlank(logDirectory)) {
 			List<LogFile> logFiles = new ArrayList<>();
 			File dir = new File(logDirectory);
@@ -274,8 +274,8 @@ public class AppManagementService {
 	}
 
 	public Resource getLogFileResource(String id, String filename) {
-		App app = appRegistry.lookup(id);
-		String logDirectory = app.getContext().getParsedAppSpec().getLogDirectory();
+		AppInstance appInstance = appRegistry.lookup(id);
+		String logDirectory = appInstance.getContext().getParsedAppInstanceSpec().getLogDirectory();
 		if (StringUtils.isNotBlank(logDirectory)) {
 			filename = FilenameUtils.getName(filename);
 			File file = new File(logDirectory, filename);
@@ -287,8 +287,8 @@ public class AppManagementService {
 	}
 
 	public Resource getStdOutFileResource(String id) {
-		App app = appRegistry.lookup(id);
-		File file = app.getStdOutFile();
+		AppInstance appInstance = appRegistry.lookup(id);
+		File file = appInstance.getStdOutFile();
 		if (file.exists()) {
 			return new FileSystemResource(file);
 		}
@@ -296,8 +296,8 @@ public class AppManagementService {
 	}
 
 	public Resource getStdErrFileResource(String id) {
-		App app = appRegistry.lookup(id);
-		File file = app.getContext().getStdErrFile();
+		AppInstance appInstance = appRegistry.lookup(id);
+		File file = appInstance.getContext().getStdErrFile();
 		if (file.exists()) {
 			return new FileSystemResource(file);
 		}

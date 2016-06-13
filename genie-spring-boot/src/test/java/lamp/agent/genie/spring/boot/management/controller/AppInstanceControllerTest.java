@@ -3,7 +3,7 @@ package lamp.agent.genie.spring.boot.management.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lamp.agent.genie.core.runtime.process.AppProcessType;
 import lamp.agent.genie.spring.boot.LampAgent;
-import lamp.agent.genie.spring.boot.management.model.AppDto;
+import lamp.agent.genie.spring.boot.management.model.AppInstanceDto;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
@@ -43,7 +43,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(value = LampAgent.class)
 @WebIntegrationTest("server.port:0")
-public class AppControllerTest {
+public class AppInstanceControllerTest {
 
 	@Autowired
 	EmbeddedWebApplicationContext server;
@@ -77,12 +77,12 @@ public class AppControllerTest {
 	public void testList() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(this.authentication);
 
-		ResponseEntity<List<AppDto>> responseEntity = template.exchange(getBaseUrl() + "/api/app", HttpMethod.GET, null, new ParameterizedTypeReference<List<AppDto>>() {});
+		ResponseEntity<List<AppInstanceDto>> responseEntity = template.exchange(getBaseUrl() + "/api/app", HttpMethod.GET, null, new ParameterizedTypeReference<List<AppInstanceDto>>() {});
 		assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
 
-		List<AppDto> appDtoList = responseEntity.getBody();
-		for (AppDto appDto : appDtoList) {
-			System.out.println(appDto);
+		List<AppInstanceDto> appInstanceDtoList = responseEntity.getBody();
+		for (AppInstanceDto appInstanceDto : appInstanceDtoList) {
+			System.out.println(appInstanceDto);
 		}
 
 	}

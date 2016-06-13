@@ -1,8 +1,8 @@
 package lamp.agent.genie.spring.boot.management.repository;
 
-import lamp.agent.genie.core.AppSpec;
+import lamp.agent.genie.core.AppInstanceSpec;
 import lamp.agent.genie.core.LampContext;
-import lamp.agent.genie.spring.boot.base.impl.AppSpecImpl;
+import lamp.agent.genie.spring.boot.base.impl.AppInstanceSpecImpl;
 import lamp.agent.genie.utils.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -18,7 +18,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AppSpecRepositoryTest {
+public class AppInstanceSpecRepositoryTest {
 
 	@InjectMocks AppSpecRepository appSpecRepository;
 
@@ -57,17 +57,17 @@ public class AppSpecRepositoryTest {
 
 	@Test
 	public void testFindOne() throws Exception {
-		AppSpecImpl testAppManifest = saveAppManifest();
+		AppInstanceSpecImpl testAppManifest = saveAppManifest();
 
-		AppSpec appSpec = appSpecRepository.findOne(artifactId);
-		assertThat(appSpec.getId()).isEqualTo(testAppManifest.getId());
+		AppInstanceSpec appInstanceSpec = appSpecRepository.findOne(artifactId);
+		assertThat(appInstanceSpec.getId()).isEqualTo(testAppManifest.getId());
 	}
 
 
 	@Test
 	public void testFindOne_Null() throws Exception {
-		AppSpec appSpec = appSpecRepository.findOne(artifactId);
-		assertThat(appSpec).isNull();
+		AppInstanceSpec appInstanceSpec = appSpecRepository.findOne(artifactId);
+		assertThat(appInstanceSpec).isNull();
 	}
 
 	@Test
@@ -80,8 +80,8 @@ public class AppSpecRepositoryTest {
 	}
 
 
-	private AppSpecImpl saveAppManifest() {
-		AppSpecImpl testAppManifest = new AppSpecImpl();
+	private AppInstanceSpecImpl saveAppManifest() {
+		AppInstanceSpecImpl testAppManifest = new AppInstanceSpecImpl();
 		testAppManifest.setId(artifactId);
 		appSpecRepository.save(testAppManifest);
 		return testAppManifest;

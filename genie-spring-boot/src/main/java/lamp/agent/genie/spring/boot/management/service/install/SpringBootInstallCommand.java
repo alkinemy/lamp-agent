@@ -1,7 +1,6 @@
 package lamp.agent.genie.spring.boot.management.service.install;
 
-import lamp.agent.genie.core.AppContext;
-import lamp.agent.genie.core.AppSpec;
+import lamp.agent.genie.core.AppInstanceSpec;
 import lamp.agent.genie.core.script.CommandExecutionContext;
 import lamp.agent.genie.core.script.exception.CommandExecuteException;
 import lamp.agent.genie.spring.boot.management.support.ExpressionParser;
@@ -53,11 +52,11 @@ public class SpringBootInstallCommand implements ExtendedScriptCommand {
 	}
 
 	@Override public void execute(CommandExecutionContext context) {
-		AppSpec appSpec = context.getAppContext().getParsedAppSpec();
-		Map<String, Object> parameters = context.getAppContext().getParameters();
+		AppInstanceSpec appInstanceSpec = context.getAppInstanceContext().getParsedAppInstanceSpec();
+		Map<String, Object> parameters = context.getAppInstanceContext().getParameters();
 		String scriptFilename = launchScriptFilename;
 		if (StringUtils.isBlank(scriptFilename)) {
-			scriptFilename = appSpec.getArtifactId() + ".sh"; // TODO OS Type?
+			scriptFilename = appInstanceSpec.getArtifactId() + ".sh"; // TODO OS Type?
 		}
 		String script = launchScript;
 		if (StringUtils.isBlank(script)) {
@@ -69,7 +68,7 @@ public class SpringBootInstallCommand implements ExtendedScriptCommand {
 			}
 		}
 
-		File scriptFile = new File(appSpec.getWorkDirectory(), scriptFilename);
+		File scriptFile = new File(appInstanceSpec.getWorkDirectory(), scriptFilename);
 		log.debug("scriptFile = {}", scriptFile.getAbsolutePath());
 
 		parameters.put("JVM_OPTS", getValue(StringUtils.defaultIfBlank(jvmOpts, DEFAULT_JVM_OPTS), parameters));

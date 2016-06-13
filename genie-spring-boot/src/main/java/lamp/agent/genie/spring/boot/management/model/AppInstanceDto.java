@@ -1,6 +1,6 @@
 package lamp.agent.genie.spring.boot.management.model;
 
-import lamp.agent.genie.core.AppStatus;
+import lamp.agent.genie.core.AppInstanceStatus;
 import lamp.agent.genie.core.runtime.process.AppProcessType;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,21 +9,21 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class AppDto {
+public class AppInstanceDto {
 
 	private String id;
 	private String name;
 	private String description;
 
-	private String groupId;
-	private String artifactId;
-	private String version;
+	private String appId;
+	private String appVersion;
+	private String hostId;
 
 	private AppProcessType processType;
 	private String pid;
-	private AppStatus status;
-	private AppStatus correctStatus;
+	private AppInstanceStatus status;
+	private String statusMessage;
 
-	private boolean isMonitor;
+	private boolean monitored;
 
 }

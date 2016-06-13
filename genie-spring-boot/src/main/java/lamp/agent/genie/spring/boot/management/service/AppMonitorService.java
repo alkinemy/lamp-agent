@@ -1,7 +1,7 @@
 package lamp.agent.genie.spring.boot.management.service;
 
-import lamp.agent.genie.core.App;
-import lamp.agent.genie.core.AppStatus;
+import lamp.agent.genie.core.AppInstance;
+import lamp.agent.genie.core.AppInstanceStatus;
 import lamp.agent.genie.spring.boot.management.model.AppMonitor;
 import lamp.agent.genie.spring.boot.register.model.AgentEvent;
 import lamp.agent.genie.spring.boot.register.model.AgentEventName;
@@ -29,21 +29,21 @@ public class AppMonitorService {
 	private Map<String, AppMonitor> appMonitorMap = new HashMap<>();
 
 	public synchronized void monitor() {
-		List<App> apps = appManagementService.getApps();
-		if (CollectionUtils.isEmpty(apps)) {
+		List<AppInstance> appInstances = appManagementService.getApps();
+		if (CollectionUtils.isEmpty(appInstances)) {
 			return;
 		}
 
-		for (App app : apps) {
-			log.debug("[App:{}] monitor={}, status={}, correctStatus={}", app.getId(), app.isMonitor(), app.getStatus(), app.getCorrectStatus());
-			if (app.isMonitor()
-				&& AppStatus.NOT_RUNNING.equals(app.getStatus())
-				&& AppStatus.RUNNING.equals(app.getCorrectStatus())) {
+		for (AppInstance appInstance : appInstances) {
+			log.debug("[App:{}] monitor={}, status={}, correctStatus={}", appInstance.getId(), appInstance.monitored(), appInstance.getStatus(), appInstance.getCorrectStatus());
+			if (appInstance.monitored()
+				&& AppInstanceStatus.STOPPED.equals(appInstance.getStatus())
+				&& AppInstanceStatus.RUNNING.equals(appInstance.getCorrectStatus())) {
 
-				AppMonitor appMonitor = appMonitorMap.get(app.getId());
+				AppMonitor appMonitor = appMonitorMap.get(appInstance.getId());
 				if (appMonitor == null) {
 					appMonitor = new AppMonitor();
-					appMonitorMap.put(app.getId(), appMonitor);
+					appMonitorMap.put(appInstance.getId(), appMonitor);
 				}
 				long currentTimeMillis = System.currentTimeMillis();
 				// TODO 로직 개선 필요
@@ -56,11 +56,11 @@ public class AppMonitorService {
 				}
 				appMonitor.setLastRetryTimeMillis(currentTimeMillis);
 
-				log.warn("[App:{}] Not Running. Trying to start App (retry={})", app.getId(), appMonitor.getRetryCount());
+				log.warn("[App:{}] Not Running. Trying to start App (retry={})", appInstance.getId(), appMonitor.getRetryCount());
 
-				agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_STARTING_BY_MONITOR, app.getId()));
+				agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_STARTING_BY_MONITOR, appInstance.getId()));
 
-				appManagementService.start(app.getId());
+				appManagementService.start(appInstance.getId());
 			}
 		}
 	}

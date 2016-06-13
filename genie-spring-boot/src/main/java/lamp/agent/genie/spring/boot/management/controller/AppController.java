@@ -1,7 +1,7 @@
 package lamp.agent.genie.spring.boot.management.controller;
 
-import lamp.agent.genie.core.App;
-import lamp.agent.genie.core.AppStatus;
+import lamp.agent.genie.core.AppInstance;
+import lamp.agent.genie.core.AppInstanceStatus;
 import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
 import lamp.agent.genie.spring.boot.management.model.*;
 import lamp.agent.genie.spring.boot.management.service.AppManagementService;
@@ -24,15 +24,15 @@ public class AppController {
 	private SmartAssembler smartAssembler;
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public List<AppDto> list() {
-		List<App> apps = appManagementService.getApps();
-		return smartAssembler.assemble(apps, App.class, AppDto.class);
+	public List<AppInstanceDto> list() {
+		List<AppInstance> appInstances = appManagementService.getApps();
+		return smartAssembler.assemble(appInstances, AppInstance.class, AppInstanceDto.class);
 	}
 
 	@RequestMapping(value = "/{id:.+}", method = RequestMethod.GET)
-	public AppDto get(@PathVariable("id") String id) {
-		App app = appManagementService.getApp(id);
-		return smartAssembler.assemble(app, App.class, AppDto.class);
+	public AppInstanceDto get(@PathVariable("id") String id) {
+		AppInstance appInstance = appManagementService.getApp(id);
+		return smartAssembler.assemble(appInstance, AppInstance.class, AppInstanceDto.class);
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
@@ -70,7 +70,7 @@ public class AppController {
 	}
 
 	@RequestMapping(value = "/{id}/status", method = RequestMethod.GET)
-	public AppStatus status(@PathVariable("id") String id) {
+	public AppInstanceStatus status(@PathVariable("id") String id) {
 		return appManagementService.status(id);
 	}
 

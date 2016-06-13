@@ -1,6 +1,6 @@
 package lamp.agent.genie.core.runtime.process.exec.foreground;
 
-import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.core.AppInstanceContext;
 import lamp.agent.genie.core.LampCoreConstants;
 import lamp.agent.genie.core.script.exception.CommandExecuteException;
 import lamp.agent.genie.core.runtime.process.AppProcessState;
@@ -22,7 +22,7 @@ public class DefaultProcess extends AbstractProcess {
 
 	private volatile ExecuteWatchdog executeWatchdog;
 
-	public DefaultProcess(AppContext context) {
+	public DefaultProcess(AppInstanceContext context) {
 		super(context);
 
 		this.executeWatchdog = doStart();
@@ -89,7 +89,7 @@ public class DefaultProcess extends AbstractProcess {
 	public String getId() {
 		String id = super.getId();
 		if (id == null) {
-			Map<String, Object> parameters = getContext().getAppSpec().getParameters();
+			Map<String, Object> parameters = getContext().getAppInstanceSpec().getParameters();
 			if (parameters != null) {
 				Object displayNameObject = parameters.get(LampCoreConstants.JVM_DISPLAY_NAME);
 				if (displayNameObject != null) {

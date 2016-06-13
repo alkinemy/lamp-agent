@@ -1,6 +1,6 @@
 package lamp.agent.genie.spring.boot.management.service;
 
-import lamp.agent.genie.core.AppSpec;
+import lamp.agent.genie.core.AppInstanceSpec;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lamp.agent.genie.spring.boot.management.repository.AppSpecRepository;
@@ -17,27 +17,27 @@ public class AppSpecService {
 	@Autowired
 	private AppSpecRepository appSpecRepository;
 
-	public void save(AppSpec appSpec) {
-		appSpecRepository.save(appSpec);
+	public void save(AppInstanceSpec appInstanceSpec) {
+		appSpecRepository.save(appInstanceSpec);
 	}
 
-	public List<AppSpec> getAppManifests() {
+	public List<AppInstanceSpec> getAppManifests() {
 		return appSpecRepository.findAll();
 	}
 
-	public AppSpec getAppManifest(String id) {
-		AppSpec appSpec = appSpecRepository.findOne(id);
-		Exceptions.throwsException(appSpec == null, ErrorCode.APP_NOT_FOUND, id);
-		return appSpec;
+	public AppInstanceSpec getAppManifest(String id) {
+		AppInstanceSpec appInstanceSpec = appSpecRepository.findOne(id);
+		Exceptions.throwsException(appInstanceSpec == null, ErrorCode.APP_INSTANCE_NOT_FOUND, id);
+		return appInstanceSpec;
 	}
 
-	public AppSpec getAppManifest(String id, AppSpec defaultValue) {
-		AppSpec appSpec = appSpecRepository.findOne(id);
-		return appSpec != null ? appSpec : defaultValue;
+	public AppInstanceSpec getAppManifest(String id, AppInstanceSpec defaultValue) {
+		AppInstanceSpec appInstanceSpec = appSpecRepository.findOne(id);
+		return appInstanceSpec != null ? appInstanceSpec : defaultValue;
 	}
 
-	public void delete(AppSpec appSpec) {
-		appSpecRepository.delete(appSpec);
+	public void delete(AppInstanceSpec appInstanceSpec) {
+		appSpecRepository.delete(appInstanceSpec);
 	}
 
 }

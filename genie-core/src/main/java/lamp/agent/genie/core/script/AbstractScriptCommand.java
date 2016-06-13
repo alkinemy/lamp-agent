@@ -9,6 +9,7 @@ import lombok.ToString;
 @ToString
 public abstract class AbstractScriptCommand implements ScriptCommand {
 
+	private Long id;
 	private String name;
 	private String description;
 

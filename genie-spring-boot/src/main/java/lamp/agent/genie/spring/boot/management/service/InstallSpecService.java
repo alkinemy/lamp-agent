@@ -21,7 +21,7 @@ public class InstallSpecService {
 
 	public InstallSpec getInstallConfig(String id) {
 		InstallSpec installSpec = installSpecRepository.findOne(id);
-		Exceptions.throwsException(installSpec == null, ErrorCode.APP_NOT_FOUND, id);
+		Exceptions.throwsException(installSpec == null, ErrorCode.APP_INSTANCE_NOT_FOUND, id);
 		return installSpec;
 	}
 

@@ -1,7 +1,7 @@
 package lamp.agent.genie.core.install;
 
 
-import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.core.AppInstanceContext;
 import lamp.agent.genie.core.exception.AppException;
 import lamp.agent.genie.core.exception.InstallException;
 import lamp.agent.genie.core.script.CommandExecutionContext;
@@ -23,15 +23,15 @@ public class SimpleAppInstaller implements AppInstaller {
 	}
 
 	@Override public void install(InstallContext context) {
-		AppContext appContext = context.getAppContext();
+		AppInstanceContext appInstanceContext = context.getAppInstanceContext();
 
 		File installLogFile = context.getInstallLogFile();
 		if (!installLogFile.getParentFile().exists()) {
 			installLogFile.getParentFile().mkdirs();
 		}
 		try (CommandExecutionContext commandExecutionContext
-				= new SimpleCommandExecutionContext(appContext, new BufferedOutputStream(new FileOutputStream(installLogFile)), context.getExpressionParser())) {
-			InstallSpec installSpec = appContext.getInstallSpec();
+				= new SimpleCommandExecutionContext(appInstanceContext, new BufferedOutputStream(new FileOutputStream(installLogFile)), context.getExpressionParser())) {
+			InstallSpec installSpec = appInstanceContext.getInstallSpec();
 
 			File file = new File(installSpec.getDirectory(), installSpec.getFilename());
 			context.transferTo(file);
@@ -51,12 +51,12 @@ public class SimpleAppInstaller implements AppInstaller {
 	}
 
 	@Override public void uninstall(UninstallContext context) {
-		AppContext appContext = context.getAppContext();
-		InstallSpec installSpec = appContext.getInstallSpec();
+		AppInstanceContext appInstanceContext = context.getAppInstanceContext();
+		InstallSpec installSpec = appInstanceContext.getInstallSpec();
 
 		File file = new File(installSpec.getDirectory(), installSpec.getFilename());
 
-		log.info("[App:{}] file({}) deleting", appContext.getId(), file.getAbsolutePath());
+		log.info("[App:{}] file({}) deleting", appInstanceContext.getId(), file.getAbsolutePath());
 		FileUtils.deleteQuietly(file);
 	}
 

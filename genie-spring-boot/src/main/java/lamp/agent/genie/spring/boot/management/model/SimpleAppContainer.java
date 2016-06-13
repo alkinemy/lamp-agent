@@ -3,6 +3,7 @@ package lamp.agent.genie.spring.boot.management.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import lamp.agent.genie.core.runtime.process.AppProcessType;
+import lamp.agent.genie.core.script.ScriptCommand;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.apache.commons.exec.ExecuteWatchdog.INFINITE_TIMEOUT;
@@ -58,6 +60,7 @@ public class SimpleAppContainer implements AppContainer{
 
 	private String commands;
 
+	private List<ScriptCommand> scriptCommands;
 	private Map<String, Object> parameters;
 
 

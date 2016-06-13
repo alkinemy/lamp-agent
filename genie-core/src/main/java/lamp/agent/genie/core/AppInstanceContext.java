@@ -7,15 +7,15 @@ import lamp.agent.genie.core.runtime.shell.Shell;
 import java.io.File;
 import java.util.Map;
 
-public interface AppContext {
+public interface AppInstanceContext {
 
 	LampContext getLampContext();
 
 	File getAppMetaInfoDirectory();
 
-	AppSpec getAppSpec();
+	AppInstanceSpec getAppInstanceSpec();
 
-	AppSpec getParsedAppSpec();
+	AppInstanceSpec getParsedAppInstanceSpec();
 
 	InstallSpec getInstallSpec();
 
@@ -29,11 +29,11 @@ public interface AppContext {
 
 	AppProcess getProcess();
 
-	AppStatus getStatus();
+	AppInstanceStatus getStatus();
 
-	AppStatus updateStatus(AppStatus status);
+	AppInstanceStatus updateStatus(AppInstanceStatus status);
 
-	AppStatus checkAndUpdateStatus();
+	AppInstanceStatus checkAndUpdateStatus();
 
 	void createProcess();
 

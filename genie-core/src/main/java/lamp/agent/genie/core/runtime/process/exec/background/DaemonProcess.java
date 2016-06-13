@@ -1,6 +1,6 @@
 package lamp.agent.genie.core.runtime.process.exec.background;
 
-import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.core.AppInstanceContext;
 import lamp.agent.genie.core.script.exception.CommandExecuteException;
 import lamp.agent.genie.core.runtime.process.AppProcessState;
 import lamp.agent.genie.core.runtime.process.exec.AbstractProcess;
@@ -16,7 +16,7 @@ import org.apache.commons.exec.PumpStreamHandler;
 public class DaemonProcess extends AbstractProcess {
 
 
-	public DaemonProcess(AppContext context) {
+	public DaemonProcess(AppInstanceContext context) {
 		super(context);
 	}
 

@@ -1,7 +1,7 @@
 package lamp.agent.genie.core.runtime.process.exec;
 
-import lamp.agent.genie.core.AppSpec;
-import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.core.AppInstanceSpec;
+import lamp.agent.genie.core.AppInstanceContext;
 import lamp.agent.genie.core.LampCoreConstants;
 import lamp.agent.genie.core.exception.PidFileException;
 import lamp.agent.genie.core.runtime.process.AppProcess;
@@ -9,6 +9,7 @@ import lamp.agent.genie.core.runtime.process.AppProcessTime;
 import lamp.agent.genie.core.support.vm.JavaVirtualMachineTools;
 import lamp.agent.genie.utils.CommandLineUtils;
 import lamp.agent.genie.utils.FileUtils;
+import lamp.agent.genie.utils.FilenameUtils;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,7 @@ import java.util.Objects;
 public abstract class AbstractProcess implements AppProcess {
 
 	@Getter
-	private final AppContext context;
+	private final AppInstanceContext context;
 	@Getter
 	private File pidFile;
 	@Getter
@@ -47,47 +48,52 @@ public abstract class AbstractProcess implements AppProcess {
 	private long procssFromPtqlTime;
 	private long lastModified;
 
-	public AbstractProcess(AppContext context) {
+	public AbstractProcess(AppInstanceContext context) {
 		Objects.requireNonNull(context);
 		this.context = context;
 		init();
 	}
 
 	protected void init() {
-		AppSpec appSpec = context.getAppSpec();
-		AppSpec parsedAppSpec = context.getParsedAppSpec();
+		AppInstanceSpec appInstanceSpec = context.getAppInstanceSpec();
+		AppInstanceSpec parsedAppInstanceSpec = context.getParsedAppInstanceSpec();
 
 		this.stdOutFile = context.getStdOutFile();
 		this.stdErrFile = context.getStdErrFile();
 
-		this.workDirectory = new File(parsedAppSpec.getWorkDirectory());
-		this.pidFile = new File(parsedAppSpec.getPidFile());
-		this.ptql = parsedAppSpec.getPtql();
+		this.workDirectory = new File(parsedAppInstanceSpec.getWorkDirectory());
+		String pidFilePath = FilenameUtils.normalize(parsedAppInstanceSpec.getPidFile());
+		if (FilenameUtils.getName(pidFilePath).equals(pidFilePath)) {
+			this.pidFile = new File(this.workDirectory, pidFilePath);
+		} else {
+			this.pidFile = new File(parsedAppInstanceSpec.getPidFile());
+		}
 
-		this.startCommandLine = parsedAppSpec.getStartCommandLine();
-		this.startTimeout = parsedAppSpec.getStartTimeout();
-		this.stopCommandLine = parsedAppSpec.getStopCommandLine();
-		this.stopTimeout = parsedAppSpec.getStopTimeout();
+		this.ptql = parsedAppInstanceSpec.getPtql();
 
-		this.lastModified = appSpec.getLastModified();
+		this.startCommandLine = parsedAppInstanceSpec.getStartCommandLine();
+		this.startTimeout = parsedAppInstanceSpec.getStartTimeout();
+		this.stopCommandLine = parsedAppInstanceSpec.getStopCommandLine();
+		this.stopTimeout = parsedAppInstanceSpec.getStopTimeout();
+
+		this.lastModified = appInstanceSpec.getLastModified();
 	}
 
 	public void refresh() {
-		AppSpec appSpec = context.getAppSpec();
-		if (this.lastModified != appSpec.getLastModified()) {
-			log.info("[{}] Process refresh", appSpec.getId());
+		AppInstanceSpec appInstanceSpec = context.getAppInstanceSpec();
+		if (this.lastModified != appInstanceSpec.getLastModified()) {
+			log.info("[{}] Process refresh", appInstanceSpec.getId());
 			init();
 		}
 	}
 
 	protected CommandLine parseCommandLine(String command) {
-		return CommandLineUtils.parse(getContext().getParsedAppSpec(), command);
+		return CommandLineUtils.parse(getContext().getParsedAppInstanceSpec(), command);
 	}
 
 	@Override
 	public String getId() {
 		String id = getPidFromFile();
-
 		if (StringUtils.isBlank(id) && StringUtils.isNotBlank(getPtql())) {
 			log.debug("[App:{}] ptql = {}", context.getId(), getPtql());
 			boolean findPid = true;
@@ -112,7 +118,7 @@ public abstract class AbstractProcess implements AppProcess {
 				}
 			}
 		} else {
-			Map<String, Object> parameters = getContext().getAppSpec().getParameters();
+			Map<String, Object> parameters = getContext().getAppInstanceSpec().getParameters();
 			if (parameters != null) {
 				Object displayNameObject = parameters.get(LampCoreConstants.JVM_DISPLAY_NAME);
 				if (displayNameObject != null) {

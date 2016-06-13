@@ -1,7 +1,7 @@
 package lamp.agent.genie.spring.boot.base.impl;
 
 import com.google.common.collect.ImmutableList;
-import lamp.agent.genie.core.App;
+import lamp.agent.genie.core.AppInstance;
 import lamp.agent.genie.core.AppRegistry;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
@@ -15,28 +15,28 @@ import java.util.Map;
 @Component
 public class AppRegistryImpl implements AppRegistry {
 
-	private Map<String, App> appMap = Collections.synchronizedMap(new HashMap<String, App>());
+	private Map<String, AppInstance> appMap = Collections.synchronizedMap(new HashMap<String, AppInstance>());
 
-	public void bind(String id, App app) {
-		appMap.put(id, app);
+	public void bind(String id, AppInstance appInstance) {
+		appMap.put(id, appInstance);
 	}
 
 	public void unbind(String id) {
 		appMap.remove(id);
 	}
 
-	public App lookup(String id) {
-		App app = appMap.get(id);
-		Exceptions.throwsException(app == null, ErrorCode.APP_NOT_FOUND, id);
-		return app;
+	public AppInstance lookup(String id) {
+		AppInstance appInstance = appMap.get(id);
+		Exceptions.throwsException(appInstance == null, ErrorCode.APP_INSTANCE_NOT_FOUND, id);
+		return appInstance;
 	}
 
 	public boolean exists(String id) {
-		App app = appMap.get(id);
-		return app != null;
+		AppInstance appInstance = appMap.get(id);
+		return appInstance != null;
 	}
 
-	public List<App> list() {
+	public List<AppInstance> list() {
 		return ImmutableList.copyOf(appMap.values());
 	}
 

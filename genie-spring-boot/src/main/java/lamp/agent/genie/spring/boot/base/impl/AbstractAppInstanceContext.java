@@ -1,8 +1,8 @@
 package lamp.agent.genie.spring.boot.base.impl;
 
-import lamp.agent.genie.core.AppContext;
-import lamp.agent.genie.core.AppSpec;
-import lamp.agent.genie.core.AppStatus;
+import lamp.agent.genie.core.AppInstanceContext;
+import lamp.agent.genie.core.AppInstanceSpec;
+import lamp.agent.genie.core.AppInstanceStatus;
 import lamp.agent.genie.core.LampContext;
 import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.core.runtime.process.AppProcess;
@@ -29,32 +29,32 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Slf4j
-public abstract class AbstractAppContext implements AppContext {
+public abstract class AbstractAppInstanceContext implements AppInstanceContext {
 
 	@Getter
 	private final LampContext lampContext;
 	@Getter
-	private final AppSpec appSpec;
+	private final AppInstanceSpec appInstanceSpec;
 	@Getter
 	private final InstallSpec installSpec;
 
 	private ExpressionParser parser = new SpelExpressionParser();
 
-	private AppStatus appStatus = AppStatus.NOT_RUNNING;
+	private AppInstanceStatus appInstanceStatus = AppInstanceStatus.STOPPED;
 	private long lastCheckTimeMillis = 1000;
 
-	public AbstractAppContext(LampContext lampContext, AppSpec appSpec, InstallSpec installSpec) {
+	public AbstractAppInstanceContext(LampContext lampContext, AppInstanceSpec appInstanceSpec, InstallSpec installSpec) {
 		this.lampContext = lampContext;
-		this.appSpec = appSpec;
+		this.appInstanceSpec = appInstanceSpec;
 		this.installSpec = installSpec;
 	}
 
 	public File getAppMetaInfoDirectory() {
-		return getLampContext().getAppMetaInfoDirectory(getAppSpec().getId());
+		return getLampContext().getAppMetaInfoDirectory(this.getAppInstanceSpec().getId());
 	}
 
 	public File getStdOutFile() {
-		String name = appSpec.getStdOutFile();
+		String name = appInstanceSpec.getStdOutFile();
 		if (StringUtils.isNotBlank(name)) {
 			return new File(name);
 		}
@@ -62,18 +62,18 @@ public abstract class AbstractAppContext implements AppContext {
 	}
 
 	public File getStdErrFile() {
-		String name = appSpec.getStdErrFile();
+		String name = appInstanceSpec.getStdErrFile();
 		if (StringUtils.isNotBlank(name)) {
 			return new File(name);
 		}
 		return null;
 	}
 
-	public AppSpec getParsedAppSpec() {
+	public AppInstanceSpec getParsedAppInstanceSpec() {
 		Map<String, Object> parameters = getParameters();
 
 		try {
-			AppSpecImpl parsedConfig = new AppSpecImpl();
+			AppInstanceSpecImpl parsedConfig = new AppInstanceSpecImpl();
 			BeanUtils.populate(parsedConfig, parameters);
 
 			return parsedConfig;
@@ -86,27 +86,27 @@ public abstract class AbstractAppContext implements AppContext {
 
 		try {
 			Map<String, Object> parameters = new LinkedHashMap<>();
-			parameters.put("id", appSpec.getId());
-			parameters.put("name", appSpec.getName());
-			parameters.put("artifactId", appSpec.getArtifactId());
-			parameters.put("version", appSpec.getVersion());
-			parameters.put("processType", appSpec.getProcessType());
-			parameters.put("checkStatusInterval", appSpec.getCheckStatusInterval());
-			parameters.put("preInstalled", appSpec.isPreInstalled());
-			parameters.put("appDirectory", appSpec.getAppDirectory());
-			parameters.put("workDirectory", appSpec.getWorkDirectory());
-			parameters.put("logDirectory", appSpec.getLogDirectory());
-			parameters.put("pidFile", appSpec.getPidFile());
-			parameters.put("ptql", appSpec.getPtql());
-			parameters.put("stdOutFile", appSpec.getStdOutFile());
-			parameters.put("stdErrFile", appSpec.getStdErrFile());
+			parameters.put("id", appInstanceSpec.getId());
+			parameters.put("name", appInstanceSpec.getName());
+			parameters.put("artifactId", appInstanceSpec.getArtifactId());
+			parameters.put("version", appInstanceSpec.getVersion());
+			parameters.put("processType", appInstanceSpec.getProcessType());
+			parameters.put("checkStatusInterval", appInstanceSpec.getCheckStatusInterval());
+			parameters.put("preInstalled", appInstanceSpec.isPreInstalled());
+			parameters.put("appDirectory", appInstanceSpec.getAppDirectory());
+			parameters.put("workDirectory", appInstanceSpec.getWorkDirectory());
+			parameters.put("logDirectory", appInstanceSpec.getLogDirectory());
+			parameters.put("pidFile", appInstanceSpec.getPidFile());
+			parameters.put("ptql", appInstanceSpec.getPtql());
+			parameters.put("stdOutFile", appInstanceSpec.getStdOutFile());
+			parameters.put("stdErrFile", appInstanceSpec.getStdErrFile());
 
-			parameters.put("commandShell", appSpec.getCommandShell());
-			parameters.put("startCommandLine", appSpec.getStartCommandLine());
-			parameters.put("startTimeout", appSpec.getStartTimeout());
-			parameters.put("stopCommandLine", appSpec.getStopCommandLine());
-			parameters.put("stopTimeout", appSpec.getStopTimeout());
-			parameters.put("monitor", appSpec.isMonitor());
+			parameters.put("commandShell", appInstanceSpec.getCommandShell());
+			parameters.put("startCommandLine", appInstanceSpec.getStartCommandLine());
+			parameters.put("startTimeout", appInstanceSpec.getStartTimeout());
+			parameters.put("stopCommandLine", appInstanceSpec.getStopCommandLine());
+			parameters.put("stopTimeout", appInstanceSpec.getStopTimeout());
+			parameters.put("monitor", appInstanceSpec.isMonitor());
 
 			parameters.put("hostname", lampContext.getHostname());
 			parameters.put("address", lampContext.getAddress());
@@ -121,8 +121,8 @@ public abstract class AbstractAppContext implements AppContext {
 				parameters.put("env", environment);
 			}
 
-			if (appSpec.getParameters() != null) {
-				parameters.putAll(appSpec.getParameters());
+			if (appInstanceSpec.getParameters() != null) {
+				parameters.putAll(appInstanceSpec.getParameters());
 			}
 
 			String filename = (String) parameters.get("filename");
@@ -158,40 +158,40 @@ public abstract class AbstractAppContext implements AppContext {
 	}
 
 	public String getId() {
-		return appSpec.getId();
+		return appInstanceSpec.getId();
 	}
 
 	@Override public Shell getShell() {
 		return lampContext.getShell();
 	}
 
-	@Override public AppStatus getStatus() {
-		if (System.currentTimeMillis() - lastCheckTimeMillis > appSpec.getCheckStatusInterval()) {
+	@Override public AppInstanceStatus getStatus() {
+		if (System.currentTimeMillis() - lastCheckTimeMillis > appInstanceSpec.getCheckStatusInterval()) {
 			return checkAndUpdateStatus();
 		}
 
-		return appStatus;
+		return appInstanceStatus;
 	}
 
-	@Override public AppStatus updateStatus(AppStatus status) {
+	@Override public AppInstanceStatus updateStatus(AppInstanceStatus status) {
 		this.lastCheckTimeMillis = System.currentTimeMillis();
-		this.appStatus = status;
-		return this.appStatus;
+		this.appInstanceStatus = status;
+		return this.appInstanceStatus;
 	}
 
-	@Override public AppStatus checkAndUpdateStatus() {
+	@Override public AppInstanceStatus checkAndUpdateStatus() {
 		AppProcess process = getProcess();
 		if (process != null) {
 			AppProcessState processStatus = process.getStatus();
 			if (AppProcessState.RUNNING.equals(processStatus)) {
-				return updateStatus(AppStatus.RUNNING);
+				return updateStatus(AppInstanceStatus.RUNNING);
 			} else if (AppProcessState.NOT_RUNNING.equals(processStatus)) {
-				return updateStatus(AppStatus.NOT_RUNNING);
+				return updateStatus(AppInstanceStatus.STOPPED);
 			} else {
-				return updateStatus(AppStatus.UNKNOWN);
+				return updateStatus(AppInstanceStatus.UNKNOWN);
 			}
 		}
-		return appStatus;
+		return appInstanceStatus;
 	}
 
 

@@ -1,7 +1,7 @@
 package lamp.agent.genie.spring.boot.management.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lamp.agent.genie.core.AppStatus;
+import lamp.agent.genie.core.AppInstanceStatus;
 import lamp.agent.genie.core.LampContext;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
@@ -23,7 +23,7 @@ public class AppCorrectStatusRepository {
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
-	public void save(String id, AppStatus correctStatus) {
+	public void save(String id, AppInstanceStatus correctStatus) {
 		File directory = lampContext.getAppMetaInfoDirectory(id);
 		if (!directory.exists()) {
 			directory.mkdirs();
@@ -36,7 +36,7 @@ public class AppCorrectStatusRepository {
 		}
 	}
 
-	public AppStatus findOne(String id) {
+	public AppInstanceStatus findOne(String id) {
 		File directory = lampContext.getAppMetaInfoDirectory(id);
 		File file = new File(directory, STATUS_JSON);
 
@@ -44,7 +44,7 @@ public class AppCorrectStatusRepository {
 			return null;
 		}
 		try {
-			return objectMapper.readValue(file, AppStatus.class);
+			return objectMapper.readValue(file, AppInstanceStatus.class);
 		} catch (IOException e) {
 			throw Exceptions.newException(ErrorCode.APP_CONFIG_READ_FAILED, e);
 		}

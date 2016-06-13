@@ -4,17 +4,17 @@ package lamp.agent.genie.core;
 import java.io.File;
 import java.util.Date;
 
-public interface App {
+public interface AppInstance {
 
 	String getId();
 
-	AppSpec getSpec();
+	AppInstanceSpec getSpec();
 
-	AppContext getContext();
+	AppInstanceContext getContext();
 
-	AppStatus getStatus();
+	AppInstanceStatus getStatus();
 
-	AppStatus getCorrectStatus();
+	AppInstanceStatus getCorrectStatus();
 
 	void start();
 
@@ -22,7 +22,7 @@ public interface App {
 
 	boolean isRunning();
 
-	boolean isMonitor();
+	boolean monitored();
 
 	File getStdOutFile();
 

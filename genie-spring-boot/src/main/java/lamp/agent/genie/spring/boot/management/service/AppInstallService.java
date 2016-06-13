@@ -1,6 +1,6 @@
 package lamp.agent.genie.spring.boot.management.service;
 
-import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.core.AppInstanceContext;
 import lamp.agent.genie.core.install.AppInstaller;
 import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.core.install.SimpleAppInstaller;
@@ -31,8 +31,6 @@ public class AppInstallService {
 	@Autowired
 	private InstallSpecRepository installSpecRepository;
 
-	@Autowired
-	private ScriptCommandService scriptCommandService;
 
 	@PostConstruct
 	public void setUp() {
@@ -40,10 +38,10 @@ public class AppInstallService {
 		expressionParser = new ExpressionParser();
 	}
 
-	public void install(AppContext appContext, MultipartFile multipartFile) {
-		Map<String, Object> parameters = appContext.getParameters();
-		InstallSpec installSpec = appContext.getInstallSpec();
-		String directory = appContext.getParsedAppSpec().getAppDirectory();
+	public void install(AppInstanceContext appInstanceContext, MultipartFile multipartFile) {
+		Map<String, Object> parameters = appInstanceContext.getParameters();
+		InstallSpec installSpec = appInstanceContext.getInstallSpec();
+		String directory = appInstanceContext.getParsedAppInstanceSpec().getAppDirectory();
 		File installDirectory = new File(directory);
 		if (!installDirectory.exists()) {
 			installDirectory.mkdirs();
@@ -57,25 +55,25 @@ public class AppInstallService {
 		filename = expressionParser.getValue(filename, parameters);
 		installSpec.setFilename(filename);
 
-		List<ScriptCommand> commands = scriptCommandService.parse(installSpec.getCommands());
+		List<ScriptCommand> commands = installSpec.getScriptCommands();
 
-		File installLogFile = new File(appContext.getAppMetaInfoDirectory(), "install-" + System.currentTimeMillis() + ".log");
+		File installLogFile = new File(appInstanceContext.getAppMetaInfoDirectory(), "install-" + System.currentTimeMillis() + ".log");
 
-		MultipartFileInstallContext context = MultipartFileInstallContext.of(appContext, multipartFile, commands, installLogFile);
+		MultipartFileInstallContext context = MultipartFileInstallContext.of(appInstanceContext, multipartFile, commands, installLogFile);
 
 		appInstaller.install(context);
 
 		installSpecRepository.save(installSpec);
 	}
 
-	public void update(AppContext appContext, MultipartFile multipartFile) {
-		install(appContext, multipartFile);
+	public void update(AppInstanceContext appInstanceContext, MultipartFile multipartFile) {
+		install(appInstanceContext, multipartFile);
 	}
 
-	public void uninstall(AppContext appContext) {
-		appInstaller.uninstall(SimpleUninstallContext.of(appContext));
+	public void uninstall(AppInstanceContext appInstanceContext) {
+		appInstaller.uninstall(SimpleUninstallContext.of(appInstanceContext));
 
-		InstallSpec installSpec = appContext.getInstallSpec();
+		InstallSpec installSpec = appInstanceContext.getInstallSpec();
 		installSpecRepository.delete(installSpec);
 	}
 

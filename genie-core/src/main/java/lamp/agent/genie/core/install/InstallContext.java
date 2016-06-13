@@ -1,6 +1,6 @@
 package lamp.agent.genie.core.install;
 
-import lamp.agent.genie.core.AppContext;
+import lamp.agent.genie.core.AppInstanceContext;
 import lamp.agent.genie.core.script.ScriptCommand;
 import lamp.agent.genie.utils.ExpressionParser;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface InstallContext {
 
-	AppContext getAppContext();
+	AppInstanceContext getAppInstanceContext();
 
 	ExpressionParser getExpressionParser();
 

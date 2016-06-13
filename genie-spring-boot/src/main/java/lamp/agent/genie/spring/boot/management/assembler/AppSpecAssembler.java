@@ -1,9 +1,9 @@
 package lamp.agent.genie.spring.boot.management.assembler;
 
-import lamp.agent.genie.core.AppSpec;
+import lamp.agent.genie.core.AppInstanceSpec;
 import lamp.agent.genie.core.LampContext;
 import lamp.agent.genie.spring.boot.base.assembler.AbstractListAssembler;
-import lamp.agent.genie.spring.boot.base.impl.AppSpecImpl;
+import lamp.agent.genie.spring.boot.base.impl.AppInstanceSpecImpl;
 import lamp.agent.genie.spring.boot.management.model.SimpleAppContainer;
 import lamp.agent.genie.utils.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 
 @Component
-public class AppSpecAssembler extends AbstractListAssembler<SimpleAppContainer, AppSpec> {
+public class AppSpecAssembler extends AbstractListAssembler<SimpleAppContainer, AppInstanceSpec> {
 
 	@Autowired
 	private LampContext lampContext;
 
-	@Override protected AppSpec doAssemble(SimpleAppContainer form) {
-		AppSpecImpl appConfig = new AppSpecImpl();
-		BeanUtils.copyProperties(form, appConfig, AppSpecImpl.class);
+	@Override protected AppInstanceSpec doAssemble(SimpleAppContainer form) {
+		AppInstanceSpecImpl appConfig = new AppInstanceSpecImpl();
+		BeanUtils.copyProperties(form, appConfig, AppInstanceSpecImpl.class);
 
 		if (StringUtils.isBlank(appConfig.getAppDirectory())) {
 			File appDirectory = new File(lampContext.getAppDirectory(), appConfig.getId() + "/app");

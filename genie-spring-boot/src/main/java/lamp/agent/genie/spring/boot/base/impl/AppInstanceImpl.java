@@ -1,9 +1,9 @@
 package lamp.agent.genie.spring.boot.base.impl;
 
-import lamp.agent.genie.core.App;
-import lamp.agent.genie.core.AppContext;
-import lamp.agent.genie.core.AppSpec;
-import lamp.agent.genie.core.AppStatus;
+import lamp.agent.genie.core.AppInstance;
+import lamp.agent.genie.core.AppInstanceContext;
+import lamp.agent.genie.core.AppInstanceSpec;
+import lamp.agent.genie.core.AppInstanceStatus;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lamp.agent.genie.utils.StringUtils;
@@ -12,19 +12,19 @@ import lombok.Getter;
 import java.io.File;
 import java.util.Date;
 
-public class AppImpl implements App {
+public class AppInstanceImpl implements AppInstance {
 
 	@Getter
-	private final AppContext context;
+	private final AppInstanceContext context;
 
 	@Getter
 	private Date startTime;
 	@Getter
 	private Date stopTime;
 
-	private AppStatus correctStatus;
+	private AppInstanceStatus correctStatus;
 
-	public AppImpl(AppContext context, AppStatus correctStatus) {
+	public AppInstanceImpl(AppInstanceContext context, AppInstanceStatus correctStatus) {
 		this.context = context;
 		this.correctStatus = correctStatus;
 	}
@@ -34,71 +34,71 @@ public class AppImpl implements App {
 		return context.getId();
 	}
 
-	@Override public AppSpec getSpec() {
-		return context.getAppSpec();
+	@Override public AppInstanceSpec getSpec() {
+		return context.getAppInstanceSpec();
 	}
 
 	@Override
-	public synchronized AppStatus getStatus() {
+	public synchronized AppInstanceStatus getStatus() {
 		return context.getStatus();
 	}
 
-	@Override public AppStatus getCorrectStatus() {
+	@Override public AppInstanceStatus getCorrectStatus() {
 		return correctStatus;
 	}
 
 	@Override public boolean isRunning() {
-		return AppStatus.RUNNING.equals(getStatus());
+		return AppInstanceStatus.RUNNING.equals(getStatus());
 	}
 
-	@Override public boolean isMonitor() {
-		return context.getAppSpec().isMonitor();
+	@Override public boolean monitored() {
+		return context.getAppInstanceSpec().isMonitor();
 	}
 
 	@Override public File getStdOutFile() {
-		String logFile = context.getParsedAppSpec().getStdOutFile();
+		String logFile = context.getParsedAppInstanceSpec().getStdOutFile();
 		return StringUtils.isNotBlank(logFile) ? new File(logFile) : null;
 	}
 
 	@Override public File getStdErrFile() {
-		String logFile = context.getParsedAppSpec().getStdErrFile();
+		String logFile = context.getParsedAppInstanceSpec().getStdErrFile();
 		return StringUtils.isNotBlank(logFile) ? new File(logFile) : null;
 	}
 
 	@Override
 	public synchronized void start() {
-		AppStatus currentStatus = context.getStatus();
-		boolean canStart = AppStatus.NOT_RUNNING.equals(currentStatus);
+		AppInstanceStatus currentStatus = context.getStatus();
+		boolean canStart = AppInstanceStatus.STOPPED.equals(currentStatus);
 		if (!canStart) {
 			throw Exceptions.newException(ErrorCode.APP_IS_ALREADY_RUNNING);
 		}
 
 		try {
-			context.updateStatus(AppStatus.STARTING);
+			context.updateStatus(AppInstanceStatus.STARTING);
 			this.startTime = new Date();
 			this.stopTime = null;
 
 			context.createProcess();
 
-			correctStatus = AppStatus.RUNNING;
+			correctStatus = AppInstanceStatus.RUNNING;
 		} catch (Exception e) {
-			context.updateStatus(AppStatus.NOT_RUNNING);
+			context.updateStatus(AppInstanceStatus.STOPPED);
 			throw Exceptions.newException(ErrorCode.APP_START_FAILED, e);
 		}
 	}
 
 	@Override
 	public synchronized void stop() {
-		correctStatus = AppStatus.NOT_RUNNING;
+		correctStatus = AppInstanceStatus.STOPPED;
 
-		AppStatus currentStatus = getStatus();
-		boolean canStop = AppStatus.RUNNING.equals(currentStatus);
+		AppInstanceStatus currentStatus = getStatus();
+		boolean canStop = AppInstanceStatus.RUNNING.equals(currentStatus);
 		if (!canStop) {
 			throw Exceptions.newException(ErrorCode.APP_IS_NOT_RUNNING);
 		}
 
 		try {
-			context.updateStatus(AppStatus.STOPPING);
+			context.updateStatus(AppInstanceStatus.STOPPING);
 			this.stopTime = new Date();
 
 			context.terminateProcess();

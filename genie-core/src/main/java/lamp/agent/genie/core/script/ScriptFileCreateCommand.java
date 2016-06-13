@@ -1,5 +1,6 @@
 package lamp.agent.genie.core.script;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import lamp.agent.genie.core.LampCoreConstants;
 import lamp.agent.genie.core.script.exception.CommandExecuteException;
 import lamp.agent.genie.utils.ExpressionParser;
@@ -13,6 +14,7 @@ import java.util.Map;
 @Slf4j
 @Getter
 @Setter
+@JsonTypeName(ScriptCommandType.Values.FILE_CREATE)
 public class ScriptFileCreateCommand extends ScriptFileCommand {
 
 	private String filename;
@@ -28,9 +30,9 @@ public class ScriptFileCreateCommand extends ScriptFileCommand {
 	public void execute(CommandExecutionContext context) {
 		log.info("File Create (0) : {}", filename);
 		ExpressionParser expressionParser = context.getExpressionParser();
-		Map<String, Object> parameters = context.getAppContext().getParameters();
+		Map<String, Object> parameters = context.getAppInstanceContext().getParameters();
 		try {
-			File file = getFile(context.getAppContext(), filename);
+			File file = getFile(context.getAppInstanceContext(), filename);
 
 			if (!file.getParentFile().exists()) {
 				file.getParentFile().mkdirs();

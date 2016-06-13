@@ -5,7 +5,7 @@ import lamp.agent.genie.core.runtime.process.AppProcessType;
 import java.util.Map;
 
 
-public interface AppSpec {
+public interface AppInstanceSpec {
 
 	String getId();
 	String getName();

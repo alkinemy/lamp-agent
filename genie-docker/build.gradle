@@ -7,6 +7,6 @@ dependencies {
 
     compile project(':genie-core')
 
-    compile("com.github.docker-java:docker-java:3.0.0-RC5")
+    compile("com.github.docker-java:docker-java:3.0.0")
 
 }
