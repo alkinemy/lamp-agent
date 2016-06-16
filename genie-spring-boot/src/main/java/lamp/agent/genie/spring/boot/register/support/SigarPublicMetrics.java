@@ -10,6 +10,7 @@ import org.springframework.boot.actuate.metrics.Metric;
 import org.springframework.core.Ordered;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
@@ -139,36 +140,78 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 		}
 	}
 
+//	protected void addFileSystemMetrics(Collection<Metric<?>> result) {
+//		try {
+//			FileSystem[] fileSystems = sigar.getFileSystemList();
+//
+//			long total = 0L;
+//			long free = 0L;
+//			long used = 0L;
+//			long avail = 0L;
+//			long files = 0L;
+//			long freeFiles = 0L;
+//			long diskReads = 0L;
+//			long diskWrites = 0L;
+//			long diskReadBytes = 0L;
+//			long diskWriteBytes = 0L;
+//
+//
+//			for (FileSystem fileSystem : fileSystems) {
+//				if (fileSystem.getType() == FileSystem.TYPE_LOCAL_DISK
+//					|| fileSystem.getType() == FileSystem.TYPE_NETWORK) {
+//					String name = fileSystem.getDevName();
+//					FileSystemUsage fileSystemUsage = sigar.getFileSystemUsage(name);
+////					log.debug("fileSystemUsage = {}, {}", fileSystem.toMap(), fileSystemUsage);
+//					result.add(new Metric<>("server.fileSystem." + name + ".total", fileSystemUsage.getTotal()));
+//					result.add(new Metric<>("server.fileSystem." + name + ".free", fileSystemUsage.getFree()));
+//					result.add(new Metric<>("server.fileSystem." + name + ".used", fileSystemUsage.getUsed()));
+//					result.add(new Metric<>("server.fileSystem." + name + ".avail", fileSystemUsage.getAvail()));
+//					result.add(new Metric<>("server.fileSystem." + name + ".files", fileSystemUsage.getFiles()));
+//					result.add(new Metric<>("server.fileSystem." + name + ".freeFiles", fileSystemUsage.getFreeFiles()));
+//					result.add(new Metric<>("server.fileSystem." + name + ".diskReads", fileSystemUsage.getDiskReads()));
+//					result.add(new Metric<>("server.fileSystem." + name + ".diskWrites", fileSystemUsage.getDiskWrites()));
+//					result.add(new Metric<>("server.fileSystem." + name + ".diskReadBytes", fileSystemUsage.getDiskReadBytes()));
+//					result.add(new Metric<>("server.fileSystem." + name + ".diskWriteBytes", fileSystemUsage.getDiskWriteBytes()));
+//					result.add(new Metric<>("server.fileSystem." + name + ".diskQueue", fileSystemUsage.getDiskQueue()));
+//					result.add(new Metric<>("server.fileSystem." + name + ".diskServiceTime", fileSystemUsage.getDiskServiceTime()));
+//					result.add(new Metric<>("server.fileSystem." + name + ".usePercent", fileSystemUsage.getUsePercent()));
+//
+//					total += fileSystemUsage.getTotal();
+//					free += fileSystemUsage.getFree();
+//					used += fileSystemUsage.getUsed();
+//					avail += fileSystemUsage.getAvail();
+//					files += fileSystemUsage.getFiles();
+//					freeFiles += fileSystemUsage.getFreeFiles();
+//					diskReads += fileSystemUsage.getDiskReads();
+//					diskWrites += fileSystemUsage.getDiskWrites();
+//					diskReadBytes += fileSystemUsage.getDiskReadBytes();
+//					diskWriteBytes += fileSystemUsage.getDiskWriteBytes();
+//				}
+//			}
+//
+//			result.add(new Metric<>("server.fileSystem.total", total));
+//			result.add(new Metric<>("server.fileSystem.free", free));
+//			result.add(new Metric<>("server.fileSystem.used", used));
+//			result.add(new Metric<>("server.fileSystem.avail", avail));
+//			result.add(new Metric<>("server.fileSystem.files", files));
+//			result.add(new Metric<>("server.fileSystem.freeFiles", freeFiles));
+//			result.add(new Metric<>("server.fileSystem.diskReads", diskReads));
+//			result.add(new Metric<>("server.fileSystem.diskWrites", diskWrites));
+//			result.add(new Metric<>("server.fileSystem.diskReadBytes", diskReadBytes));
+//			result.add(new Metric<>("server.fileSystem.diskWriteBytes", diskWriteBytes));
+//
+//
+//		} catch (SigarException e) {
+//			log.warn("addFileSystemMetrics Failed", e);
+//		}
+//	}
+
 	protected void addFileSystemMetrics(Collection<Metric<?>> result) {
-		try {
-			FileSystem[] fileSystems = sigar.getFileSystemList();
+		File root = new File("/");
 
-			for (FileSystem fileSystem : fileSystems) {
-				if (fileSystem.getType() == FileSystem.TYPE_LOCAL_DISK
-					|| fileSystem.getType() == FileSystem.TYPE_NETWORK) {
-					String name = fileSystem.getDevName();
-					FileSystemUsage fileSystemUsage = sigar.getFileSystemUsage(name);
-//					log.debug("fileSystemUsage = {}, {}", fileSystem.toMap(), fileSystemUsage);
-					result.add(new Metric<>("server.fileSystem." + name + ".total", fileSystemUsage.getTotal()));
-					result.add(new Metric<>("server.fileSystem." + name + ".free", fileSystemUsage.getFree()));
-					result.add(new Metric<>("server.fileSystem." + name + ".used", fileSystemUsage.getUsed()));
-					result.add(new Metric<>("server.fileSystem." + name + ".avail", fileSystemUsage.getAvail()));
-					result.add(new Metric<>("server.fileSystem." + name + ".files", fileSystemUsage.getFiles()));
-					result.add(new Metric<>("server.fileSystem." + name + ".freeFiles", fileSystemUsage.getFreeFiles()));
-					result.add(new Metric<>("server.fileSystem." + name + ".diskReads", fileSystemUsage.getDiskReads()));
-					result.add(new Metric<>("server.fileSystem." + name + ".diskWrites", fileSystemUsage.getDiskWrites()));
-					result.add(new Metric<>("server.fileSystem." + name + ".diskReadBytes", fileSystemUsage.getDiskReadBytes()));
-					result.add(new Metric<>("server.fileSystem." + name + ".diskWriteBytes", fileSystemUsage.getDiskWriteBytes()));
-					result.add(new Metric<>("server.fileSystem." + name + ".diskQueue", fileSystemUsage.getDiskQueue()));
-					result.add(new Metric<>("server.fileSystem." + name + ".diskServiceTime", fileSystemUsage.getDiskServiceTime()));
-					result.add(new Metric<>("server.fileSystem." + name + ".usePercent", fileSystemUsage.getUsePercent()));
-				}
-
-			}
-
-		} catch (SigarException e) {
-			log.warn("addFileSystemMetrics Failed", e);
-		}
+		result.add(new Metric<>("server.fileSystem.total", root.getTotalSpace()));
+		result.add(new Metric<>("server.fileSystem.free", root.getFreeSpace()));
+		result.add(new Metric<>("server.fileSystem.used", root.getTotalSpace() - root.getFreeSpace()));
 	}
 
 	protected void addDiskUsageMetrics(Collection<Metric<?>> result) {
