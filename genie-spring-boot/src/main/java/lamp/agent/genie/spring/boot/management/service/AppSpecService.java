@@ -40,4 +40,8 @@ public class AppSpecService {
 		appSpecRepository.delete(appInstanceSpec);
 	}
 
+	public void deleteAppMetaInfoDirectory(AppInstanceSpec appInstanceSpec) {
+		appSpecRepository.deleteAppMetaInfoDirectory(appInstanceSpec);
+	}
+
 }

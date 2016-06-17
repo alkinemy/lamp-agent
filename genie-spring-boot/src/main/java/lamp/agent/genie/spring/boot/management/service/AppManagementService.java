@@ -181,7 +181,6 @@ public class AppManagementService {
 
 		AppInstanceContext appInstanceContext = appInstance.getContext();
 
-
 		appInstallService.update(appInstanceContext, form.getInstallFile());
 		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_FILE_UPDATED, id));
 
@@ -224,7 +223,7 @@ public class AppManagementService {
 
 		appRegistry.unbind(appInstance.getId());
 
-		appSpecService.delete(appInstanceSpec);
+		appSpecService.deleteAppMetaInfoDirectory(appInstanceSpec);
 		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_UNREGISTERED, id));
 	}
 

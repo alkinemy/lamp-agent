@@ -8,6 +8,7 @@ import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lamp.agent.genie.spring.boot.base.impl.AppInstanceSpecImpl;
 import lamp.agent.genie.utils.ArrayUtils;
+import lamp.agent.genie.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -81,4 +82,8 @@ public class AppSpecRepository {
 		file.delete();
 	}
 
+	public void deleteAppMetaInfoDirectory(AppInstanceSpec appInstanceSpec) {
+		File directory = lampContext.getAppMetaInfoDirectory(appInstanceSpec.getId());
+		FileUtils.deleteQuietly(directory);
+	}
 }

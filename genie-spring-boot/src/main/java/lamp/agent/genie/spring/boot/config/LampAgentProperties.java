@@ -3,6 +3,7 @@ package lamp.agent.genie.spring.boot.config;
 import com.amazonaws.util.EC2MetadataUtils;
 import lamp.agent.genie.core.MountPoint;
 import lamp.agent.genie.utils.BooleanUtils;
+import lamp.agent.genie.utils.HostUtils;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -67,6 +68,11 @@ public class LampAgentProperties implements ApplicationListener<ApplicationEvent
 			InetAddress inetAddress = InetAddress.getLocalHost();
 			hostname = inetAddress.getHostName();
 			address = inetAddress.getHostAddress();
+		}
+
+		if ("localhost".equals(hostname)) {
+			String localHostName = HostUtils.getLocalHostName();
+			hostname = StringUtils.defaultString(localHostName, hostname);
 		}
 
 		if (StringUtils.isBlank(version)) {
