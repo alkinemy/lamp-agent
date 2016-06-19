@@ -26,8 +26,12 @@ public class AgentRegistrationApplicationListener implements ApplicationListener
 	@Override public void onApplicationEvent(ApplicationEvent event) {
 		log.debug("Event : {}", event);
 		if (event instanceof EmbeddedServletContainerInitializedEvent) {
-			lampClientRegistrator.register();
-			agentEventPublisher.publish(AgentEvent.of(AgentEventName.AGENT_STARTED, null));
+			try {
+				lampClientRegistrator.register();
+				agentEventPublisher.publish(AgentEvent.of(AgentEventName.AGENT_STARTED, null));
+			} catch (Exception e) {
+				log.error("LampClient register failed");
+			}
 		} else if (event instanceof ContextClosedEvent) {
 			lampClientRegistrator.deregister();
 			agentEventPublisher.publish(AgentEvent.of(AgentEventName.AGENT_STOPPED, null));
