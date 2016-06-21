@@ -1,7 +1,7 @@
 package lamp.agent.genie.core.runtime.process.exec;
 
 import lamp.agent.genie.core.AppInstanceSpec;
-import lamp.agent.genie.core.AppInstanceContext;
+import lamp.agent.genie.core.SimpleAppInstanceContext;
 import lamp.agent.genie.core.LampCoreConstants;
 import lamp.agent.genie.core.exception.PidFileException;
 import lamp.agent.genie.core.runtime.process.AppProcess;
@@ -24,7 +24,7 @@ import java.util.Objects;
 public abstract class AbstractProcess implements AppProcess {
 
 	@Getter
-	private final AppInstanceContext context;
+	private final SimpleAppInstanceContext context;
 	@Getter
 	private File pidFile;
 	@Getter
@@ -48,7 +48,7 @@ public abstract class AbstractProcess implements AppProcess {
 	private long procssFromPtqlTime;
 	private long lastModified;
 
-	public AbstractProcess(AppInstanceContext context) {
+	public AbstractProcess(SimpleAppInstanceContext context) {
 		Objects.requireNonNull(context);
 		this.context = context;
 		init();

@@ -1,6 +1,6 @@
 package lamp.agent.genie.spring.boot.base.impl;
 
-import lamp.agent.genie.core.AppInstanceContext;
+import lamp.agent.genie.core.SimpleAppInstanceContext;
 import lamp.agent.genie.core.install.InstallContext;
 import lamp.agent.genie.core.script.ScriptCommand;
 import lamp.agent.genie.utils.ExpressionParser;
@@ -17,7 +17,7 @@ import java.util.List;
 public class MultipartFileInstallContext implements InstallContext {
 
 	@Getter @NonNull
-	private AppInstanceContext appInstanceContext;
+	private SimpleAppInstanceContext appInstanceContext;
 
 	@Getter
 	private ExpressionParser expressionParser = new SpringExpressionParser();

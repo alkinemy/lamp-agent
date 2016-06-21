@@ -1,6 +1,6 @@
 package lamp.agent.genie.spring.boot.management.controller;
 
-import lamp.agent.genie.core.AppInstance;
+import lamp.agent.genie.core.SimpleAppInstance;
 import lamp.agent.genie.core.AppInstanceStatus;
 import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
 import lamp.agent.genie.spring.boot.management.model.*;
@@ -25,14 +25,14 @@ public class AppController {
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public List<AppInstanceDto> list() {
-		List<AppInstance> appInstances = appManagementService.getApps();
-		return smartAssembler.assemble(appInstances, AppInstance.class, AppInstanceDto.class);
+		List<SimpleAppInstance> appInstances = appManagementService.getApps();
+		return smartAssembler.assemble(appInstances, SimpleAppInstance.class, AppInstanceDto.class);
 	}
 
 	@RequestMapping(value = "/{id:.+}", method = RequestMethod.GET)
 	public AppInstanceDto get(@PathVariable("id") String id) {
-		AppInstance appInstance = appManagementService.getApp(id);
-		return smartAssembler.assemble(appInstance, AppInstance.class, AppInstanceDto.class);
+		SimpleAppInstance appInstance = appManagementService.getApp(id);
+		return smartAssembler.assemble(appInstance, SimpleAppInstance.class, AppInstanceDto.class);
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.POST)

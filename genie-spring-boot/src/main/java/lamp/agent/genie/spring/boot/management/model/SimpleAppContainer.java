@@ -22,7 +22,7 @@ import static org.apache.commons.exec.ExecuteWatchdog.INFINITE_TIMEOUT;
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeName(AppContainerType.Names.SIMPLE)
-public class SimpleAppContainer implements AppContainer{
+public class SimpleAppContainer implements AppContainer {
 
 	private String id;
 

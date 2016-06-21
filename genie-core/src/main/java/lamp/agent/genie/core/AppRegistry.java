@@ -9,10 +9,10 @@ public interface AppRegistry {
 
 	void unbind(String id);
 
-	AppInstance lookup(String id);
+	SimpleAppInstance lookup(String id);
 
 	boolean exists(String id);
 
-	List<AppInstance> list();
+	List<SimpleAppInstance> list();
 
 }

@@ -1,6 +1,6 @@
 package lamp.agent.genie.core.runtime.process.exec.foreground;
 
-import lamp.agent.genie.core.AppInstanceContext;
+import lamp.agent.genie.core.SimpleAppInstanceContext;
 import lamp.agent.genie.core.LampCoreConstants;
 import lamp.agent.genie.core.script.exception.CommandExecuteException;
 import lamp.agent.genie.core.runtime.process.AppProcessState;
@@ -22,7 +22,7 @@ public class DefaultProcess extends AbstractProcess {
 
 	private volatile ExecuteWatchdog executeWatchdog;
 
-	public DefaultProcess(AppInstanceContext context) {
+	public DefaultProcess(SimpleAppInstanceContext context) {
 		super(context);
 
 		this.executeWatchdog = doStart();

@@ -1,6 +1,6 @@
 package lamp.agent.genie.spring.boot.management.service;
 
-import lamp.agent.genie.core.AppInstanceContext;
+import lamp.agent.genie.core.SimpleAppInstanceContext;
 import lamp.agent.genie.core.install.AppInstaller;
 import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.core.install.SimpleAppInstaller;
@@ -38,7 +38,7 @@ public class AppInstallService {
 		expressionParser = new ExpressionParser();
 	}
 
-	public void install(AppInstanceContext appInstanceContext, MultipartFile multipartFile) {
+	public void install(SimpleAppInstanceContext appInstanceContext, MultipartFile multipartFile) {
 		Map<String, Object> parameters = appInstanceContext.getParameters();
 		InstallSpec installSpec = appInstanceContext.getInstallSpec();
 		String directory = appInstanceContext.getParsedAppInstanceSpec().getAppDirectory();
@@ -66,11 +66,11 @@ public class AppInstallService {
 		installSpecRepository.save(installSpec);
 	}
 
-	public void update(AppInstanceContext appInstanceContext, MultipartFile multipartFile) {
+	public void update(SimpleAppInstanceContext appInstanceContext, MultipartFile multipartFile) {
 		install(appInstanceContext, multipartFile);
 	}
 
-	public void uninstall(AppInstanceContext appInstanceContext) {
+	public void uninstall(SimpleAppInstanceContext appInstanceContext) {
 		appInstaller.uninstall(SimpleUninstallContext.of(appInstanceContext));
 
 		InstallSpec installSpec = appInstanceContext.getInstallSpec();

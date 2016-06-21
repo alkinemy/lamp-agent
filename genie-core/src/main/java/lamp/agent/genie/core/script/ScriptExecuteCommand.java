@@ -1,7 +1,7 @@
 package lamp.agent.genie.core.script;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import lamp.agent.genie.core.AppInstanceContext;
+import lamp.agent.genie.core.SimpleAppInstanceContext;
 import lamp.agent.genie.core.AppInstanceSpec;
 import lamp.agent.genie.core.script.exception.CommandExecuteException;
 import lamp.agent.genie.utils.CommandLineUtils;
@@ -29,7 +29,7 @@ public class ScriptExecuteCommand extends AbstractScriptCommand {
 
 	@Override
 	public void execute(CommandExecutionContext context) {
-		AppInstanceContext appInstanceContext = context.getAppInstanceContext();
+		SimpleAppInstanceContext appInstanceContext = context.getAppInstanceContext();
 		String commandLine = context.getAppInstanceContext().getValue(getCommandLine(), appInstanceContext.getParameters());
 		log.info("Execute : {}", commandLine);
 

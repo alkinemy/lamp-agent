@@ -1,6 +1,6 @@
 package lamp.agent.genie.core.runtime.process.exec.background;
 
-import lamp.agent.genie.core.AppInstanceContext;
+import lamp.agent.genie.core.SimpleAppInstanceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.ExecuteException;
@@ -8,10 +8,10 @@ import org.apache.commons.exec.ExecuteException;
 @Slf4j
 public class DaemonProcessResultHandler extends DefaultExecuteResultHandler {
 
-	private final AppInstanceContext context;
+	private final SimpleAppInstanceContext context;
 	private final String command;
 
-	public DaemonProcessResultHandler(AppInstanceContext context, String command) {
+	public DaemonProcessResultHandler(SimpleAppInstanceContext context, String command) {
 		this.context = context;
 		this.command = command;
 	}

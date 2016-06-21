@@ -1,13 +1,10 @@
 package lamp.agent.genie.core.install;
 
-import lamp.agent.genie.core.AppInstanceContext;
-
-import java.io.File;
-import java.util.List;
+import lamp.agent.genie.core.SimpleAppInstanceContext;
 
 public interface UninstallContext {
 
-	AppInstanceContext getAppInstanceContext();
+	SimpleAppInstanceContext getAppInstanceContext();
 
 
 }

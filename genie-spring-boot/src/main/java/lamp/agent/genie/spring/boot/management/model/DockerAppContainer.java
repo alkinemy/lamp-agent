@@ -1,20 +1,21 @@
 package lamp.agent.genie.spring.boot.management.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
 @ToString
-public class DockerContainer {
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeName(AppContainerType.Names.DOCKER)
+public class DockerAppContainer implements AppContainer {
 
-	private String type = "docker";
-
+	private String id;
 	private String image;
 	private String network;
 

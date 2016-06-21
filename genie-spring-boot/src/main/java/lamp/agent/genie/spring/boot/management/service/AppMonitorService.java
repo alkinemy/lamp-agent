@@ -1,6 +1,6 @@
 package lamp.agent.genie.spring.boot.management.service;
 
-import lamp.agent.genie.core.AppInstance;
+import lamp.agent.genie.core.SimpleAppInstance;
 import lamp.agent.genie.core.AppInstanceStatus;
 import lamp.agent.genie.spring.boot.management.model.AppMonitor;
 import lamp.agent.genie.spring.boot.register.model.AgentEvent;
@@ -29,12 +29,12 @@ public class AppMonitorService {
 	private Map<String, AppMonitor> appMonitorMap = new HashMap<>();
 
 	public synchronized void monitor() {
-		List<AppInstance> appInstances = appManagementService.getApps();
+		List<SimpleAppInstance> appInstances = appManagementService.getApps();
 		if (CollectionUtils.isEmpty(appInstances)) {
 			return;
 		}
 
-		for (AppInstance appInstance : appInstances) {
+		for (SimpleAppInstance appInstance : appInstances) {
 			log.debug("[App:{}] monitor={}, status={}, correctStatus={}", appInstance.getId(), appInstance.monitored(), appInstance.getStatus(), appInstance.getCorrectStatus());
 			if (appInstance.monitored()
 				&& AppInstanceStatus.STOPPED.equals(appInstance.getStatus())

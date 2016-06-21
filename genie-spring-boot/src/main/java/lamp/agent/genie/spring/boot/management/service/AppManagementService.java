@@ -4,10 +4,11 @@ import lamp.agent.genie.core.*;
 import lamp.agent.genie.core.exception.UnsupportedProcessTypeException;
 import lamp.agent.genie.core.install.InstallSpec;
 import lamp.agent.genie.core.runtime.process.AppProcessType;
+import lamp.agent.genie.docker.DockerAppInstance;
 import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
-import lamp.agent.genie.spring.boot.base.impl.AppInstanceImpl;
+import lamp.agent.genie.spring.boot.base.impl.SimpleAppInstanceImpl;
 import lamp.agent.genie.spring.boot.base.impl.AppInstanceSpecImpl;
 import lamp.agent.genie.spring.boot.base.impl.DaemonAppInstanceContext;
 import lamp.agent.genie.spring.boot.base.impl.DefaultAppInstanceContext;
@@ -65,7 +66,7 @@ public class AppManagementService {
 		List<AppInstanceSpec> appInstanceSpecs = appSpecService.getAppManifests();
 		for (AppInstanceSpec appInstanceSpec : appInstanceSpecs) {
 			try {
-				AppInstance appInstance = newAppInstance(appInstanceSpec);
+				SimpleAppInstance appInstance = newSimpleAppInstance(appInstanceSpec);
 				appRegistry.bind(appInstance.getId(), appInstance);
 				log.info("[App:{}] registered", appInstance.getId());
 			} catch (Exception e) {
@@ -74,8 +75,8 @@ public class AppManagementService {
 		}
 
 		// AUTO START
-		List<AppInstance> appInstances = appRegistry.list();
-		for (AppInstance appInstance : appInstances) {
+		List<SimpleAppInstance> appInstances = appRegistry.list();
+		for (SimpleAppInstance appInstance : appInstances) {
 			try {
 				if (AppInstanceStatus.RUNNING.equals(appInstance.getCorrectStatus())
 					&& AppInstanceStatus.STOPPED.equals(appInstance.getStatus())) {
@@ -90,12 +91,12 @@ public class AppManagementService {
 
 	}
 
-	protected AppInstance newAppInstance(AppInstanceSpec appInstanceSpec) {
-		AppInstanceContext appInstanceContext = newAppContextInstance(appInstanceSpec);
-		return new AppInstanceImpl(appInstanceContext, appCorrectStatusService.getCorrectStatus(appInstanceSpec.getId()));
+	protected SimpleAppInstance newSimpleAppInstance(AppInstanceSpec appInstanceSpec) {
+		SimpleAppInstanceContext appInstanceContext = newSimpleAppContextInstance(appInstanceSpec);
+		return new SimpleAppInstanceImpl(appInstanceContext, appCorrectStatusService.getCorrectStatus(appInstanceSpec.getId()));
 	}
 
-	protected AppInstanceContext newAppContextInstance(AppInstanceSpec appInstanceSpec, InstallSpec installSpec) {
+	protected SimpleAppInstanceContext newSimpleAppContextInstance(AppInstanceSpec appInstanceSpec, InstallSpec installSpec) {
 		AppProcessType appProcessType = appInstanceSpec.getProcessType();
 		if (AppProcessType.DAEMON.equals(appProcessType)) {
 			return new DaemonAppInstanceContext(lampContext, appInstanceSpec, installSpec);
@@ -106,23 +107,23 @@ public class AppManagementService {
 		}
 	}
 
-	protected AppInstanceContext newAppContextInstance(AppInstanceSpec appInstanceSpec) {
+	protected SimpleAppInstanceContext newSimpleAppContextInstance(AppInstanceSpec appInstanceSpec) {
 		InstallSpec installSpec = null;
 		if (!appInstanceSpec.isPreInstalled()) {
 			installSpec = installSpecService.getInstallConfig(appInstanceSpec.getId());
 		}
-		return newAppContextInstance(appInstanceSpec, installSpec);
+		return newSimpleAppContextInstance(appInstanceSpec, installSpec);
 	}
 
 	@PreDestroy
 	public void close() {
 	}
 
-	public synchronized List<AppInstance> getApps() {
+	public synchronized List<SimpleAppInstance> getApps() {
 		return appRegistry.list();
 	}
 
-	public synchronized AppInstance getApp(String id) {
+	public synchronized SimpleAppInstance getApp(String id) {
 		return appRegistry.lookup(id);
 	}
 
@@ -133,21 +134,29 @@ public class AppManagementService {
 		AppContainer appContainer = JsonUtils.parse(form.getAppContainer(), AppContainer.class);
 
 		AppInstanceSpec appInstanceSpec = smartAssembler.assemble(appContainer, AppInstanceSpec.class);
-		if (appContainer instanceof SimpleAppContainer
-			&& !appInstanceSpec.isPreInstalled()) {
-			InstallSpec installSpec = newInstallSpec((SimpleAppContainer) appContainer);
-			AppInstanceContext appInstanceContext = newAppContextInstance(appInstanceSpec, installSpec);
-			appInstallService.install(appInstanceContext, form.getResource());
+		if (appContainer instanceof SimpleAppContainer) {
+			if (!appInstanceSpec.isPreInstalled()) {
+				InstallSpec installSpec = newInstallSpec((SimpleAppContainer) appContainer);
+				SimpleAppInstanceContext appInstanceContext = newSimpleAppContextInstance(appInstanceSpec, installSpec);
+				appInstallService.install(appInstanceContext, form.getResource());
 
-			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_INSTALLED, id));
+				agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_INSTALLED, id));
+			}
+
+			SimpleAppInstance appInstance = newSimpleAppInstance(appInstanceSpec);
+			appRegistry.bind(appInstance.getId(), appInstance);
+
+			appSpecService.save(appInstanceSpec);
+
+			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_REGISTERED, id));
+		} else if (appContainer instanceof DockerAppContainer) {
+			DockerAppInstance appInstance = newDockerAppInsntace(appInstanceSpec);
+			appRegistry.bind(appInstance.getId(), appInstance);
+
+			appSpecService.save(appInstanceSpec);
+			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_REGISTERED, id));
 		}
 
-		AppInstance appInstance = newAppInstance(appInstanceSpec);
-		appRegistry.bind(appInstance.getId(), appInstance);
-
-		appSpecService.save(appInstanceSpec);
-
-		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_REGISTERED, id));
 	}
 
 	protected InstallSpec newInstallSpec(SimpleAppContainer appContainer) {
@@ -169,7 +178,7 @@ public class AppManagementService {
 //	}
 
 	public synchronized void updateFile(String id, AppFileUpdateForm form) {
-		AppInstance appInstance = appRegistry.lookup(id);
+		SimpleAppInstance appInstance = appRegistry.lookup(id);
 
 		boolean isRunning = appInstance.isRunning();
 		Exceptions.throwsException(isRunning && !form.isForceStop(), ErrorCode.APP_IS_RUNNING);
@@ -179,7 +188,7 @@ public class AppManagementService {
 			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_STOPPED, id));
 		}
 
-		AppInstanceContext appInstanceContext = appInstance.getContext();
+		SimpleAppInstanceContext appInstanceContext = appInstance.getContext();
 
 		appInstallService.update(appInstanceContext, form.getInstallFile());
 		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_FILE_UPDATED, id));
@@ -194,7 +203,7 @@ public class AppManagementService {
 	}
 
 	public synchronized void updateSpec(String id, AppUpdateSpecForm form) {
-		AppInstance appInstance = appRegistry.lookup(id);
+		SimpleAppInstance appInstance = appRegistry.lookup(id);
 		AppInstanceSpec appInstanceSpec = appInstance.getSpec();
 
 		BeanUtils.copyProperties(form, appInstanceSpec);
@@ -203,7 +212,7 @@ public class AppManagementService {
 	}
 
 	public synchronized void deregister(String id, boolean forceStop) {
-		AppInstance appInstance = appRegistry.lookup(id);
+		SimpleAppInstance appInstance = appRegistry.lookup(id);
 		AppInstanceSpec appInstanceSpec = appInstance.getSpec();
 		AppProcessType processType = appInstanceSpec.getProcessType();
 
@@ -217,7 +226,7 @@ public class AppManagementService {
 			Exceptions.throwsException(appInstance.isRunning(), ErrorCode.APP_IS_RUNNING, id);
 
 			InstallSpec installSpec = installSpecService.getInstallConfig(id);
-			appInstallService.uninstall(newAppContextInstance(appInstanceSpec, installSpec));
+			appInstallService.uninstall(newSimpleAppContextInstance(appInstanceSpec, installSpec));
 			agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_UNINSTALLED, id));
 		}
 
@@ -228,7 +237,7 @@ public class AppManagementService {
 	}
 
 	public synchronized void start(String id) {
-		AppInstance appInstance = appRegistry.lookup(id);
+		SimpleAppInstance appInstance = appRegistry.lookup(id);
 		appInstance.start();
 
 		appCorrectStatusService.updateCorrectStatus(appInstance.getId(), AppInstanceStatus.RUNNING);
@@ -239,19 +248,19 @@ public class AppManagementService {
 	public synchronized void stop(String id) {
 		appCorrectStatusService.updateCorrectStatus(id, AppInstanceStatus.STOPPED);
 
-		AppInstance appInstance = appRegistry.lookup(id);
+		SimpleAppInstance appInstance = appRegistry.lookup(id);
 		appInstance.stop();
 
 		agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_STOPPED, id));
 	}
 
 	public synchronized AppInstanceStatus status(String id) {
-		AppInstance appInstance = appRegistry.lookup(id);
+		SimpleAppInstance appInstance = appRegistry.lookup(id);
 		return appInstance.getStatus();
 	}
 
 	public List<LogFile> getLogFiles(String id) {
-		AppInstance appInstance = appRegistry.lookup(id);
+		SimpleAppInstance appInstance = appRegistry.lookup(id);
 		String logDirectory = appInstance.getContext().getParsedAppInstanceSpec().getLogDirectory();
 		if (StringUtils.isNotBlank(logDirectory)) {
 			List<LogFile> logFiles = new ArrayList<>();
@@ -273,7 +282,7 @@ public class AppManagementService {
 	}
 
 	public Resource getLogFileResource(String id, String filename) {
-		AppInstance appInstance = appRegistry.lookup(id);
+		SimpleAppInstance appInstance = appRegistry.lookup(id);
 		String logDirectory = appInstance.getContext().getParsedAppInstanceSpec().getLogDirectory();
 		if (StringUtils.isNotBlank(logDirectory)) {
 			filename = FilenameUtils.getName(filename);
@@ -286,7 +295,7 @@ public class AppManagementService {
 	}
 
 	public Resource getStdOutFileResource(String id) {
-		AppInstance appInstance = appRegistry.lookup(id);
+		SimpleAppInstance appInstance = appRegistry.lookup(id);
 		File file = appInstance.getStdOutFile();
 		if (file.exists()) {
 			return new FileSystemResource(file);
@@ -295,7 +304,7 @@ public class AppManagementService {
 	}
 
 	public Resource getStdErrFileResource(String id) {
-		AppInstance appInstance = appRegistry.lookup(id);
+		SimpleAppInstance appInstance = appRegistry.lookup(id);
 		File file = appInstance.getContext().getStdErrFile();
 		if (file.exists()) {
 			return new FileSystemResource(file);

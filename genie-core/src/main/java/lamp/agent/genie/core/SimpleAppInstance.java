@@ -1,16 +1,15 @@
 package lamp.agent.genie.core;
 
-
 import java.io.File;
 import java.util.Date;
 
-public interface AppInstance<T extends AppInstanceContext> {
+public interface SimpleAppInstance extends AppInstance<SimpleAppInstanceContext> {
 
 	String getId();
 
 	AppInstanceSpec getSpec();
 
-	T getContext();
+	SimpleAppInstanceContext getContext();
 
 	AppInstanceStatus getStatus();
 
@@ -27,5 +26,9 @@ public interface AppInstance<T extends AppInstanceContext> {
 	File getStdOutFile();
 
 	File getStdErrFile();
+
+	Date getStartTime();
+
+	Date getStopTime();
 
 }

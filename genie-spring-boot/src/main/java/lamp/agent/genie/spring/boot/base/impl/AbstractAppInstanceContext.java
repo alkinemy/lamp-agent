@@ -1,6 +1,6 @@
 package lamp.agent.genie.spring.boot.base.impl;
 
-import lamp.agent.genie.core.AppInstanceContext;
+import lamp.agent.genie.core.SimpleAppInstanceContext;
 import lamp.agent.genie.core.AppInstanceSpec;
 import lamp.agent.genie.core.AppInstanceStatus;
 import lamp.agent.genie.core.LampContext;
@@ -29,7 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Slf4j
-public abstract class AbstractAppInstanceContext implements AppInstanceContext {
+public abstract class AbstractAppInstanceContext implements SimpleAppInstanceContext {
 
 	@Getter
 	private final LampContext lampContext;

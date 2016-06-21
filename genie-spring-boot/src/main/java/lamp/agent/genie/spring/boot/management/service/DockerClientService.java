@@ -3,9 +3,7 @@ package lamp.agent.genie.spring.boot.management.service;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.exception.DockerClientException;
-import com.github.dockerjava.api.model.Container;
-import com.github.dockerjava.api.model.PortBinding;
-import com.github.dockerjava.api.model.Statistics;
+import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.async.ResultCallbackTemplate;
@@ -13,6 +11,7 @@ import com.github.dockerjava.core.command.PullImageResultCallback;
 import com.github.dockerjava.jaxrs.DockerCmdExecFactoryImpl;
 import lamp.agent.genie.spring.boot.config.DockerClientProperties;
 import lamp.agent.genie.spring.boot.management.model.DockerApp;
+import lamp.agent.genie.spring.boot.management.model.DockerAppContainer;
 import lamp.agent.genie.spring.boot.management.model.DockerContainer;
 import lamp.agent.genie.spring.boot.management.model.PortMapping;
 import lamp.agent.genie.utils.CollectionUtils;
@@ -21,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -70,11 +70,8 @@ public class DockerClientService {
 		return dockerClient.inspectContainerCmd(containerId).exec();
 	}
 
-	public InspectContainerResponse runContainer(DockerApp dockerApp) {
-//		String image, String
-//	} tag, String containerName, String[] containerCmd) {
+	public InspectContainerResponse runContainer(DockerAppContainer container) {
 
-		DockerContainer container = dockerApp.getContainer();
 		// 1. Pull Image
 		PullImageCmd pullImageCmd = dockerClient.pullImageCmd(container.getImage());
 		pullImageCmd.exec(new PullImageResultCallback()).awaitSuccess();
@@ -87,12 +84,38 @@ public class DockerClientService {
 		}
 
 		if (CollectionUtils.isNotEmpty(container.getPortMappings())) {
-			for (PortMapping port : container.getPortMappings()) {
-				PortBinding portBinding = PortBinding.parse(port.getContainerPort() + ":" + port.getHostPort());
-				createContainerCmd.withExposedPorts(portBinding.getExposedPort());
-				createContainerCmd.withPortBindings(portBinding);
+			List<ExposedPort> exposedPorts = new ArrayList<>();
+			List<PortBinding> portBindings = new ArrayList<>();
+			for (String port : container.getPortMappings()) {
+				PortBinding portBinding = PortBinding.parse(port);
+				exposedPorts.add(portBinding.getExposedPort());
+				portBindings.add(portBinding);
 			}
+			createContainerCmd.withExposedPorts(exposedPorts);
+			createContainerCmd.withPortBindings(portBindings);
 		}
+
+		if (CollectionUtils.isNotEmpty(container.getVolumes())) {
+			List<Volume> volumes = new ArrayList<>();
+			for (String volumeStr : container.getVolumes()) {
+				volumes.add(new Volume(volumeStr));
+			}
+			createContainerCmd.withVolumes(volumes);
+		}
+
+		if (CollectionUtils.isNotEmpty(container.getEnv())) {
+			createContainerCmd.withEnv(container.getEnv());
+		}
+
+//		if (CollectionUtils.isNotEmpty(container.getVolumesFroms())) {
+//			List<VolumesFrom> volumesFroms = new ArrayList<>();
+//			for (String volumeFromStr : container.getVolumesFroms()) {
+//				VolumesFrom volumesFrom = VolumesFrom.parse(volumeFromStr);
+//				volumesFroms.add(volumesFrom);
+//			}
+//			createContainerCmd.withVolumesFrom(volumesFroms);
+//		}
+
 		CreateContainerResponse containerResponse = createContainerCmd.exec();
 		String containerId  = containerResponse.getId();
 

@@ -1,7 +1,7 @@
 package lamp.agent.genie.spring.boot.management.assembler;
 
-import lamp.agent.genie.core.AppInstance;
-import lamp.agent.genie.core.AppInstanceContext;
+import lamp.agent.genie.core.SimpleAppInstance;
+import lamp.agent.genie.core.SimpleAppInstanceContext;
 import lamp.agent.genie.core.AppInstanceSpec;
 import lamp.agent.genie.core.runtime.process.AppProcess;
 import lamp.agent.genie.spring.boot.base.assembler.AbstractListAssembler;
@@ -9,11 +9,11 @@ import lamp.agent.genie.spring.boot.management.model.AppInstanceDto;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AppInstanceDtoAssembler extends AbstractListAssembler<AppInstance, AppInstanceDto> {
+public class AppInstanceDtoAssembler extends AbstractListAssembler<SimpleAppInstance, AppInstanceDto> {
 
-	@Override protected AppInstanceDto doAssemble(AppInstance appInstance) {
+	@Override protected AppInstanceDto doAssemble(SimpleAppInstance appInstance) {
 		AppInstanceSpec appInstanceSpec = appInstance.getSpec();
-		AppInstanceContext appInstanceContext = appInstance.getContext();
+		SimpleAppInstanceContext appInstanceContext = appInstance.getContext();
 
 		AppInstanceDto appInstanceDto = new AppInstanceDto();
 		appInstanceDto.setId(appInstance.getId());

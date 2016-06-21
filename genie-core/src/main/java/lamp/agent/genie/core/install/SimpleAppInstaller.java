@@ -1,7 +1,7 @@
 package lamp.agent.genie.core.install;
 
 
-import lamp.agent.genie.core.AppInstanceContext;
+import lamp.agent.genie.core.SimpleAppInstanceContext;
 import lamp.agent.genie.core.exception.AppException;
 import lamp.agent.genie.core.exception.InstallException;
 import lamp.agent.genie.core.script.CommandExecutionContext;
@@ -23,7 +23,7 @@ public class SimpleAppInstaller implements AppInstaller {
 	}
 
 	@Override public void install(InstallContext context) {
-		AppInstanceContext appInstanceContext = context.getAppInstanceContext();
+		SimpleAppInstanceContext appInstanceContext = context.getAppInstanceContext();
 
 		File installLogFile = context.getInstallLogFile();
 		if (!installLogFile.getParentFile().exists()) {
@@ -51,7 +51,7 @@ public class SimpleAppInstaller implements AppInstaller {
 	}
 
 	@Override public void uninstall(UninstallContext context) {
-		AppInstanceContext appInstanceContext = context.getAppInstanceContext();
+		SimpleAppInstanceContext appInstanceContext = context.getAppInstanceContext();
 		InstallSpec installSpec = appInstanceContext.getInstallSpec();
 
 		File file = new File(installSpec.getDirectory(), installSpec.getFilename());

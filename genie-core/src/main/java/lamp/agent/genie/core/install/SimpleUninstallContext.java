@@ -1,6 +1,6 @@
 package lamp.agent.genie.core.install;
 
-import lamp.agent.genie.core.AppInstanceContext;
+import lamp.agent.genie.core.SimpleAppInstanceContext;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +12,6 @@ import lombok.ToString;
 public class SimpleUninstallContext implements UninstallContext {
 
 	@NonNull
-	private AppInstanceContext appInstanceContext;
+	private SimpleAppInstanceContext appInstanceContext;
 
 }

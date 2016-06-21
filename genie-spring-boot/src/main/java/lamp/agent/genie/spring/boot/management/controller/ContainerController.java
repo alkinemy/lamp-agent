@@ -31,24 +31,24 @@ public class ContainerController {
 //		return smartAssembler.assemble(app, App.class, AppDto.class);
 //	}
 
-	@RequestMapping(value = "", method = RequestMethod.POST)
-	@ResponseBody
-	public InspectContainerResponse runContainer(@RequestBody DockerApp form) {
-		log.error("form = {}", form);
-		return dockerClientService.runContainer(form);
-	}
-
-	@RequestMapping(value = "/{id}/stop", method = RequestMethod.GET)
-	public void stopContainer(@PathVariable("id") String id) {
-		log.info("[App] '{}' Stopping", id);
-		dockerClientService.stopContainer(id);
-		log.info("[App] '{}' Stopped", id);
-	}
-
-	@RequestMapping(value = "/{id}/stats", method = RequestMethod.GET)
-	public Statistics stats(@PathVariable("id") String id) {
-		return dockerClientService.getStats(id);
-	}
+//	@RequestMapping(value = "", method = RequestMethod.POST)
+//	@ResponseBody
+//	public InspectContainerResponse runContainer(@RequestBody DockerApp form) {
+//		log.error("form = {}", form);
+//		return dockerClientService.runContainer(form);
+//	}
+//
+//	@RequestMapping(value = "/{id}/stop", method = RequestMethod.GET)
+//	public void stopContainer(@PathVariable("id") String id) {
+//		log.info("[App] '{}' Stopping", id);
+//		dockerClientService.stopContainer(id);
+//		log.info("[App] '{}' Stopped", id);
+//	}
+//
+//	@RequestMapping(value = "/{id}/stats", method = RequestMethod.GET)
+//	public Statistics stats(@PathVariable("id") String id) {
+//		return dockerClientService.getStats(id);
+//	}
 	//
 //
 //	@RequestMapping(value = "/{id:.+}", method = RequestMethod.POST)

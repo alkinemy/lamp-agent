@@ -1,7 +1,7 @@
 package lamp.agent.genie.spring.boot.base.impl;
 
-import lamp.agent.genie.core.AppInstance;
-import lamp.agent.genie.core.AppInstanceContext;
+import lamp.agent.genie.core.SimpleAppInstance;
+import lamp.agent.genie.core.SimpleAppInstanceContext;
 import lamp.agent.genie.core.AppInstanceSpec;
 import lamp.agent.genie.core.AppInstanceStatus;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
@@ -12,10 +12,10 @@ import lombok.Getter;
 import java.io.File;
 import java.util.Date;
 
-public class AppInstanceImpl implements AppInstance {
+public class SimpleAppInstanceImpl implements SimpleAppInstance {
 
 	@Getter
-	private final AppInstanceContext context;
+	private final SimpleAppInstanceContext context;
 
 	@Getter
 	private Date startTime;
@@ -24,7 +24,7 @@ public class AppInstanceImpl implements AppInstance {
 
 	private AppInstanceStatus correctStatus;
 
-	public AppInstanceImpl(AppInstanceContext context, AppInstanceStatus correctStatus) {
+	public SimpleAppInstanceImpl(SimpleAppInstanceContext context, AppInstanceStatus correctStatus) {
 		this.context = context;
 		this.correctStatus = correctStatus;
 	}
