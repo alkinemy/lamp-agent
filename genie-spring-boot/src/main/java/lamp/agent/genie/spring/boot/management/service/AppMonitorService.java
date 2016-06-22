@@ -1,10 +1,7 @@
 package lamp.agent.genie.spring.boot.management.service;
 
-import lamp.agent.genie.core.SimpleAppInstance;
-import lamp.agent.genie.core.AppInstanceStatus;
+import lamp.agent.genie.core.App;
 import lamp.agent.genie.spring.boot.management.model.AppMonitor;
-import lamp.agent.genie.spring.boot.register.model.AgentEvent;
-import lamp.agent.genie.spring.boot.register.model.AgentEventName;
 import lamp.agent.genie.utils.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,39 +26,39 @@ public class AppMonitorService {
 	private Map<String, AppMonitor> appMonitorMap = new HashMap<>();
 
 	public synchronized void monitor() {
-		List<SimpleAppInstance> appInstances = appManagementService.getApps();
-		if (CollectionUtils.isEmpty(appInstances)) {
+		List<App> apps = appManagementService.getApps();
+		if (CollectionUtils.isEmpty(apps)) {
 			return;
 		}
 
-		for (SimpleAppInstance appInstance : appInstances) {
-			log.debug("[App:{}] monitor={}, status={}, correctStatus={}", appInstance.getId(), appInstance.monitored(), appInstance.getStatus(), appInstance.getCorrectStatus());
-			if (appInstance.monitored()
-				&& AppInstanceStatus.STOPPED.equals(appInstance.getStatus())
-				&& AppInstanceStatus.RUNNING.equals(appInstance.getCorrectStatus())) {
-
-				AppMonitor appMonitor = appMonitorMap.get(appInstance.getId());
-				if (appMonitor == null) {
-					appMonitor = new AppMonitor();
-					appMonitorMap.put(appInstance.getId(), appMonitor);
-				}
-				long currentTimeMillis = System.currentTimeMillis();
-				// TODO 로직 개선 필요
-				long diffTimeMillis = currentTimeMillis - appMonitor.getLastRetryTimeMillis();
-				if (diffTimeMillis > ONE_MINUTE) {
-					// 1분이 지났을 경우, 정상적으로 실행되었다고 보고 리셋함.
-					appMonitor.setRetryCount(0);
-				} else {
-					appMonitor.setRetryCount(appMonitor.getRetryCount() + 1);
-				}
-				appMonitor.setLastRetryTimeMillis(currentTimeMillis);
-
-				log.warn("[App:{}] Not Running. Trying to start App (retry={})", appInstance.getId(), appMonitor.getRetryCount());
-
-				agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_STARTING_BY_MONITOR, appInstance.getId()));
-
-				appManagementService.start(appInstance.getId());
-			}
+		for (App app : apps) {
+//			log.debug("[App:{}] monitor={}, status={}, correctStatus={}", app.getId(), app.monitored(), app.getStatus(), app.getCorrectStatus());
+//			if (app.monitored()
+//				&& AppStatus.STOPPED.equals(app.getStatus())
+//				&& AppStatus.RUNNING.equals(app.getCorrectStatus())) {
+//
+//				AppMonitor appMonitor = appMonitorMap.get(app.getId());
+//				if (appMonitor == null) {
+//					appMonitor = new AppMonitor();
+//					appMonitorMap.put(app.getId(), appMonitor);
+//				}
+//				long currentTimeMillis = System.currentTimeMillis();
+//				// TODO 로직 개선 필요
+//				long diffTimeMillis = currentTimeMillis - appMonitor.getLastRetryTimeMillis();
+//				if (diffTimeMillis > ONE_MINUTE) {
+//					// 1분이 지났을 경우, 정상적으로 실행되었다고 보고 리셋함.
+//					appMonitor.setRetryCount(0);
+//				} else {
+//					appMonitor.setRetryCount(appMonitor.getRetryCount() + 1);
+//				}
+//				appMonitor.setLastRetryTimeMillis(currentTimeMillis);
+//
+//				log.warn("[App:{}] Not Running. Trying to start App (retry={})", app.getId(), appMonitor.getRetryCount());
+//
+//				agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_STARTING_BY_MONITOR, app.getId()));
+//
+//				appManagementService.start(app.getId());
+//			}
 		}
 	}
 

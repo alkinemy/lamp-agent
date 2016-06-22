@@ -1,6 +1,6 @@
 package lamp.agent.genie.core.script;
 
-import lamp.agent.genie.core.SimpleAppInstanceContext;
+import lamp.agent.genie.core.app.simple.SimpleAppContext;
 import lamp.agent.genie.utils.ExpressionParser;
 import lamp.agent.genie.utils.IOUtils;
 import lombok.Getter;
@@ -13,18 +13,18 @@ public class SimpleCommandExecutionContext implements CommandExecutionContext {
 
 	@Getter
 	@NonNull
-	private final SimpleAppInstanceContext appInstanceContext;
+	private final SimpleAppContext appInstanceContext;
 
 	private final OutputStream outputStream;
 	private final OutputStream errorStream;
 
 	private final ExpressionParser expressionParser;
 
-	public SimpleCommandExecutionContext(SimpleAppInstanceContext appInstanceContext, OutputStream outputStream, ExpressionParser expressionParser) {
+	public SimpleCommandExecutionContext(SimpleAppContext appInstanceContext, OutputStream outputStream, ExpressionParser expressionParser) {
 		this(appInstanceContext, outputStream, outputStream, expressionParser);
 	}
 
-	public SimpleCommandExecutionContext(SimpleAppInstanceContext appInstanceContext, OutputStream outputStream, OutputStream errorStream, ExpressionParser expressionParser) {
+	public SimpleCommandExecutionContext(SimpleAppContext appInstanceContext, OutputStream outputStream, OutputStream errorStream, ExpressionParser expressionParser) {
 		this.appInstanceContext = appInstanceContext;
 		this.outputStream = outputStream;
 		this.errorStream = errorStream;

@@ -1,7 +1,7 @@
 package lamp.agent.genie.spring.boot.register.support;
 
 import lamp.agent.genie.core.LampContext;
-import lamp.agent.genie.core.runtime.shell.SigarShell;
+import lamp.agent.genie.core.app.simple.runtime.shell.SigarShell;
 import lombok.extern.slf4j.Slf4j;
 import org.hyperic.sigar.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +51,7 @@ public class SigarPublicMetrics implements PublicMetrics, Ordered {
 	//	protected void addCpuPercMetrics(Collection<Metric<?>> result) {
 	//		List<CpuUsage> cpuUsageList = cpuMetrics.getCpuUsages();
 	//		for (int i = 0; i < cpuUsageList.size(); i++) {
-	//			CpuUsage cpuUsage = cpuUsageList.get(i);
+	//			CpuUsage cpuUsage = cpuUsageList.loadApp(i);
 	//			result.add(new Metric<Double>("server.cpu" + i + ".user", cpuUsage.getUser()));
 	//			result.add(new Metric<Double>("server.cpu" + i + ".sys", cpuUsage.getSys()));
 	//			result.add(new Metric<Double>("server.cpu" + i + ".nice", cpuUsage.getNice()));

@@ -26,8 +26,8 @@ public class ContainerController {
 	}
 
 //	@RequestMapping(value = "/{id:.+}", method = RequestMethod.GET)
-//	public AppDto get(@PathVariable("id") String id) {
-//		App app = appManagementService.getApp(id);
+//	public AppDto loadApp(@PathVariable("id") String id) {
+//		App app = appManagementService.loadApp(id);
 //		return smartAssembler.assemble(app, App.class, AppDto.class);
 //	}
 

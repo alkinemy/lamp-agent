@@ -1,13 +1,13 @@
 package lamp.agent.genie.spring.boot.management.controller;
 
-import lamp.agent.genie.core.SimpleAppInstance;
-import lamp.agent.genie.core.AppInstanceStatus;
+import lamp.agent.genie.core.App;
+import lamp.agent.genie.core.AppStatus;
 import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
-import lamp.agent.genie.spring.boot.management.model.*;
+import lamp.agent.genie.spring.boot.management.model.AppDeployForm;
+import lamp.agent.genie.spring.boot.management.model.AppDto;
 import lamp.agent.genie.spring.boot.management.service.AppManagementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,15 +24,15 @@ public class AppController {
 	private SmartAssembler smartAssembler;
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public List<AppInstanceDto> list() {
-		List<SimpleAppInstance> appInstances = appManagementService.getApps();
-		return smartAssembler.assemble(appInstances, SimpleAppInstance.class, AppInstanceDto.class);
+	public List<AppDto> list() {
+		List<App> appInstances = appManagementService.getApps();
+		return smartAssembler.assemble(appInstances, App.class, AppDto.class);
 	}
 
 	@RequestMapping(value = "/{id:.+}", method = RequestMethod.GET)
-	public AppInstanceDto get(@PathVariable("id") String id) {
-		SimpleAppInstance appInstance = appManagementService.getApp(id);
-		return smartAssembler.assemble(appInstance, SimpleAppInstance.class, AppInstanceDto.class);
+	public AppDto get(@PathVariable("id") String id) {
+		App appInstance = appManagementService.getApp(id);
+		return smartAssembler.assemble(appInstance, App.class, AppDto.class);
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
@@ -45,10 +45,10 @@ public class AppController {
 //		appManagementService.update(id, form);
 //	}
 
-	@RequestMapping(value = "/{id}/file", method = RequestMethod.POST)
-	public void updateFile(@PathVariable("id") String id, AppFileUpdateForm form) {
-		appManagementService.updateFile(id, form);
-	}
+//	@RequestMapping(value = "/{id}/file", method = RequestMethod.POST)
+//	public void updateFile(@PathVariable("id") String id, AppFileUpdateForm form) {
+//		appManagementService.updateFile(id, form);
+//	}
 
 	@RequestMapping(value = "/{id:.+}", method = RequestMethod.DELETE)
 	public void deregister(@PathVariable("id") String id, @RequestParam(name = "forceStop", defaultValue = "false") Boolean forceStop) {
@@ -70,31 +70,31 @@ public class AppController {
 	}
 
 	@RequestMapping(value = "/{id}/status", method = RequestMethod.GET)
-	public AppInstanceStatus status(@PathVariable("id") String id) {
+	public AppStatus status(@PathVariable("id") String id) {
 		return appManagementService.status(id);
 	}
 
-	@RequestMapping(value = "/{id}/log", method = RequestMethod.GET)
-	public List<LogFile> logFiles(@PathVariable("id") String id) {
-		return appManagementService.getLogFiles(id);
-	}
-
-	@RequestMapping(value = "/{id}/log/{filename:.+}", method = RequestMethod.GET)
-	public Resource logFiles(@PathVariable("id") String id, @PathVariable("filename") String filename) {
-		return appManagementService.getLogFileResource(id, filename);
-	}
-
-	@RequestMapping(value = "/{id}/stdOutFile", method = RequestMethod.GET)
-	public Resource stdOutFile(@PathVariable("id") String id) {
-		Resource resource = appManagementService.getStdOutFileResource(id);
-		return resource;
-	}
-
-	@RequestMapping(value = "/{id}/stdErrFile", method = RequestMethod.GET)
-	@ResponseBody
-	public Resource stdErrFile(@PathVariable("id") String id) {
-		Resource resource = appManagementService.getStdErrFileResource(id);
-		return resource;
-	}
+//	@RequestMapping(value = "/{id}/log", method = RequestMethod.GET)
+//	public List<LogFile> logFiles(@PathVariable("id") String id) {
+//		return appManagementService.getLogFiles(id);
+//	}
+//
+//	@RequestMapping(value = "/{id}/log/{filename:.+}", method = RequestMethod.GET)
+//	public Resource logFiles(@PathVariable("id") String id, @PathVariable("filename") String filename) {
+//		return appManagementService.getLogFileResource(id, filename);
+//	}
+//
+//	@RequestMapping(value = "/{id}/stdOutFile", method = RequestMethod.GET)
+//	public Resource stdOutFile(@PathVariable("id") String id) {
+//		Resource resource = appManagementService.getStdOutFileResource(id);
+//		return resource;
+//	}
+//
+//	@RequestMapping(value = "/{id}/stdErrFile", method = RequestMethod.GET)
+//	@ResponseBody
+//	public Resource stdErrFile(@PathVariable("id") String id) {
+//		Resource resource = appManagementService.getStdErrFileResource(id);
+//		return resource;
+//	}
 
 }

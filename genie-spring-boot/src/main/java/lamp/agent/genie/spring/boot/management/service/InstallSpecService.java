@@ -1,6 +1,6 @@
 package lamp.agent.genie.spring.boot.management.service;
 
-import lamp.agent.genie.core.install.InstallSpec;
+import lamp.agent.genie.core.app.simple.install.InstallSpec;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lamp.agent.genie.spring.boot.management.repository.InstallSpecRepository;
@@ -21,7 +21,7 @@ public class InstallSpecService {
 
 	public InstallSpec getInstallConfig(String id) {
 		InstallSpec installSpec = installSpecRepository.findOne(id);
-		Exceptions.throwsException(installSpec == null, ErrorCode.APP_INSTANCE_NOT_FOUND, id);
+		Exceptions.throwsException(installSpec == null, ErrorCode.APP_NOT_FOUND, id);
 		return installSpec;
 	}
 

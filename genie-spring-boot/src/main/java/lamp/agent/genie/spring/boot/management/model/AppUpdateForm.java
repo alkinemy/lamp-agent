@@ -1,5 +1,6 @@
 package lamp.agent.genie.spring.boot.management.model;
 
+import lamp.agent.genie.core.app.simple.SimpleAppContainer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

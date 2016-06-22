@@ -1,6 +1,6 @@
 package lamp.agent.genie.core;
 
-import lamp.agent.genie.core.runtime.shell.Shell;
+import lamp.agent.genie.core.app.simple.runtime.shell.Shell;
 
 import java.io.File;
 

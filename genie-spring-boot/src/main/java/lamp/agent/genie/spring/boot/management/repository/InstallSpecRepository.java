@@ -2,7 +2,7 @@ package lamp.agent.genie.spring.boot.management.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lamp.agent.genie.core.LampContext;
-import lamp.agent.genie.core.install.InstallSpec;
+import lamp.agent.genie.core.app.simple.install.InstallSpec;
 import lamp.agent.genie.spring.boot.base.exception.ErrorCode;
 import lamp.agent.genie.spring.boot.base.exception.Exceptions;
 import lombok.extern.slf4j.Slf4j;

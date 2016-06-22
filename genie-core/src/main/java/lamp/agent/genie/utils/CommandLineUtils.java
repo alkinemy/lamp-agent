@@ -1,12 +1,12 @@
 package lamp.agent.genie.utils;
 
-import lamp.agent.genie.core.AppInstanceSpec;
+import lamp.agent.genie.core.app.simple.SimpleAppContainer;
 import org.apache.commons.exec.CommandLine;
 
 public class CommandLineUtils {
 
-	public static CommandLine parse(AppInstanceSpec appInstanceSpec, String command) {
-		String commandShell = appInstanceSpec.getCommandShell();
+	public static CommandLine parse(SimpleAppContainer appContainer, String command) {
+		String commandShell = appContainer.getCommandShell();
 		if (StringUtils.isNotBlank(commandShell)) {
 			String[] commandShellArray = StringUtils.split(commandShell, " ");
 			CommandLine commandLine = new CommandLine(commandShellArray[0]);

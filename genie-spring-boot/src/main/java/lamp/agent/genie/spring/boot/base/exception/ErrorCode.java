@@ -2,7 +2,7 @@ package lamp.agent.genie.spring.boot.base.exception;
 
 public enum ErrorCode {
 	INTERNAL("에러가 발생하였습니다."),
-	APP_INSTANCE_NOT_FOUND("애플리케이션이 존재하지 않습니다.")
+	APP_NOT_FOUND("애플리케이션이 존재하지 않습니다.")
 	, APP_ALWAYS_EXIST("애플리케이션이 이미 존재합니다."), APP_DEPLOY_FAILED(
 		"애플리케이션을 디플로이 하는 중 문제가 발생하였습니다."), INVALID_MOUNT_POINT_NAME("잘못된 마운트 포인트 이름입니다."),
 	INVALID_MOUNT_POINT_PARENT("잘못된 마운트 포인트 부모입니다."),

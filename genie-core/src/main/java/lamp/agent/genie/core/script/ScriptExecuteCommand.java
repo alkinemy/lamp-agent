@@ -1,8 +1,8 @@
 package lamp.agent.genie.core.script;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import lamp.agent.genie.core.SimpleAppInstanceContext;
-import lamp.agent.genie.core.AppInstanceSpec;
+import lamp.agent.genie.core.app.simple.SimpleAppContainer;
+import lamp.agent.genie.core.app.simple.SimpleAppContext;
 import lamp.agent.genie.core.script.exception.CommandExecuteException;
 import lamp.agent.genie.utils.CommandLineUtils;
 import lombok.Getter;
@@ -29,16 +29,16 @@ public class ScriptExecuteCommand extends AbstractScriptCommand {
 
 	@Override
 	public void execute(CommandExecutionContext context) {
-		SimpleAppInstanceContext appInstanceContext = context.getAppInstanceContext();
+		SimpleAppContext appInstanceContext = context.getAppInstanceContext();
 		String commandLine = context.getAppInstanceContext().getValue(getCommandLine(), appInstanceContext.getParameters());
 		log.info("Execute : {}", commandLine);
 
-		AppInstanceSpec appInstanceSpec = context.getAppInstanceContext().getParsedAppInstanceSpec();
-		String appDirectory = appInstanceSpec.getAppDirectory();
+		SimpleAppContainer parsedAppContainer = context.getAppInstanceContext().getParsedAppContainer();
+		String appDirectory = parsedAppContainer.getAppDirectory();
 		log.info("appDirectory = {}", appDirectory);
 
 		try {
-			CommandLine cmdLine = CommandLineUtils.parse(appInstanceSpec, commandLine);
+			CommandLine cmdLine = CommandLineUtils.parse(parsedAppContainer, commandLine);
 			DaemonExecutor executor = new DaemonExecutor();
 			executor.setWorkingDirectory(new File(appDirectory));
 			if (timeout != null) {

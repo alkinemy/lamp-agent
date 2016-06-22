@@ -1,6 +1,6 @@
 package lamp.agent.genie.core.script;
 
-import lamp.agent.genie.core.SimpleAppInstanceContext;
+import lamp.agent.genie.core.app.simple.SimpleAppContext;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,8 +13,8 @@ import java.nio.file.Paths;
 @AllArgsConstructor
 public abstract class ScriptFileCommand extends AbstractScriptCommand {
 
-	protected File getFile(SimpleAppInstanceContext context, String filename) {
-		String workDir = context.getParsedAppInstanceSpec().getWorkDirectory();
+	protected File getFile(SimpleAppContext context, String filename) {
+		String workDir = context.getParsedAppContainer().getWorkDirectory();
 		String targetFilename = context.getValue(filename, context.getParameters());
 		Path filepath;
 		if (StringUtils.startsWith(targetFilename, "/")) {

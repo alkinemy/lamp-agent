@@ -5,14 +5,14 @@ import java.util.List;
 
 public interface AppRegistry {
 
-	void bind(String id, AppInstance appInstance);
+	void bind(String id, App app);
 
 	void unbind(String id);
 
-	SimpleAppInstance lookup(String id);
+	App lookup(String id);
 
 	boolean exists(String id);
 
-	List<SimpleAppInstance> list();
+	List<App> list();
 
 }

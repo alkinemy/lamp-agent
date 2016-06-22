@@ -1,6 +1,6 @@
 package lamp.agent.genie.spring.boot.management.model;
 
-import lamp.agent.genie.core.runtime.process.AppProcessType;
+import lamp.agent.genie.core.app.simple.runtime.process.AppProcessType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

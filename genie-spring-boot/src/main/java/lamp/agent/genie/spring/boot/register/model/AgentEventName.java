@@ -9,7 +9,7 @@ public enum AgentEventName {
 	APP_INSTALLED(AgentEventLevel.INFO, "App Installed"),
 	APP_FILE_UPDATED(AgentEventLevel.INFO, "App File Updated"),
 	APP_UPDATED(AgentEventLevel.INFO, "App Updated"),
-	APP_UNINSTALLED(AgentEventLevel.INFO, "App Uninstalled"),
+	APP_UNINSTALLED(AgentEventLevel.INFO, "App Uninstaledd"),
 	APP_REGISTERED(AgentEventLevel.INFO, "App Registered"),
 	APP_UNREGISTERED(AgentEventLevel.INFO, "App Unregistered"),
 	APP_STARTED(AgentEventLevel.INFO, "App Started"),

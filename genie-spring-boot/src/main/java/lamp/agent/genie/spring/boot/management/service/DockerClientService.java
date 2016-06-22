@@ -9,11 +9,8 @@ import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.async.ResultCallbackTemplate;
 import com.github.dockerjava.core.command.PullImageResultCallback;
 import com.github.dockerjava.jaxrs.DockerCmdExecFactoryImpl;
+import lamp.agent.genie.core.app.docker.DockerAppContainer;
 import lamp.agent.genie.spring.boot.config.DockerClientProperties;
-import lamp.agent.genie.spring.boot.management.model.DockerApp;
-import lamp.agent.genie.spring.boot.management.model.DockerAppContainer;
-import lamp.agent.genie.spring.boot.management.model.DockerContainer;
-import lamp.agent.genie.spring.boot.management.model.PortMapping;
 import lamp.agent.genie.utils.CollectionUtils;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -70,23 +67,23 @@ public class DockerClientService {
 		return dockerClient.inspectContainerCmd(containerId).exec();
 	}
 
-	public InspectContainerResponse runContainer(DockerAppContainer container) {
+	public InspectContainerResponse runContainer(DockerAppContainer appContainer) {
 
 		// 1. Pull Image
-		PullImageCmd pullImageCmd = dockerClient.pullImageCmd(container.getImage());
+		PullImageCmd pullImageCmd = dockerClient.pullImageCmd(appContainer.getImage());
 		pullImageCmd.exec(new PullImageResultCallback()).awaitSuccess();
 
 		// 2. CreateContainer
-		CreateContainerCmd createContainerCmd = dockerClient.createContainerCmd(container.getImage());
+		CreateContainerCmd createContainerCmd = dockerClient.createContainerCmd(appContainer.getImage());
 
-		if (StringUtils.isNotEmpty(container.getNetwork())) {
-			createContainerCmd.withNetworkMode(container.getNetwork());
+		if (StringUtils.isNotEmpty(appContainer.getNetwork())) {
+			createContainerCmd.withNetworkMode(appContainer.getNetwork());
 		}
 
-		if (CollectionUtils.isNotEmpty(container.getPortMappings())) {
+		if (CollectionUtils.isNotEmpty(appContainer.getPortMappings())) {
 			List<ExposedPort> exposedPorts = new ArrayList<>();
 			List<PortBinding> portBindings = new ArrayList<>();
-			for (String port : container.getPortMappings()) {
+			for (String port : appContainer.getPortMappings()) {
 				PortBinding portBinding = PortBinding.parse(port);
 				exposedPorts.add(portBinding.getExposedPort());
 				portBindings.add(portBinding);
@@ -95,16 +92,16 @@ public class DockerClientService {
 			createContainerCmd.withPortBindings(portBindings);
 		}
 
-		if (CollectionUtils.isNotEmpty(container.getVolumes())) {
+		if (CollectionUtils.isNotEmpty(appContainer.getVolumes())) {
 			List<Volume> volumes = new ArrayList<>();
-			for (String volumeStr : container.getVolumes()) {
+			for (String volumeStr : appContainer.getVolumes()) {
 				volumes.add(new Volume(volumeStr));
 			}
 			createContainerCmd.withVolumes(volumes);
 		}
 
-		if (CollectionUtils.isNotEmpty(container.getEnv())) {
-			createContainerCmd.withEnv(container.getEnv());
+		if (CollectionUtils.isNotEmpty(appContainer.getEnv())) {
+			createContainerCmd.withEnv(appContainer.getEnv());
 		}
 
 //		if (CollectionUtils.isNotEmpty(container.getVolumesFroms())) {
@@ -156,7 +153,7 @@ public class DockerClientService {
 			}
 
 			if (latestStats == null) {
-				new DockerClientException("Could not get stats");
+				new DockerClientException("Could not loadApp stats");
 			}
 			return latestStats;
 		}

@@ -1,6 +1,6 @@
 package lamp.agent.genie.core.exception;
 
-import lamp.agent.genie.core.runtime.process.AppProcessType;
+import lamp.agent.genie.core.app.simple.runtime.process.AppProcessType;
 
 public class UnsupportedProcessTypeException extends AppException {
 
