@@ -5,6 +5,7 @@ import lamp.agent.genie.core.AppStatus;
 import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
 import lamp.agent.genie.spring.boot.management.model.AppDeployForm;
 import lamp.agent.genie.spring.boot.management.model.AppDto;
+import lamp.agent.genie.spring.boot.management.model.AppRedeployForm;
 import lamp.agent.genie.spring.boot.management.service.AppManagementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,14 +37,14 @@ public class AppController {
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	public void register(AppDeployForm form) {
-		appManagementService.register(form);
+	public void deploy(AppDeployForm form) {
+		appManagementService.deploy(form);
 	}
 
-//	@RequestMapping(value = "/{id:.+}", method = RequestMethod.POST)
-//	public void update(@PathVariable("id") String id, AppUpdateForm form) {
-//		appManagementService.update(id, form);
-//	}
+	@RequestMapping(value = "/{id:.+}", method = RequestMethod.POST)
+	public void redeploy(@PathVariable("id") String id, AppRedeployForm form) {
+		appManagementService.redeploy(id, form);
+	}
 
 //	@RequestMapping(value = "/{id}/file", method = RequestMethod.POST)
 //	public void updateFile(@PathVariable("id") String id, AppFileUpdateForm form) {
@@ -51,8 +52,8 @@ public class AppController {
 //	}
 
 	@RequestMapping(value = "/{id:.+}", method = RequestMethod.DELETE)
-	public void deregister(@PathVariable("id") String id, @RequestParam(name = "forceStop", defaultValue = "false") Boolean forceStop) {
-		appManagementService.deregister(id, forceStop);
+	public void undeploy(@PathVariable("id") String id, @RequestParam(name = "forceStop", defaultValue = "false") Boolean forceStop) {
+		appManagementService.undeploy(id, forceStop);
 	}
 
 	@RequestMapping(value = "/{id}/start", method = RequestMethod.GET)

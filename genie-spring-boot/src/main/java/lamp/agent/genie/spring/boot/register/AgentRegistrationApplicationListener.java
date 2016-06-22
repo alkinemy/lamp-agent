@@ -30,7 +30,7 @@ public class AgentRegistrationApplicationListener implements ApplicationListener
 				lampClientRegistrator.register();
 				agentEventPublisher.publish(AgentEvent.of(AgentEventName.AGENT_STARTED, null));
 			} catch (Exception e) {
-				log.error("LampClient register failed");
+				log.error("LampClient deploy failed");
 			}
 		} else if (event instanceof ContextClosedEvent) {
 			lampClientRegistrator.deregister();

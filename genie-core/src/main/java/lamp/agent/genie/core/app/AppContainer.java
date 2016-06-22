@@ -8,8 +8,10 @@ import lamp.agent.genie.core.app.simple.SimpleAppContainer;
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
 @JsonSubTypes({
 	@JsonSubTypes.Type(value = SimpleAppContainer.class, name = AppContainerType.Names.SIMPLE),
-	@JsonSubTypes.Type(value = SimpleAppContainer.class, name = AppContainerType.Names.SPRING_BOOT),
 	@JsonSubTypes.Type(value = DockerAppContainer.class, name = AppContainerType.Names.DOCKER)
 })
 public interface AppContainer {
+
+	String getId();
+
 }

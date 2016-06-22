@@ -44,9 +44,9 @@ public abstract class AbstractSimpleAppContext implements SimpleAppContext {
 	private AppStatus appStatus = AppStatus.STOPPED;
 	private long lastCheckTimeMillis = 1000;
 
-	public AbstractSimpleAppContext(LampContext lampContext, String id, SimpleAppContainer appContainer) {
+	public AbstractSimpleAppContext(LampContext lampContext, SimpleAppContainer appContainer) {
 		this.lampContext = lampContext;
-		this.id = id;
+		this.id = appContainer.getId();
 		this.appContainer = appContainer;
 	}
 
@@ -130,9 +130,9 @@ public abstract class AbstractSimpleAppContext implements SimpleAppContext {
 				parameters.put("env", environment);
 			}
 
-//			if (appSpec.getParameters() != null) {
-//				parameters.putAll(appSpec.getParameters());
-//			}
+			if (appContainer.getParameters() != null) {
+				parameters.putAll(appContainer.getParameters());
+			}
 
 			String filename = (String) parameters.get("filename");
 			if (StringUtils.isNotBlank(filename)) {
@@ -147,7 +147,7 @@ public abstract class AbstractSimpleAppContext implements SimpleAppContext {
 				if (value instanceof String) {
 
 					String expValue = getValue((String) value, parameters);
-					log.info("{} = {}", entry.getKey(), expValue);
+					log.debug("{} = {}", entry.getKey(), expValue);
 					parameters.put(entry.getKey(), expValue);
 				}
 			}

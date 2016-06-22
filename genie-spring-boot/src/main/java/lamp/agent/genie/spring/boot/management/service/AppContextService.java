@@ -17,14 +17,14 @@ public class AppContextService {
     @Autowired
     private LampContext lampContext;
 
-    public AppContext createAppContext(String id, AppContainer appContainer) {
+    public AppContext createAppContext(AppContainer appContainer) {
         AppContext appContext = null;
         if (appContainer instanceof SimpleAppContainer) {
             AppProcessType processType = ((SimpleAppContainer) appContainer).getProcessType();
             if (AppProcessType.DAEMON.equals(processType)) {
-                appContext = new DaemonAppContext(lampContext, id, (SimpleAppContainer) appContainer);
+                appContext = new DaemonAppContext(lampContext, (SimpleAppContainer) appContainer);
             } else {
-                appContext = new DefaultAppContext(lampContext, id, (SimpleAppContainer) appContainer);
+                appContext = new DefaultAppContext(lampContext, (SimpleAppContainer) appContainer);
             }
         } else if (appContainer instanceof DockerAppContainer) {
 

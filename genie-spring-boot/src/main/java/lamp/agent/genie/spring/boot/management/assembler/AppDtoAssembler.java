@@ -11,7 +11,7 @@ import lamp.agent.genie.spring.boot.management.model.AppDto;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AppInstanceDtoAssembler extends AbstractListAssembler<App, AppDto> {
+public class AppDtoAssembler extends AbstractListAssembler<App, AppDto> {
 
 	@Override protected AppDto doAssemble(App app) {
 		AppContainer appContainer = app.getAppContainer();

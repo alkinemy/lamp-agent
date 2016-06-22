@@ -9,8 +9,8 @@ public class DaemonAppContext extends AbstractSimpleAppContext {
 
 	private DaemonProcess process;
 
-	public DaemonAppContext(LampContext lampContext, String id, SimpleAppContainer appContainer) {
-		super(lampContext, id, appContainer);
+	public DaemonAppContext(LampContext lampContext, SimpleAppContainer appContainer) {
+		super(lampContext, appContainer);
 
 		this.process = new DaemonProcess(this);
 	}

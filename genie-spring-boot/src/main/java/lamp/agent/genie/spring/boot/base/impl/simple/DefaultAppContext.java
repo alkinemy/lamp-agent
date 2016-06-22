@@ -11,8 +11,8 @@ public class DefaultAppContext extends AbstractSimpleAppContext {
 
 	private DefaultProcess process;
 
-	public DefaultAppContext(LampContext lampContext, String id, SimpleAppContainer appContainer) {
-		super(lampContext, id, appContainer);
+	public DefaultAppContext(LampContext lampContext, SimpleAppContainer appContainer) {
+		super(lampContext, appContainer);
 	}
 
 	@Override

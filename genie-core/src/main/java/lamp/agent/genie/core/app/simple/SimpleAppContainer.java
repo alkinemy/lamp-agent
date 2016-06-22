@@ -53,8 +53,6 @@ public class SimpleAppContainer implements AppContainer {
 	private List<ScriptCommand> scriptCommands;
 	private Map<String, Object> parameters;
 
-
-
 	private long checkStatusInterval = 1000L;
 
 	private boolean monitor;

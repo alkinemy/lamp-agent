@@ -39,22 +39,8 @@ public class SimpleAppInstallService {
 		expressionParser = new ExpressionParser();
 	}
 
-	public void install(SimpleAppContainer simpleAppContainer, SimpleAppContext appContext, MultipartFile multipartFile) {
-		Map<String, Object> parameters = appContext.getParameters();
-		InstallSpec installSpec = newInstallSpec(simpleAppContainer);
-		String directory = appContext.getParsedAppContainer().getAppDirectory();
-		File installDirectory = new File(directory);
-		if (!installDirectory.exists()) {
-			installDirectory.mkdirs();
-		}
-		installSpec.setDirectory(installDirectory.getAbsolutePath());
-
-		String filename = installSpec.getFilename();
-		if (StringUtils.isBlank(filename)) {
-			filename = multipartFile.getOriginalFilename();
-		}
-		filename = expressionParser.getValue(filename, parameters);
-		installSpec.setFilename(filename);
+	public void install(SimpleAppContext appContext, MultipartFile multipartFile) {
+		InstallSpec installSpec = newInstallSpec(appContext, multipartFile.getOriginalFilename());
 
 		List<ScriptCommand> commands = installSpec.getScriptCommands();
 
@@ -67,23 +53,47 @@ public class SimpleAppInstallService {
 		installSpecRepository.save(installSpec);
 	}
 
-	protected InstallSpec newInstallSpec(SimpleAppContainer appContainer) {
+	public void reinstall(SimpleAppContext appContext, MultipartFile multipartFile) {
+		install(appContext, multipartFile);
+	}
+
+	protected InstallSpec newInstallSpec(SimpleAppContext appContext, String defaultFilename) {
+		SimpleAppContainer appContainer = appContext.getAppContainer();
+
 		InstallSpec installSpec = new InstallSpec();
 		installSpec.setId(appContainer.getId());
-		installSpec.setDirectory(null);
-		installSpec.setFilename(appContainer.getInstallFilename());
 		installSpec.setScriptCommands(appContainer.getScriptCommands());
+
+
+		SimpleAppContainer parsedAppContainer = appContext.getParsedAppContainer();
+		String directory = parsedAppContainer.getAppDirectory();
+		File installDirectory = new File(directory);
+		if (!installDirectory.exists()) {
+			installDirectory.mkdirs();
+		}
+		installSpec.setDirectory(installDirectory.getAbsolutePath());
+
+		Map<String, Object> parameters = appContext.getParameters();
+		String filename = appContainer.getInstallFilename();
+		if (StringUtils.isBlank(filename)) {
+			filename = defaultFilename;
+		} else {
+			filename = expressionParser.getValue(filename, parameters);
+		}
+		installSpec.setFilename(filename);
+
 
 		return installSpec;
 	}
 
 
-	public void uninstall(SimpleAppContainer appContainer, SimpleAppContext appContext) {
-		InstallSpec installSpec = newInstallSpec(appContainer);
+	public void uninstall(SimpleAppContext appContext) {
+		InstallSpec installSpec = newInstallSpec(appContext, null);
 		appInstaller.uninstall(SimpleUninstallContext.of(appContext, installSpec));
 
 
 		installSpecRepository.delete(installSpec);
 	}
+
 
 }

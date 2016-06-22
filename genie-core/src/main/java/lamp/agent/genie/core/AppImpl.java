@@ -2,6 +2,7 @@ package lamp.agent.genie.core;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lamp.agent.genie.core.app.AppContainer;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AppImpl implements App {
 
 	private String id;
@@ -43,6 +45,10 @@ public class AppImpl implements App {
 		correctStatus = AppStatus.STOPPED;
 
 		appContext.stopProcess();
+	}
+
+	public AppStatus getStatus() {
+		return appContext.getStatus();
 	}
 
 	@JsonIgnore

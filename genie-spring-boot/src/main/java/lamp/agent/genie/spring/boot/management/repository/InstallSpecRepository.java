@@ -23,14 +23,14 @@ public class InstallSpecRepository {
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
-	public void save(InstallSpec manifest) {
-		File directory = lampContext.getAppMetaInfoDirectory(manifest.getId());
+	public void save(InstallSpec installSpec) {
+		File directory = lampContext.getAppMetaInfoDirectory(installSpec.getId());
 		if (!directory.exists()) {
 			directory.mkdirs();
 		}
 		File file = new File(directory, SPEC_FILE);
 		try {
-			objectMapper.writeValue(file, manifest);
+			objectMapper.writeValue(file, installSpec);
 		} catch (IOException e) {
 			throw Exceptions.newException(ErrorCode.APP_CONFIG_SAVE_FAILED, e);
 		}

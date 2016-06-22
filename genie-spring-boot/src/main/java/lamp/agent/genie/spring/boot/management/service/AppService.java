@@ -32,7 +32,7 @@ public class AppService {
 			List<App> apps = appRepository.findAll();
 			for (App app : apps) {
 				try {
-					AppContext appContext = appContextService.createAppContext(app.getId(), app.getAppContainer());
+					AppContext appContext = appContextService.createAppContext(app.getAppContainer());
 					if (app instanceof AppImpl) {
 						((AppImpl)app).setAppContext(appContext);
 					}

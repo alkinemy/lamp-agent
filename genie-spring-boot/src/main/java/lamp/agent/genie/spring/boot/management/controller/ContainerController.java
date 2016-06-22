@@ -62,8 +62,8 @@ public class ContainerController {
 //	}
 //
 //	@RequestMapping(value = "/{id:.+}", method = RequestMethod.DELETE)
-//	public void deregister(@PathVariable("id") String id, @RequestParam(name = "forceStop", defaultValue = "false") Boolean forceStop) {
-//		appManagementService.deregister(id, forceStop);
+//	public void undeploy(@PathVariable("id") String id, @RequestParam(name = "forceStop", defaultValue = "false") Boolean forceStop) {
+//		appManagementService.undeploy(id, forceStop);
 //	}
 //
 //	@RequestMapping(value = "/{id}/start", method = RequestMethod.GET)
