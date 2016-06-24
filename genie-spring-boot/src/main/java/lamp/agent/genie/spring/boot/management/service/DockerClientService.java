@@ -13,6 +13,7 @@ import lamp.agent.genie.core.app.docker.DockerAppContainer;
 import lamp.agent.genie.spring.boot.config.DockerClientProperties;
 import lamp.agent.genie.utils.CollectionUtils;
 import lamp.agent.genie.utils.StringUtils;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PreDestroy;
@@ -24,9 +25,14 @@ import java.util.List;
 @Slf4j
 public class DockerClientService {
 
+	@Getter
 	private DockerClient dockerClient;
 
 	public DockerClientService(DockerClientProperties dockerClientProperties) {
+		this.dockerClient = buildDockerClient(dockerClientProperties);
+	}
+
+	protected DockerClient buildDockerClient(DockerClientProperties dockerClientProperties) {
 		log.info("dockerHost : {}", dockerClientProperties.getDockerHost());
 		DockerClientConfig.DockerClientConfigBuilder builder = DockerClientConfig.createDefaultConfigBuilder();
 		if (StringUtils.isNotEmpty(dockerClientProperties.getDockerHost())) {
@@ -49,7 +55,7 @@ public class DockerClientService {
 			.withMaxTotalConnections(100)
 			.withMaxPerRouteConnections(10);
 
-		this.dockerClient = DockerClientBuilder.getInstance(config)
+		return DockerClientBuilder.getInstance(config)
 			.withDockerCmdExecFactory(dockerCmdExecFactory)
 			.build();
 	}
@@ -131,6 +137,7 @@ public class DockerClientService {
 	public Statistics getStats(String containerId) {
 		return dockerClient.statsCmd(containerId).exec(new StatsCallback()).awaitSuccess();
 	}
+
 
 	private class StatsCallback extends ResultCallbackTemplate<StatsCallback, Statistics> {
 

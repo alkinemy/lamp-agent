@@ -78,6 +78,8 @@ public class AppManagementService {
 
 				agentEventPublishService.publish(AgentEvent.of(AgentEventName.APP_INSTALLED, id));
 			}
+		} else if (appContainer instanceof DockerAppContainer) {
+
 		}
 
 		appService.createApp(id, appContainer, appContext);

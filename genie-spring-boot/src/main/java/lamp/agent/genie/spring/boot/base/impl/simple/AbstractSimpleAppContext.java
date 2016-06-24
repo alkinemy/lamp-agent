@@ -46,8 +46,8 @@ public abstract class AbstractSimpleAppContext implements SimpleAppContext {
 
 	public AbstractSimpleAppContext(LampContext lampContext, SimpleAppContainer appContainer) {
 		this.lampContext = lampContext;
-		this.id = appContainer.getId();
 		this.appContainer = appContainer;
+		this.id = appContainer.getId();
 	}
 
 	public File getAppMetaInfoDirectory() {

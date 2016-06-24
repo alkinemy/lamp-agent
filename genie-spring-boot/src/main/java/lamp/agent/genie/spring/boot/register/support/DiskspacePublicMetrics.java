@@ -68,7 +68,7 @@ public class DiskSpacePublicMetrics implements PublicMetrics, Ordered {
 			File path = disk.getPath();
 			result.add(new Metric<>(name("server.diskspace", disk.getName(), "total"), path.getTotalSpace()));
 			result.add(new Metric<>(name("server.diskspace", disk.getName(), "free"), path.getFreeSpace()));
-			result.add(new Metric<>(name("server.diskspace", disk.getName(), "usable"), path.getUsableSpace()));
+			result.add(new Metric<>(name("server.diskspace", disk.getName(), "used"), path.getTotalSpace() - path.getFreeSpace()));
 		}
 	}
 
