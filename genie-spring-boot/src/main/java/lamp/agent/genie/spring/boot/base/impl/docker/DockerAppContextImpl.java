@@ -4,6 +4,7 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.model.*;
+import com.github.dockerjava.core.command.LogContainerResultCallback;
 import com.github.dockerjava.core.command.PullImageResultCallback;
 import com.github.dockerjava.core.command.WaitContainerResultCallback;
 import lamp.agent.genie.core.AppStatus;
@@ -12,8 +13,13 @@ import lamp.agent.genie.core.app.docker.DockerAppContainer;
 import lamp.agent.genie.core.app.docker.DockerAppContext;
 import lamp.agent.genie.utils.CollectionUtils;
 import lamp.agent.genie.utils.StringUtils;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -194,5 +200,41 @@ public class DockerAppContextImpl implements DockerAppContext {
 
 	@Override public boolean isProcessRunning() {
 		return AppStatus.RUNNING.equals(getStatus());
+	}
+
+	@Override public InputStream getStdOutInputStream() throws IOException {
+		LogContainerStreamCallback streamCallback = new LogContainerStreamCallback();
+		dockerClient.logContainerCmd(getContainerId()).withStdOut(true).exec(streamCallback);
+		return streamCallback.getInputStream();
+	}
+
+	@Override public InputStream getStdErrInputStream() throws IOException {
+		LogContainerStreamCallback streamCallback = new LogContainerStreamCallback();
+		dockerClient.logContainerCmd(getContainerId()).withStdErr(true).exec(streamCallback);
+		return streamCallback.getInputStream();
+	}
+
+
+	public static class LogContainerStreamCallback extends LogContainerResultCallback {
+
+		private final PipedOutputStream outputStream = new PipedOutputStream();
+		@Getter
+		private final PipedInputStream inputStream = new PipedInputStream();
+
+
+		public LogContainerStreamCallback() throws IOException {
+			inputStream.connect(outputStream);
+		}
+
+
+		@Override
+		public void onNext(Frame frame) {
+			try {
+				outputStream.write(frame.getPayload());
+			} catch (IOException e) {
+				log.error("LogContainerStreamCallback write failed", e);
+			}
+		}
+
 	}
 }

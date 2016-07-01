@@ -9,10 +9,13 @@ import lamp.agent.genie.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,21 +67,23 @@ public class AppLogService {
 		return null;
 	}
 
-	public Resource getStdOutFileResource(String id) {
-//		App app = appService.getApp(id);
-//		File file = app.getStdOutFile();
-//		if (file.exists()) {
-//			return new FileSystemResource(file);
-//		}
+	public Resource getStdOutFileResource(String id) throws IOException {
+		App app = appService.getApp(id);
+		AppContext appContext = app.getAppContext();
+		InputStream inputStream = appContext.getStdOutInputStream();
+		if (inputStream != null) {
+			return new InputStreamResource(inputStream);
+		}
 		return null;
 	}
 
-	public Resource getStdErrFileResource(String id) {
-//		App app = appService.getApp(id);
-//		File file = app.getStdErrFile();
-//		if (file.exists()) {
-//			return new FileSystemResource(file);
-//		}
+	public Resource getStdErrFileResource(String id) throws IOException {
+		App app = appService.getApp(id);
+		AppContext appContext = app.getAppContext();
+		InputStream inputStream = appContext.getStdErrInputStream();
+		if (inputStream != null) {
+			return new InputStreamResource(inputStream);
+		}
 		return null;
 	}
 

@@ -56,16 +56,11 @@ public abstract class AbstractProcess implements AppProcess {
 	protected void init() {
 		SimpleAppContainer parsedAppContainer = context.getParsedAppContainer();
 
-		this.stdOutFile = context.getStdOutFile();
-		this.stdErrFile = context.getStdErrFile();
-
 		this.workDirectory = new File(parsedAppContainer.getWorkDirectory());
-		String pidFilePath = FilenameUtils.normalize(parsedAppContainer.getPidFile());
-		if (FilenameUtils.getName(pidFilePath).equals(pidFilePath)) {
-			this.pidFile = new File(this.workDirectory, pidFilePath);
-		} else {
-			this.pidFile = new File(parsedAppContainer.getPidFile());
-		}
+		this.pidFile = getFile(workDirectory, parsedAppContainer.getPidFile());
+
+		this.stdOutFile = getFile(workDirectory, parsedAppContainer.getStdOutFile());
+		this.stdErrFile = getFile(workDirectory, parsedAppContainer.getStdErrFile());
 
 		this.ptql = parsedAppContainer.getPtql();
 
@@ -74,6 +69,18 @@ public abstract class AbstractProcess implements AppProcess {
 		this.stopCommandLine = parsedAppContainer.getStopCommandLine();
 		this.stopTimeout = parsedAppContainer.getStopTimeout();
 
+	}
+
+	protected File getFile(File workDirectory, String filename) {
+		if (StringUtils.isNotBlank(filename)) {
+			String normalizedFilename = FilenameUtils.normalize(filename);
+			if (FilenameUtils.getName(normalizedFilename).equals(normalizedFilename)) {
+				return new File(workDirectory, normalizedFilename);
+			} else {
+				return new File(filename);
+			}
+		}
+		return null;
 	}
 
 	protected CommandLine parseCommandLine(String command) {

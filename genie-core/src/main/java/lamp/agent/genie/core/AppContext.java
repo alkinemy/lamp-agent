@@ -1,5 +1,7 @@
 package lamp.agent.genie.core;
 
+import java.io.IOException;
+import java.io.InputStream;
 
 public interface AppContext {
 
@@ -13,5 +15,8 @@ public interface AppContext {
 
     boolean isProcessRunning();
 
+    InputStream getStdOutInputStream() throws IOException;
+
+    InputStream getStdErrInputStream() throws IOException;
 
 }

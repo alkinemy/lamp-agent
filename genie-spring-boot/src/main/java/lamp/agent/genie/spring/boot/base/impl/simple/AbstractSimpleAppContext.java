@@ -26,6 +26,9 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -54,19 +57,22 @@ public abstract class AbstractSimpleAppContext implements SimpleAppContext {
 		return getLampContext().getAppMetaInfoDirectory(getId());
 	}
 
-	public File getStdOutFile() {
-//		String name = appSpec.getStdOutFile();
-//		if (StringUtils.isNotBlank(name)) {
-//			return new File(name);
-//		}
+
+	@Override
+	public InputStream getStdOutInputStream() throws IOException {
+		String filename = appContainer.getStdOutFile();
+		if (StringUtils.isNotBlank(filename)) {
+			return new FileInputStream(new File(filename));
+		}
 		return null;
 	}
 
-	public File getStdErrFile() {
-//		String name = appSpec.getStdErrFile();
-//		if (StringUtils.isNotBlank(name)) {
-//			return new File(name);
-//		}
+	@Override
+	public InputStream getStdErrInputStream() throws IOException {
+		String filename = appContainer.getStdErrFile();
+		if (StringUtils.isNotBlank(filename)) {
+			return new FileInputStream(new File(filename));
+		}
 		return null;
 	}
 
@@ -235,6 +241,15 @@ public abstract class AbstractSimpleAppContext implements SimpleAppContext {
 			updateStatus(AppStatus.STOPPING);
 
 			doTerminateProcess();
+
+			if (appContainer.getStopTimeout() > 0) {
+				AppProcess process = getProcess();
+				long timeout = appContainer.getStopTimeout() / 1000;
+				for (long i = 0; i < timeout && AppProcessState.RUNNING.equals(process.getStatus()); timeout++) {
+					log.info("Waiting for process to stop... {} ({}/{})", getId(), i, timeout);
+					Thread.sleep(1000);
+				}
+			}
 
 		} catch (Exception e) {
 			throw Exceptions.newException(ErrorCode.APP_STOP_FAILED, e);

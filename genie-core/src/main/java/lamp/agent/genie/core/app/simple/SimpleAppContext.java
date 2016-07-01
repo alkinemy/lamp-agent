@@ -25,10 +25,6 @@ public interface SimpleAppContext extends AppContext {
 
 	void doTerminateProcess();
 
-	File getStdOutFile();
-
-	File getStdErrFile();
-
 	AppProcess getProcess();
 
 	AppStatus getStatus();

@@ -6,11 +6,14 @@ import lamp.agent.genie.spring.boot.base.assembler.SmartAssembler;
 import lamp.agent.genie.spring.boot.management.model.AppDeployForm;
 import lamp.agent.genie.spring.boot.management.model.AppDto;
 import lamp.agent.genie.spring.boot.management.model.AppRedeployForm;
+import lamp.agent.genie.spring.boot.management.service.AppLogService;
 import lamp.agent.genie.spring.boot.management.service.AppManagementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -20,6 +23,9 @@ public class AppController {
 
 	@Autowired
 	private AppManagementService appManagementService;
+
+	@Autowired
+	private AppLogService appLogService;
 
 	@Autowired
 	private SmartAssembler smartAssembler;
@@ -82,20 +88,20 @@ public class AppController {
 //
 //	@RequestMapping(value = "/{id}/log/{filename:.+}", method = RequestMethod.GET)
 //	public Resource logFiles(@PathVariable("id") String id, @PathVariable("filename") String filename) {
-//		return appManagementService.getLogFileResource(id, filename);
+//		return appLogService.getLogFileResource(id, filename);
 //	}
-//
-//	@RequestMapping(value = "/{id}/stdOutFile", method = RequestMethod.GET)
-//	public Resource stdOutFile(@PathVariable("id") String id) {
-//		Resource resource = appManagementService.getStdOutFileResource(id);
-//		return resource;
-//	}
-//
-//	@RequestMapping(value = "/{id}/stdErrFile", method = RequestMethod.GET)
-//	@ResponseBody
-//	public Resource stdErrFile(@PathVariable("id") String id) {
-//		Resource resource = appManagementService.getStdErrFileResource(id);
-//		return resource;
-//	}
+
+	@RequestMapping(value = "/{id}/stdOut", method = RequestMethod.GET)
+	public Resource stdOutFile(@PathVariable("id") String id) throws IOException {
+		Resource resource = appLogService.getStdOutFileResource(id);
+		return resource;
+	}
+
+	@RequestMapping(value = "/{id}/stdErr", method = RequestMethod.GET)
+	@ResponseBody
+	public Resource stdErrFile(@PathVariable("id") String id) throws IOException {
+		Resource resource = appLogService.getStdErrFileResource(id);
+		return resource;
+	}
 
 }
