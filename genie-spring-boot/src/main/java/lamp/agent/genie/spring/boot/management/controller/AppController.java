@@ -91,13 +91,13 @@ public class AppController {
 //		return appLogService.getLogFileResource(id, filename);
 //	}
 
-	@RequestMapping(value = "/{id}/stdOut", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}/stdout", method = RequestMethod.GET)
 	public Resource stdOutFile(@PathVariable("id") String id) throws IOException {
 		Resource resource = appLogService.getStdOutFileResource(id);
 		return resource;
 	}
 
-	@RequestMapping(value = "/{id}/stdErr", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}/stderr", method = RequestMethod.GET)
 	@ResponseBody
 	public Resource stdErrFile(@PathVariable("id") String id) throws IOException {
 		Resource resource = appLogService.getStdErrFileResource(id);
