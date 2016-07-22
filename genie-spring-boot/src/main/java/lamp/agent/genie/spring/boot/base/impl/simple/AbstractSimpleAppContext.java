@@ -58,6 +58,16 @@ public abstract class AbstractSimpleAppContext implements SimpleAppContext {
 	}
 
 
+	public boolean isStdOutAvailable() {
+		SimpleAppContainer appContainer = getParsedAppContainer();
+		String filename = appContainer.getStdOutFile();
+		if (StringUtils.isNotBlank(filename)) {
+			File file = getFileWithWorkDirectory(appContainer, filename);
+			return file.exists() && file.canRead();
+		}
+		return false;
+	}
+
 	@Override
 	public InputStream getStdOutInputStream() throws IOException {
 		SimpleAppContainer appContainer = getParsedAppContainer();
@@ -83,6 +93,16 @@ public abstract class AbstractSimpleAppContext implements SimpleAppContext {
 			return new FileInputStream(file);
 		}
 		return null;
+	}
+
+	public boolean isStdErrAvailable() {
+		SimpleAppContainer appContainer = getParsedAppContainer();
+		String filename = appContainer.getStdErrFile();
+		if (StringUtils.isNotBlank(filename)) {
+			File file = getFileWithWorkDirectory(appContainer, filename);
+			return file.exists() && file.canRead();
+		}
+		return false;
 	}
 
 
