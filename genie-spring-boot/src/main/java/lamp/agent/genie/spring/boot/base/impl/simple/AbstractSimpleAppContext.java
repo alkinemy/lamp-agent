@@ -60,20 +60,40 @@ public abstract class AbstractSimpleAppContext implements SimpleAppContext {
 
 	@Override
 	public InputStream getStdOutInputStream() throws IOException {
+		SimpleAppContainer appContainer = getParsedAppContainer();
 		String filename = appContainer.getStdOutFile();
 		if (StringUtils.isNotBlank(filename)) {
-			return new FileInputStream(new File(filename));
+			File file = getFileWithWorkDirectory(appContainer, filename);
+			if (!file.exists()) {
+				log.warn("stdout file not exists : {}", file.getAbsolutePath());
+			}
+			return new FileInputStream(file);
+		}
+		return null;
+	}
+	@Override
+	public InputStream getStdErrInputStream() throws IOException {
+		SimpleAppContainer appContainer = getParsedAppContainer();
+		String filename = appContainer.getStdErrFile();
+		if (StringUtils.isNotBlank(filename)) {
+			File file = getFileWithWorkDirectory(appContainer, filename);
+			if (!file.exists()) {
+				log.warn("stderr file not exists : {}", file.getAbsolutePath());
+			}
+			return new FileInputStream(file);
 		}
 		return null;
 	}
 
-	@Override
-	public InputStream getStdErrInputStream() throws IOException {
-		String filename = appContainer.getStdErrFile();
-		if (StringUtils.isNotBlank(filename)) {
-			return new FileInputStream(new File(filename));
+
+	protected File getFileWithWorkDirectory(SimpleAppContainer appContainer, String filename) {
+		File file;
+		if (!filename.startsWith("/")) {
+			file = new File(appContainer.getWorkDirectory(), filename);
+		} else {
+			file = new File(filename);
 		}
-		return null;
+		return file;
 	}
 
 	public SimpleAppContainer getParsedAppContainer() {
