@@ -47,6 +47,9 @@ public abstract class AbstractSimpleAppContext implements SimpleAppContext {
 	private AppStatus appStatus = AppStatus.STOPPED;
 	private long lastCheckTimeMillis = 1000;
 
+	private long startTimeMillis;
+	private long stopTimeMillis;
+
 	public AbstractSimpleAppContext(LampContext lampContext, SimpleAppContainer appContainer) {
 		this.lampContext = lampContext;
 		this.appContainer = appContainer;
@@ -230,8 +233,22 @@ public abstract class AbstractSimpleAppContext implements SimpleAppContext {
 	}
 
 	@Override public AppStatus updateStatus(AppStatus status) {
-		this.lastCheckTimeMillis = System.currentTimeMillis();
-		this.appStatus = status;
+		long currentTimeMillis = System.currentTimeMillis();
+		this.lastCheckTimeMillis = currentTimeMillis;
+		if (AppStatus.STARTING.equals(this.appStatus)
+			&& appContainer.getStartTimeout() != null
+			&& appContainer.getStartTimeout() > -1
+			&& (startTimeMillis + appContainer.getStartTimeout()) > currentTimeMillis) {
+			// IGNORE
+		} else if (AppStatus.STOPPING.equals(this.appStatus)
+			&& appContainer.getStopTimeout() != null
+			&& appContainer.getStopTimeout() > -1
+			&& (stopTimeMillis + appContainer.getStopTimeout()) > currentTimeMillis) {
+			// IGNORE
+		} else {
+			this.appStatus = status;
+		}
+
 		return this.appStatus;
 	}
 
@@ -259,6 +276,7 @@ public abstract class AbstractSimpleAppContext implements SimpleAppContext {
 		}
 
 		try {
+			this.startTimeMillis = System.currentTimeMillis();
 			updateStatus(AppStatus.STARTING);
 
 			doCreateProcess();
@@ -278,6 +296,7 @@ public abstract class AbstractSimpleAppContext implements SimpleAppContext {
 		}
 
 		try {
+			this.stopTimeMillis = System.currentTimeMillis();
 			updateStatus(AppStatus.STOPPING);
 
 			doTerminateProcess();
