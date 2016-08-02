@@ -123,6 +123,13 @@ public class DockerAppContextImpl implements DockerAppContext {
 		//			createContainerCmd.withVolumesFrom(volumesFroms);
 		//		}
 
+		if (CollectionUtils.isNotEmpty(appContainer.getEntrypoint())) {
+			createContainerCmd.withEntrypoint(appContainer.getEntrypoint());
+		}
+		if (CollectionUtils.isNotEmpty(appContainer.getCmd())) {
+			createContainerCmd.withCmd(appContainer.getCmd());
+		}
+
 		CreateContainerResponse containerResponse = createContainerCmd.exec();
 		return containerResponse;
 	}
