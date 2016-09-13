@@ -8,7 +8,7 @@ public class HostUtils {
 
 	public static String getLocalHostName() {
 		try {
-			return execReadToString("hostname");
+			return StringUtils.trim(execReadToString("hostname"));
 		} catch (IOException e) {
 			return null;
 		}
