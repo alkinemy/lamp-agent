@@ -12,6 +12,7 @@ import lamp.agent.genie.core.LampContext;
 import lamp.agent.genie.core.app.docker.DockerAppContainer;
 import lamp.agent.genie.core.app.docker.DockerAppContext;
 import lamp.agent.genie.utils.CollectionUtils;
+import lamp.agent.genie.utils.HostUtils;
 import lamp.agent.genie.utils.StringUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -85,6 +86,14 @@ public class DockerAppContextImpl implements DockerAppContext {
 	protected CreateContainerResponse createContainer() {
 		CreateContainerCmd createContainerCmd = dockerClient.createContainerCmd(appContainer.getImage());
 		createContainerCmd.withName(getId());
+
+		if (StringUtils.isNotEmpty(appContainer.getHostName())) {
+			String hostName = appContainer.getHostName();
+			if ("hostname".equalsIgnoreCase(hostName)) {
+				hostName = HostUtils.getLocalHostName();
+			}
+			createContainerCmd.withHostName(hostName);
+		}
 
 		if (StringUtils.isNotEmpty(appContainer.getNetwork())) {
 			createContainerCmd.withNetworkMode(appContainer.getNetwork());
