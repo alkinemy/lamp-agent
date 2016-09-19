@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Map;
+
 @Getter
 @Setter
 @ToString
@@ -25,5 +27,7 @@ public class AppDto {
 	private String statusMessage;
 
 	private boolean monitored;
+
+	private Map<String, Object> details;
 
 }

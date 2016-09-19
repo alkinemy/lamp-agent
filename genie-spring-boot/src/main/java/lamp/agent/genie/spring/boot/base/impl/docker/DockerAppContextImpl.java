@@ -183,6 +183,7 @@ public class DockerAppContextImpl implements DockerAppContext {
 		return AppStatus.STOPPED;
 	}
 
+	@Override
 	public String getContainerId() {
 		String containerId = this.containerId;
 		if (StringUtils.isBlank(containerId)) {
@@ -206,6 +207,7 @@ public class DockerAppContextImpl implements DockerAppContext {
 		this.containerId = containerId;
 	}
 
+	@Override
 	public String getImageId() {
 		return this.imageId;
 	}
